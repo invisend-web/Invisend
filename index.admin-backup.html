@@ -395,3 +395,221 @@
                   <div class="upload-label">Click to upload</div>
                   <div class="upload-hint">JPG/PNG together photo</div>
                   <div class="upload-progress" id="prog-couple"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:40px;display:flex;gap:12px">
+              <button type="submit" class="btn btn-primary">Save Invitation</button>
+              <button type="button" class="btn btn-secondary" onclick="showView('dashboard')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ALL INVITATIONS VIEW ═════════════════════ -->
+    <div id="view-invitations" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">All Invitations</div>
+          <button class="btn btn-primary btn-sm" onclick="showView('create')">Create New</button>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table id="inv-table">
+              <thead>
+                <tr>
+                  <th>Couple</th>
+                  <th>Slug</th>
+                  <th>Template</th>
+                  <th>Wedding Date</th>
+                  <th>Views</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inv-tbody">
+                <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TESTIMONIALS VIEW ════════════════════════ -->
+    <div id="view-testimonials" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Testimonials</div>
+          <button class="btn btn-primary btn-sm" onclick="uploadTestimonial()">Upload Testimonial</button>
+        </div>
+        <div class="panel-body">
+          <div id="testimonials-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RSVP VIEW ════════════════════════════════ -->
+    <div id="view-rsvp" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">RSVP Responses</div>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table id="rsvp-table">
+              <thead>
+                <tr>
+                  <th>Invitation</th>
+                  <th>Guest Name</th>
+                  <th>Phone</th>
+                  <th>Attendance</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody id="rsvp-tbody">
+                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:40px">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETUP VIEW ════════════════════════════════ -->
+    <div id="view-setup" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Supabase Setup</div>
+        </div>
+        <div class="panel-body" style="padding:40px;text-align:center">
+          <div style="background:var(--bg-secondary);padding:24px;border-radius:8px;margin-bottom:20px">
+            <p style="color:var(--text-muted);font-size:13px;line-height:1.6">
+              <strong>Configuration Details:</strong><br/>
+              Check your browser console (F12) for connection status and any errors.
+            </p>
+          </div>
+          <button class="btn btn-primary" onclick="testConnection()">Test Connection</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+
+<!-- ════════════════════════════════════════════════════
+     MAIN APPLICATION SCRIPT
+     ════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════
+// ALL FUNCTIONS EXPOSED TO GLOBAL WINDOW SCOPE
+// ═══════════════════════════════════════════════════════════
+
+window.showView = function(viewName) {
+  document.querySelectorAll('[id^="view-"]').forEach(el => el.style.display = 'none');
+  const view = document.getElementById('view-' + viewName);
+  if (view) view.style.display = 'block';
+  
+  const pageTitle = {
+    dashboard: 'Dashboard',
+    create: 'Create Invitation',
+    invitations: 'All Invitations',
+    testimonials: 'Testimonials',
+    rsvp: 'RSVP Responses',
+  };
+  document.getElementById('topbar-title').textContent = pageTitle[viewName] || viewName;
+  
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navBtn = document.getElementById('nav-' + viewName);
+  if (navBtn) navBtn.classList.add('active');
+  
+  if (viewName === 'invitations') loadAllInvitations();
+  if (viewName === 'testimonials') loadTestimonialsList();
+  if (viewName === 'rsvp') loadRSVPResponses();
+};
+
+window.showSetupView = function() {
+  window.showView('setup');
+};
+
+window.handleFormSubmit = function(e) {
+  e.preventDefault();
+  alert('Form submission handler — connect to your backend here');
+  console.log('Form data ready to submit');
+};
+
+window.autoSlug = function() {
+  const couple = document.getElementById('couple_name').value.toLowerCase().trim();
+  const slug = couple.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  document.getElementById('slug').value = slug;
+};
+
+window.selectTemplate = function(templateId) {
+  document.querySelectorAll('.template-option').forEach(el => el.classList.remove('selected'));
+  document.querySelector('.template-option.t' + templateId).classList.add('selected');
+  document.querySelector('input[name="template_id"][value="' + templateId + '"]').checked = true;
+};
+
+window.triggerUpload = function(inputId) {
+  document.getElementById(inputId).click();
+};
+
+window.handleFileSelect = function(fileType, input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById('prev-' + fileType);
+    if (preview) preview.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.uploadTestimonial = function() {
+  alert('Testimonial upload handler');
+};
+
+window.testConnection = function() {
+  console.log('Testing connection...');
+  alert('Connection test — check browser console (F12) for details');
+};
+
+// ═══════════════════════════════════════════════════════════
+// DATA LOADING FUNCTIONS
+// ═══════════════════════════════════════════════════════════
+
+function loadAllInvitations() {
+  console.log('Loading all invitations...');
+  // Connect to your backend here
+}
+
+function loadTestimonialsList() {
+  console.log('Loading testimonials list...');
+  // Connect to your backend here
+}
+
+function loadRSVPResponses() {
+  console.log('Loading RSVP responses...');
+  // Connect to your backend here
+}
+
+// ═══════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Admin Dashboard loaded');
+  window.showView('dashboard');
+});
+</script>
+
+</body>
+</html>
