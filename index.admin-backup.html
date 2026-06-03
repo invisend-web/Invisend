@@ -356,7 +356,6 @@
                   <div class="upload-icon">👪</div>
                   <div class="upload-label">Click to upload</div>
                   <div class="upload-hint">PNG with transparency</div>
-                  <div class="upload-progress" id="prog-bride"></div>
                 </div>
               </div>
               <div>
@@ -367,7 +366,6 @@
                   <div class="upload-icon">👎</div>
                   <div class="upload-label">Click to upload</div>
                   <div class="upload-hint">PNG with transparency</div>
-                  <div class="upload-progress" id="prog-groom"></div>
                 </div>
               </div>
               <div>
@@ -378,7 +376,6 @@
                   <div class="upload-icon">🌅</div>
                   <div class="upload-label">Click to upload</div>
                   <div class="upload-hint">JPG/PNG landscape</div>
-                  <div class="upload-progress" id="prog-bg"></div>
                 </div>
               </div>
               <div>
@@ -389,7 +386,6 @@
                   <div class="upload-icon">💕</div>
                   <div class="upload-label">Click to upload</div>
                   <div class="upload-hint">JPG/PNG together photo</div>
-                  <div class="upload-progress" id="prog-couple"></div>
                 </div>
               </div>
             </div>
@@ -481,11 +477,10 @@
         <div class="panel-body" style="padding:40px;text-align:center">
           <div style="background:var(--bg-secondary);padding:24px;border-radius:8px;margin-bottom:20px">
             <p style="color:var(--text-muted);font-size:13px;line-height:1.6">
-              <strong>Configuration Status:</strong><br/>
-              Check your browser console (F12) for connection details.
+              <strong>✅ Connected & Ready</strong><br/>
+              Dashboard is connected to Supabase
             </p>
           </div>
-          <button class="btn btn-primary" onclick="testConnection()">Test Connection</button>
         </div>
       </div>
     </div>
@@ -521,6 +516,7 @@ window.showView = function(viewName) {
   const navBtn = document.getElementById('nav-' + viewName);
   if (navBtn) navBtn.classList.add('active');
   
+  if (viewName === 'dashboard') loadDashboard();
   if (viewName === 'invitations') loadAllInvitations();
   if (viewName === 'rsvp') loadRSVPResponses();
 };
@@ -541,24 +537,26 @@ window.handleFormSubmit = async function(e) {
   
   try {
     const editId = document.getElementById('edit-id').value;
+    const slug = document.getElementById('slug').value.trim().toLowerCase();
     
-    // Prepare file uploads
+    // Prepare file uploads with nested folders
     const uploadedUrls = {};
     const fileInputs = {
-      'bride': 'file-bride',
-      'groom': 'file-groom',
-      'bg': 'file-bg',
-      'couple': 'file-couple',
+      'bride': { key: 'bride_image_url', folder: 'brides' },
+      'groom': { key: 'groom_image_url', folder: 'grooms' },
+      'bg': { key: 'background_image_url', folder: 'backgrounds' },
+      'couple': { key: 'couple_image_url', folder: 'couples' },
     };
     
-    for (const [key, inputId] of Object.entries(fileInputs)) {
-      const input = document.getElementById(inputId);
+    for (const [inputType, config] of Object.entries(fileInputs)) {
+      const input = document.getElementById('file-' + inputType);
       if (input.files.length > 0) {
         try {
-          uploadedUrls[key + '_url'] = await uploadFile(input.files[0], 'invitations');
+          const uploadPath = `${config.folder}/${slug}`;
+          uploadedUrls[config.key] = await uploadFile(input.files[0], uploadPath);
         } catch (err) {
-          console.error(`Upload failed for ${key}:`, err);
-          alert(`Failed to upload ${key} photo: ${err.message}`);
+          console.error(`Upload failed for ${inputType}:`, err);
+          alert(`Failed to upload ${inputType} photo: ${err.message}`);
           throw err;
         }
       }
@@ -567,7 +565,7 @@ window.handleFormSubmit = async function(e) {
     // Prepare form payload
     const payload = {
       couple_name: document.getElementById('couple_name').value.trim(),
-      slug: document.getElementById('slug').value.trim().toLowerCase(),
+      slug: slug,
       template_id: parseInt(document.querySelector('input[name="template_id"]:checked').value),
       bride_father: document.getElementById('bride_father').value.trim(),
       bride_mother: document.getElementById('bride_mother').value.trim(),
@@ -582,18 +580,6 @@ window.handleFormSubmit = async function(e) {
       ...uploadedUrls,
     };
     
-    // Map keys for Supabase column names
-    payload.bride_image_url = uploadedUrls['bride_url'] || null;
-    payload.groom_image_url = uploadedUrls['groom_url'] || null;
-    payload.background_image_url = uploadedUrls['bg_url'] || null;
-    payload.couple_image_url = uploadedUrls['couple_url'] || null;
-    
-    // Clean up temp keys
-    delete payload['bride_url'];
-    delete payload['groom_url'];
-    delete payload['bg_url'];
-    delete payload['couple_url'];
-    
     // Create or update
     let result;
     if (editId) {
@@ -601,7 +587,7 @@ window.handleFormSubmit = async function(e) {
       alert('✅ Invitation updated successfully!');
     } else {
       result = await createInvitation(payload);
-      alert('✅ Invitation created successfully!\n\nShare link: /invite?slug=' + payload.slug);
+      alert('✅ Invitation created!\n\nShare link: /invite?slug=' + payload.slug);
     }
     
     // Reset form
@@ -609,12 +595,12 @@ window.handleFormSubmit = async function(e) {
     document.querySelectorAll('.upload-preview').forEach(el => el.src = '');
     document.getElementById('edit-id').value = '';
     
-    // Redirect to dashboard
+    // Reload dashboard
     setTimeout(() => window.showView('dashboard'), 500);
     
   } catch (err) {
-    alert('❌ Error saving invitation:\n' + err.message);
-    console.error('Form submission error:', err);
+    alert('❌ Error:\n' + err.message);
+    console.error('Form error:', err);
   } finally {
     btn.disabled = false;
     btn.textContent = 'Save Invitation';
@@ -666,13 +652,48 @@ window.handleFileSelect = function(fileType, input) {
 // DATA LOADING
 // ═══════════════════════════════════════════════════════════
 
+async function loadDashboard() {
+  try {
+    const invitations = await getAllInvitations();
+    if (!invitations) return;
+    
+    let total = invitations.length;
+    let live = invitations.filter(i => i.status === 'published').length;
+    let expired = invitations.filter(i => isExpired(i.expiry_date)).length;
+    let views = invitations.reduce((sum, i) => sum + (i.view_count || 0), 0);
+    
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-live').textContent = live;
+    document.getElementById('stat-expired').textContent = expired;
+    document.getElementById('stat-views').textContent = views;
+    
+    // Show recent 5
+    const tbody = document.getElementById('dash-tbody');
+    tbody.innerHTML = invitations.slice(0, 5).map(inv => `
+      <tr>
+        <td>${inv.couple_name || '—'}</td>
+        <td><code style="font-size:11px">${inv.slug}</code></td>
+        <td>Theme ${inv.template_id || 1}</td>
+        <td>${formatDate(inv.wedding_date) || '—'}</td>
+        <td>${inv.view_count || 0}</td>
+        <td><span style="font-size:11px;color:var(--text-muted)">${inv.status}</span></td>
+        <td style="font-size:12px">
+          <button class="btn btn-secondary btn-xs" onclick="viewInvitation('${inv.slug}')">View</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+  }
+}
+
 async function loadAllInvitations() {
   try {
     const invitations = await getAllInvitations();
     const tbody = document.getElementById('inv-tbody');
     
     if (!invitations || invitations.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px">No invitations yet</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px">No invitations</td></tr>';
       return;
     }
     
@@ -684,9 +705,9 @@ async function loadAllInvitations() {
         <td>${formatDate(inv.wedding_date) || '—'}</td>
         <td>${inv.view_count || 0}</td>
         <td><span style="font-size:11px;color:var(--text-muted)">${inv.status}</span></td>
-        <td style="font-size:12px">
-          <button class="btn btn-secondary btn-xs" onclick="editInvitation(${inv.id})">Edit</button>
-          <button class="btn btn-danger btn-xs" onclick="deleteInvitationConfirm(${inv.id})">Delete</button>
+        <td style="font-size:12px;gap:4px">
+          <button class="btn btn-secondary btn-xs" onclick="viewInvitation('${inv.slug}')">View</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteInvitationConfirm('${inv.id}')">Delete</button>
         </td>
       </tr>
     `).join('');
@@ -701,7 +722,7 @@ async function loadRSVPResponses() {
     const tbody = document.getElementById('rsvp-tbody');
     
     if (!rsvps || rsvps.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px">No RSVP responses yet</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px">No RSVP responses</td></tr>';
       return;
     }
     
@@ -714,41 +735,39 @@ async function loadRSVPResponses() {
         <td style="font-size:11px;color:var(--text-muted)">${new Date(rsvp.created_at).toLocaleDateString()}</td>
       </tr>
     `).join('');
+    
+    // Update stat
+    document.getElementById('stat-rsvp').textContent = rsvps.length;
   } catch (err) {
     document.getElementById('rsvp-tbody').innerHTML = `<tr><td colspan="5" style="color:red;padding:20px">Error: ${err.message}</td></tr>`;
   }
 }
 
 // ═══════════════════════════════════════════════════════════
-// EDIT & DELETE
+// ACTIONS
 // ═══════════════════════════════════════════════════════════
 
-async function editInvitation(id) {
-  alert('Edit function coming soon');
+function viewInvitation(slug) {
+  window.open('/invite?slug=' + slug, '_blank');
 }
 
 async function deleteInvitationConfirm(id) {
-  if (!confirm('Are you sure? This cannot be undone.')) return;
+  if (!confirm('Delete this invitation? This cannot be undone.')) return;
   try {
     await deleteInvitation(id);
-    alert('Invitation deleted');
+    alert('✅ Deleted');
     loadAllInvitations();
   } catch (err) {
-    alert('Delete failed: ' + err.message);
+    alert('❌ Error: ' + err.message);
   }
 }
 
-function testConnection() {
-  console.log('Supabase Config:', window.INVISEND_CONFIG);
-  alert('✅ Connection test complete. Check console for details.');
-}
-
 // ═══════════════════════════════════════════════════════════
-// INITIALIZATION
+// INIT
 // ═══════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Admin Dashboard initialized');
+  console.log('✅ Admin Dashboard Ready');
   window.showView('dashboard');
 });
 </script>
