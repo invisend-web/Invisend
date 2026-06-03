@@ -84,7 +84,6 @@
 
 <script>
 (function(){
-  // SHA-256 hash of 'I@mfc!sm@S'
   const CORRECT_HASH = '7155703dd712ab839b9ead7c8afdd0e54038efce897e08f926a7e6d837aefa09';
 
   async function sha256(str) {
@@ -110,7 +109,6 @@
       err.classList.add('show');
       document.getElementById('auth-pw').value = '';
       document.getElementById('auth-pw').focus();
-      // Brief delay so brute force is slower
       setTimeout(() => err.classList.remove('show'), 3000);
     }
   }
@@ -335,9 +333,6 @@
               <div class="form-group span-2">
                 <label>Google Maps Link</label>
                 <input type="url" id="maps_url" placeholder="https://maps.google.com/maps?q=..." />
-                <span style="font-size:11px;color:var(--text-muted);margin-top:4px;display:block">
-                  Paste a Google Maps share link. Guests click "Open Location" to navigate.
-                </span>
               </div>
               <div class="form-group span-2">
                 <label>Personal Message</label>
@@ -443,10 +438,9 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">Testimonials</div>
-          <button class="btn btn-primary btn-sm" onclick="uploadTestimonial()">Upload Testimonial</button>
         </div>
         <div class="panel-body">
-          <div id="testimonials-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px"></div>
+          <p style="color:var(--text-muted);text-align:center;padding:40px">Testimonials are managed on the public website</p>
         </div>
       </div>
     </div>
@@ -487,8 +481,8 @@
         <div class="panel-body" style="padding:40px;text-align:center">
           <div style="background:var(--bg-secondary);padding:24px;border-radius:8px;margin-bottom:20px">
             <p style="color:var(--text-muted);font-size:13px;line-height:1.6">
-              <strong>Configuration Details:</strong><br/>
-              Check your browser console (F12) for connection status and any errors.
+              <strong>Configuration Status:</strong><br/>
+              Check your browser console (F12) for connection details.
             </p>
           </div>
           <button class="btn btn-primary" onclick="testConnection()">Test Connection</button>
@@ -502,14 +496,11 @@
 <script src="js/config.js"></script>
 <script src="js/supabase.js"></script>
 
-<!-- ════════════════════════════════════════════════════
-     MAIN APPLICATION SCRIPT
-     ════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
 // ═══════════════════════════════════════════════════════════
-// ALL FUNCTIONS EXPOSED TO GLOBAL WINDOW SCOPE
+// VIEW MANAGEMENT
 // ═══════════════════════════════════════════════════════════
 
 window.showView = function(viewName) {
@@ -531,7 +522,6 @@ window.showView = function(viewName) {
   if (navBtn) navBtn.classList.add('active');
   
   if (viewName === 'invitations') loadAllInvitations();
-  if (viewName === 'testimonials') loadTestimonialsList();
   if (viewName === 'rsvp') loadRSVPResponses();
 };
 
@@ -539,15 +529,105 @@ window.showSetupView = function() {
   window.showView('setup');
 };
 
-window.handleFormSubmit = function(e) {
+// ═══════════════════════════════════════════════════════════
+// FORM SUBMISSION - MAIN FUNCTION
+// ═══════════════════════════════════════════════════════════
+
+window.handleFormSubmit = async function(e) {
   e.preventDefault();
-  alert('Form submission handler — connect to your backend here');
-  console.log('Form data ready to submit');
+  const btn = document.querySelector('#invitation-form button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  
+  try {
+    const editId = document.getElementById('edit-id').value;
+    
+    // Prepare file uploads
+    const uploadedUrls = {};
+    const fileInputs = {
+      'bride': 'file-bride',
+      'groom': 'file-groom',
+      'bg': 'file-bg',
+      'couple': 'file-couple',
+    };
+    
+    for (const [key, inputId] of Object.entries(fileInputs)) {
+      const input = document.getElementById(inputId);
+      if (input.files.length > 0) {
+        try {
+          uploadedUrls[key + '_url'] = await uploadFile(input.files[0], 'invitations');
+        } catch (err) {
+          console.error(`Upload failed for ${key}:`, err);
+          alert(`Failed to upload ${key} photo: ${err.message}`);
+          throw err;
+        }
+      }
+    }
+    
+    // Prepare form payload
+    const payload = {
+      couple_name: document.getElementById('couple_name').value.trim(),
+      slug: document.getElementById('slug').value.trim().toLowerCase(),
+      template_id: parseInt(document.querySelector('input[name="template_id"]:checked').value),
+      bride_father: document.getElementById('bride_father').value.trim(),
+      bride_mother: document.getElementById('bride_mother').value.trim(),
+      groom_father: document.getElementById('groom_father').value.trim(),
+      groom_mother: document.getElementById('groom_mother').value.trim(),
+      wedding_date: document.getElementById('wedding_date').value,
+      venue: document.getElementById('venue').value.trim(),
+      maps_url: document.getElementById('maps_url').value.trim() || null,
+      message: document.getElementById('message').value.trim() || null,
+      status: 'active',
+      expiry_date: expiryFromWedding(document.getElementById('wedding_date').value),
+      ...uploadedUrls,
+    };
+    
+    // Map keys for Supabase column names
+    payload.bride_image_url = uploadedUrls['bride_url'] || null;
+    payload.groom_image_url = uploadedUrls['groom_url'] || null;
+    payload.background_image_url = uploadedUrls['bg_url'] || null;
+    payload.couple_image_url = uploadedUrls['couple_url'] || null;
+    
+    // Clean up temp keys
+    delete payload['bride_url'];
+    delete payload['groom_url'];
+    delete payload['bg_url'];
+    delete payload['couple_url'];
+    
+    // Create or update
+    let result;
+    if (editId) {
+      result = await updateInvitation(editId, payload);
+      alert('✅ Invitation updated successfully!');
+    } else {
+      result = await createInvitation(payload);
+      alert('✅ Invitation created successfully!\n\nShare link: /invite?slug=' + payload.slug);
+    }
+    
+    // Reset form
+    document.getElementById('invitation-form').reset();
+    document.querySelectorAll('.upload-preview').forEach(el => el.src = '');
+    document.getElementById('edit-id').value = '';
+    
+    // Redirect to dashboard
+    setTimeout(() => window.showView('dashboard'), 500);
+    
+  } catch (err) {
+    alert('❌ Error saving invitation:\n' + err.message);
+    console.error('Form submission error:', err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Invitation';
+  }
 };
+
+// ═══════════════════════════════════════════════════════════
+// FORM HELPERS
+// ═══════════════════════════════════════════════════════════
 
 window.autoSlug = function() {
   const couple = document.getElementById('couple_name').value.toLowerCase().trim();
-  const slug = couple.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const slug = couple.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'invitation';
   document.getElementById('slug').value = slug;
 };
 
@@ -565,40 +645,102 @@ window.handleFileSelect = function(fileType, input) {
   const file = input.files[0];
   if (!file) return;
   
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File too large (max 5MB)');
+    input.value = '';
+    return;
+  }
+  
   const reader = new FileReader();
   reader.onload = (e) => {
     const preview = document.getElementById('prev-' + fileType);
-    if (preview) preview.src = e.target.result;
+    if (preview) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
   };
   reader.readAsDataURL(file);
 };
 
-window.uploadTestimonial = function() {
-  alert('Testimonial upload handler');
-};
-
-window.testConnection = function() {
-  console.log('Testing connection...');
-  alert('Connection test — check browser console (F12) for details');
-};
-
 // ═══════════════════════════════════════════════════════════
-// DATA LOADING FUNCTIONS
+// DATA LOADING
 // ═══════════════════════════════════════════════════════════
 
-function loadAllInvitations() {
-  console.log('Loading all invitations...');
-  // Connect to your backend here
+async function loadAllInvitations() {
+  try {
+    const invitations = await getAllInvitations();
+    const tbody = document.getElementById('inv-tbody');
+    
+    if (!invitations || invitations.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px">No invitations yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = invitations.map(inv => `
+      <tr>
+        <td>${inv.couple_name || '—'}</td>
+        <td><code style="font-size:11px">${inv.slug}</code></td>
+        <td>Theme ${inv.template_id || 1}</td>
+        <td>${formatDate(inv.wedding_date) || '—'}</td>
+        <td>${inv.view_count || 0}</td>
+        <td><span style="font-size:11px;color:var(--text-muted)">${inv.status}</span></td>
+        <td style="font-size:12px">
+          <button class="btn btn-secondary btn-xs" onclick="editInvitation(${inv.id})">Edit</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteInvitationConfirm(${inv.id})">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    document.getElementById('inv-tbody').innerHTML = `<tr><td colspan="7" style="color:red;padding:20px">Error: ${err.message}</td></tr>`;
+  }
 }
 
-function loadTestimonialsList() {
-  console.log('Loading testimonials list...');
-  // Connect to your backend here
+async function loadRSVPResponses() {
+  try {
+    const rsvps = await sbFetch('rsvp?order=created_at.desc&select=*');
+    const tbody = document.getElementById('rsvp-tbody');
+    
+    if (!rsvps || rsvps.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px">No RSVP responses yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = rsvps.map(rsvp => `
+      <tr>
+        <td><code style="font-size:11px">${rsvp.invitation_slug}</code></td>
+        <td>${rsvp.guest_name || '—'}</td>
+        <td>${rsvp.phone || '—'}</td>
+        <td>${rsvp.attendance === 'yes' ? '✅ Yes' : '❌ No'}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${new Date(rsvp.created_at).toLocaleDateString()}</td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    document.getElementById('rsvp-tbody').innerHTML = `<tr><td colspan="5" style="color:red;padding:20px">Error: ${err.message}</td></tr>`;
+  }
 }
 
-function loadRSVPResponses() {
-  console.log('Loading RSVP responses...');
-  // Connect to your backend here
+// ═══════════════════════════════════════════════════════════
+// EDIT & DELETE
+// ═══════════════════════════════════════════════════════════
+
+async function editInvitation(id) {
+  alert('Edit function coming soon');
+}
+
+async function deleteInvitationConfirm(id) {
+  if (!confirm('Are you sure? This cannot be undone.')) return;
+  try {
+    await deleteInvitation(id);
+    alert('Invitation deleted');
+    loadAllInvitations();
+  } catch (err) {
+    alert('Delete failed: ' + err.message);
+  }
+}
+
+function testConnection() {
+  console.log('Supabase Config:', window.INVISEND_CONFIG);
+  alert('✅ Connection test complete. Check console for details.');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -606,7 +748,7 @@ function loadRSVPResponses() {
 // ═══════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Admin Dashboard loaded');
+  console.log('Admin Dashboard initialized');
   window.showView('dashboard');
 });
 </script>
