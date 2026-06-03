@@ -577,7 +577,7 @@ window.handleFormSubmit = async function(e) {
       venue: document.getElementById('venue').value.trim(),
       maps_url: document.getElementById('maps_url').value.trim() || null,
       message: document.getElementById('message').value.trim() || null,
-      status: 'active',
+      status: 'published',
       expiry_date: expiryFromWedding(document.getElementById('wedding_date').value),
       ...uploadedUrls,
     };
