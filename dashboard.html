@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InviSend — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#111118;--bg3:#16161f;
+  --glass:rgba(255,255,255,0.04);--gb:rgba(255,255,255,0.08);--gh:rgba(255,255,255,0.07);
+  --blue:#0a84ff;--green:#30d158;--yellow:#ffd60a;--red:#ff453a;--purple:#bf5af2;--orange:#ff9f0a;
+  --text:#f5f5f7;--text2:#a1a1b0;--text3:#6e6e80;--border:rgba(255,255,255,0.06);
+  --font:'Inter',sans-serif;--ease:cubic-bezier(0.25,1,0.5,1);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
+
+/* LOGIN */
+.login-overlay{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.login-card{background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:40px 36px;width:min(400px,90vw);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo-text{font-size:22px;font-weight:700;background:linear-gradient(135deg,#0a84ff,#bf5af2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-title{font-size:20px;font-weight:600;margin-bottom:6px;text-align:center}
+.login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:28px}
+.login-field{background:rgba(255,255,255,0.05);border:1px solid var(--gb);border-radius:10px;padding:13px 16px;color:var(--text);font-family:var(--font);font-size:14px;width:100%;outline:none;margin-bottom:12px;transition:border-color 0.2s;-webkit-appearance:none}
+.login-field:focus{border-color:var(--blue)}
+.login-field::placeholder{color:var(--text3)}
+.login-btn{width:100%;padding:13px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;margin-top:4px;transition:opacity 0.2s}
+.login-btn:hover{opacity:0.9}
+.login-error{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
+.login-error.show{display:block}
+
+/* LAYOUT */
+.dashboard{display:none;min-height:100dvh}
+.dashboard.active{display:flex}
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform 0.3s var(--ease)}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar-logo-text{font-size:17px;font-weight:700;background:linear-gradient(135deg,#0a84ff,#bf5af2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-label{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:0 20px;margin:12px 0 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;margin:1px 8px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--text2);transition:all 0.2s;user-select:none}
+.nav-item:hover{background:var(--gh);color:var(--text)}
+.nav-item.active{background:rgba(10,132,255,0.12);color:var(--blue)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:0.7}
+.nav-item.active svg{opacity:1}
+.sidebar-bottom{margin-top:auto;padding:16px 8px 0;border-top:1px solid var(--border)}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--red);transition:background 0.2s}
+.logout-btn:hover{background:rgba(255,69,58,0.1)}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100dvh}
+.topbar{height:56px;background:rgba(10,10,15,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:40}
+.topbar-title{font-size:16px;font-weight:600}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.btn-primary{display:flex;align-items:center;gap:7px;background:var(--blue);border:none;border-radius:8px;padding:8px 16px;color:#fff;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-ghost{display:flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--gb);border-radius:8px;padding:7px 14px;color:var(--text2);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.2s}
+.btn-ghost:hover{background:var(--gh);color:var(--text)}
+.content{padding:28px;flex:1}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.stat-label{font-size:11.5px;color:var(--text3)}
+.stat-value{font-size:26px;font-weight:600;line-height:1}
+.stat-sub{font-size:11.5px;color:var(--text3)}
+/* TABLE */
+.table-card{background:var(--glass);border:1px solid var(--gb);border-radius:16px;overflow:hidden}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.table-title{font-size:15px;font-weight:600}
+.search-input{background:rgba(255,255,255,0.05);border:1px solid var(--gb);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:200px;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--blue)}
+.search-input::placeholder{color:var(--text3)}
+.inv-table{width:100%;border-collapse:collapse}
+.inv-table th{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);text-align:left;padding:10px 20px;border-bottom:1px solid var(--border);white-space:nowrap}
+.inv-table td{padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13.5px;color:var(--text2);vertical-align:middle;white-space:nowrap}
+.inv-table tr:last-child td{border-bottom:none}
+.inv-table tr:hover td{background:var(--gh)}
+.sbadge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;letter-spacing:0.03em;padding:3px 9px;border-radius:50px}
+.sbadge::before{content:'';width:5px;height:5px;border-radius:50%}
+.sbadge.live{background:rgba(48,209,88,0.12);color:var(--green)}
+.sbadge.live::before{background:var(--green)}
+.sbadge.expired{background:rgba(255,69,58,0.1);color:var(--red)}
+.sbadge.expired::before{background:var(--red)}
+.theme-dot{width:10px;height:10px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:6px}
+.action-btns{display:flex;align-items:center;gap:6px}
+.action-btn{width:28px;height:28px;border-radius:7px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text3)}
+.action-btn:hover{background:var(--gh);color:var(--text)}
+.action-btn.danger:hover{background:rgba(255,69,58,0.12);color:var(--red);border-color:rgba(255,69,58,0.2)}
+.action-btn svg{width:13px;height:13px;fill:currentColor}
+.empty-state{padding:60px 20px;text-align:center}
+.empty-icon{width:48px;height:48px;background:var(--glass);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.empty-icon svg{width:22px;height:22px;fill:var(--text3)}
+.empty-title{font-size:15px;font-weight:500;margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--text3)}
+/* MODAL */
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--gb);border-radius:20px;width:min(680px,100%);margin:auto;padding:28px;animation:modalIn 0.3s var(--ease)}
+@keyframes modalIn{from{opacity:0;transform:scale(0.96) translateY(10px)}to{opacity:1;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.modal-title{font-size:18px;font-weight:600}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all 0.2s}
+.modal-close:hover{background:var(--gh);color:var(--text)}
+.modal-close svg{width:14px;height:14px;fill:currentColor}
+.form-section{margin-bottom:20px}
+.form-section-title{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:11.5px;color:var(--text3);letter-spacing:0.03em}
+.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--gb);border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--font);font-size:13.5px;outline:none;width:100%;transition:border-color 0.2s;-webkit-appearance:none}
+.form-input:focus{border-color:var(--blue)}
+.form-input::placeholder{color:var(--text3)}
+select.form-input{cursor:pointer}
+/* UPLOAD */
+.upload-area{border:1.5px dashed var(--gb);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.upload-area:hover{border-color:var(--blue);background:rgba(10,132,255,0.04)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{width:32px;height:32px;background:var(--glass);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.upload-icon svg{width:16px;height:16px;fill:var(--text3)}
+.upload-label{font-size:12px;color:var(--text2)}
+.upload-sub{font-size:10.5px;color:var(--text3)}
+.upload-preview{display:none;width:100%;max-height:100px;object-fit:cover;border-radius:7px}
+/* PRESHOOT UPLOAD GRID */
+.preshoot-upload-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.preshoot-slot{aspect-ratio:3/4;border:1.5px dashed var(--gb);border-radius:8px;position:relative;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color 0.2s,background 0.2s;background:var(--glass)}
+.preshoot-slot:hover{border-color:var(--blue);background:rgba(10,132,255,0.05)}
+.preshoot-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.preshoot-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:6px}
+.preshoot-slot .slot-num{font-size:9px;color:var(--text3);font-weight:500}
+.preshoot-slot .slot-icon svg{width:14px;height:14px;fill:var(--text3)}
+.preshoot-slot .slot-remove{position:absolute;top:4px;right:4px;width:18px;height:18px;background:rgba(255,69,58,0.85);border-radius:50%;border:none;color:#fff;font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;line-height:1}
+.preshoot-slot:hover .slot-remove{display:flex}
+/* THEME SELECTOR */
+.theme-selector{display:flex;gap:10px;flex-wrap:wrap}
+.theme-opt{flex:1;min-width:100px;border:1.5px solid var(--gb);border-radius:10px;padding:12px 10px;cursor:pointer;text-align:center;transition:all 0.2s}
+.theme-opt:hover{border-color:rgba(255,255,255,0.2)}
+.theme-opt.active{border-color:var(--blue);background:rgba(10,132,255,0.06)}
+.theme-opt-dot{width:28px;height:28px;border-radius:50%;margin:0 auto 8px;border:2px solid rgba(255,255,255,0.1)}
+.theme-opt-name{font-size:11px;font-weight:500;color:var(--text2)}
+.theme-opt-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+/* RSVP */
+.rsvp-panel{background:var(--glass);border:1px solid var(--gb);border-radius:16px;margin-top:0;overflow:hidden}
+.rsvp-list-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.rsvp-summary{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border)}
+.rsvp-stat{padding:20px;text-align:center;border-right:1px solid var(--border)}
+.rsvp-stat:last-child{border-right:none}
+.rsvp-stat-val{font-size:28px;font-weight:600;line-height:1;margin-bottom:4px}
+.rsvp-stat-label{font-size:11.5px;color:var(--text3)}
+.rsvp-table{width:100%;border-collapse:collapse}
+.rsvp-table th{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);text-align:left;padding:10px 20px;border-bottom:1px solid var(--border)}
+.rsvp-table td{padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13.5px;color:var(--text2)}
+.rsvp-table tr:last-child td{border-bottom:none}
+/* TESTIMONIALS GRID */
+.test-grid{padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.test-thumb{border:1px solid var(--gb);border-radius:12px;overflow:hidden;background:var(--glass);transition:transform 0.2s}
+.test-thumb:hover{transform:translateY(-3px)}
+.test-thumb-img{width:100%;aspect-ratio:4/3;overflow:hidden;background:#111}
+.test-thumb-img img{width:100%;height:100%;object-fit:cover;display:block}
+.test-thumb-body{padding:10px 12px}
+.test-thumb-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.test-thumb-theme{font-size:10px;color:var(--purple);margin-bottom:8px}
+.test-thumb-caption{font-size:11px;color:var(--text3);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px}
+.test-thumb-actions{display:flex;gap:5px}
+.test-thumb-btn{flex:1;padding:5px;background:var(--glass);border:1px solid var(--gb);border-radius:6px;color:var(--text2);font-size:10.5px;cursor:pointer;font-family:var(--font);transition:all 0.2s;text-align:center}
+.test-thumb-btn:hover{background:var(--gh);color:var(--text)}
+.test-thumb-btn.red{color:var(--red);border-color:rgba(255,69,58,0.2)}
+.test-thumb-btn.red:hover{background:rgba(255,69,58,0.1)}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--bg3);border:1px solid var(--gb);border-radius:12px;padding:12px 18px;font-size:13.5px;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:toastIn 0.3s var(--ease);max-width:320px}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.toast.success .toast-icon{color:var(--green)}
+.toast.error .toast-icon{color:var(--red)}
+.toast.info .toast-icon{color:var(--blue)}
+.toast-icon svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+/* LOADING */
+.loading-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.loading-overlay.show{display:flex}
+.loading-ring{width:40px;height:40px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* MOBILE */
+.menu-toggle{display:none;width:36px;height:36px;border-radius:8px;background:var(--glass);border:1px solid var(--gb);align-items:center;justify-content:center;cursor:pointer}
+.menu-toggle svg{width:16px;height:16px;fill:var(--text2)}
+.sidebar-overlay{display:none;position:fixed;inset:0;z-index:45;background:rgba(0,0,0,0.5)}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .sidebar-overlay.show{display:block}
+  .main{margin-left:0}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .menu-toggle{display:flex}
+}
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr}
+  .form-grid,.form-grid.cols-3{grid-template-columns:1fr}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+  .modal{padding:20px}
+  .preshoot-upload-grid{grid-template-columns:repeat(3,1fr)}
+  .rsvp-summary{grid-template-columns:1fr}
+  .rsvp-stat{border-right:none;border-bottom:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo"><div class="login-logo-text">InviSend</div></div>
+    <div class="login-title">Admin Dashboard</div>
+    <div class="login-sub">Enter password to continue</div>
+    <input class="login-field" type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+    <button class="login-btn" onclick="attemptLogin()">Sign In</button>
+    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="loading-ring"></div></div>
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-text">InviSend</div></div>
+    <div class="sidebar-label">Management</div>
+    <div class="nav-item active" id="nav-invitations" onclick="showSection('invitations',this)">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Invitations
+    </div>
+    <div class="nav-item" id="nav-rsvp" onclick="showSection('rsvp',this)">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      RSVP Results
+    </div>
+    <div class="nav-item" id="nav-testimonials" onclick="showSection('testimonials',this)">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 14v-2.47l6.88-6.88c.2-.2.51-.2.71 0l1.77 1.77c.2.2.2.51 0 .71L8.47 14H6zm14 0H9.5l2-2H20v2z"/></svg>
+      Testimonials
+    </div>
+    <div class="sidebar-bottom">
+      <div class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        Sign Out
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="menu-toggle" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></div>
+        <div class="topbar-title" id="topbarTitle">Invitations</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-primary" id="topCreateBtn" onclick="openCreateModal()">
+          <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          New Invitation
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- INVITATIONS -->
+      <div id="sectionInvitations">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total Invitations</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">All time</div></div>
+          <div class="stat-card"><div class="stat-label">Live</div><div class="stat-value" style="color:var(--green)" id="statLive">—</div><div class="stat-sub">Active now</div></div>
+          <div class="stat-card"><div class="stat-label">Total RSVPs</div><div class="stat-value" style="color:var(--blue)" id="statRSVP">—</div><div class="stat-sub">All invitations</div></div>
+          <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" style="color:var(--purple)" id="statMonth">—</div><div class="stat-sub">New invitations</div></div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">All Invitations</div>
+            <input class="search-input" type="text" placeholder="Search..." oninput="filterTable(this.value)">
+          </div>
+          <div style="overflow-x:auto">
+            <table class="inv-table">
+              <thead><tr><th>Couple</th><th>Slug</th><th>Theme</th><th>Wedding Date</th><th>Status</th><th>Pre-Shoot</th><th>RSVPs</th><th>Actions</th></tr></thead>
+              <tbody id="invTableBody"><tr><td colspan="8"><div class="empty-state"><div class="loading-ring" style="margin:auto"></div></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RSVP -->
+      <div id="sectionRSVP" style="display:none">
+        <div class="rsvp-panel">
+          <div class="rsvp-list-header">
+            <div class="table-title">RSVP Results</div>
+            <select class="form-input" style="width:260px" id="rsvpInvSelect" onchange="loadRSVPForInv(this.value)">
+              <option value="">Choose invitation...</option>
+            </select>
+          </div>
+          <div id="rsvpContent" style="display:none">
+            <div class="rsvp-summary">
+              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--green)" id="rsvpYesCount">0</div><div class="rsvp-stat-label">Attending</div></div>
+              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--red)" id="rsvpNoCount">0</div><div class="rsvp-stat-label">Not Attending</div></div>
+              <div class="rsvp-stat"><div class="rsvp-stat-val" id="rsvpTotalCount">0</div><div class="rsvp-stat-label">Total Responses</div></div>
+            </div>
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+              <span style="font-size:13px;color:var(--text2)">Guest Responses</span>
+              <button class="btn-ghost" onclick="openRSVPRealtime()">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                Open Live View
+              </button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="rsvp-table">
+                <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Submitted</th></tr></thead>
+                <tbody id="rsvpTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TESTIMONIALS -->
+      <div id="sectionTestimonials" style="display:none">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">Testimonial Gallery</div>
+            <button class="btn-primary" onclick="openTestimonialModal()">
+              <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              Add Testimonial
+            </button>
+          </div>
+          <div class="test-grid" id="testimonialsGrid">
+            <div style="grid-column:1/-1;text-align:center;padding:40px"><div class="loading-ring" style="margin:auto"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- INVITATION MODAL -->
+<div class="modal-backdrop" id="invModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">New Invitation</div>
+      <div class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Theme</div>
+      <div class="theme-selector">
+        <div class="theme-opt active" data-val="1" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#0a0804,#c9a84c)"></div><div class="theme-opt-name">Western Luxury</div><div class="theme-opt-sub">Black & Gold</div></div>
+        <div class="theme-opt" data-val="2" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#4b1010,#f1cb14)"></div><div class="theme-opt-name">Ratha Mala</div><div class="theme-opt-sub">Sri Lankan</div></div>
+        <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Vaanam</div><div class="theme-opt-sub">Tamil</div></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Basic Info</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Couple Name</label><input class="form-input" id="fCoupleName" placeholder="e.g. Ayasha & Rohan" type="text"></div>
+        <div class="form-group"><label class="form-label">URL Slug</label><input class="form-input" id="fSlug" placeholder="e.g. ayasha-rohan" type="text"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-input" id="fStatus"><option value="live">Live</option><option value="expired">Expired</option></select></div>
+        <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" id="fExpiry" type="date"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Family</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Bride's Father</label><input class="form-input" id="fBrideFather" type="text" placeholder="Name"></div>
+        <div class="form-group"><label class="form-label">Bride's Mother</label><input class="form-input" id="fBrideMother" type="text" placeholder="Name"></div>
+        <div class="form-group"><label class="form-label">Groom's Father</label><input class="form-input" id="fGroomFather" type="text" placeholder="Name"></div>
+        <div class="form-group"><label class="form-label">Groom's Mother</label><input class="form-input" id="fGroomMother" type="text" placeholder="Name"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Event Details</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Wedding Date & Time</label><input class="form-input" id="fWeddingDate" type="datetime-local"></div>
+        <div class="form-group"><label class="form-label">Venue</label><input class="form-input" id="fVenue" type="text" placeholder="Venue name"></div>
+        <div class="form-group full"><label class="form-label">Personal Message</label><input class="form-input" id="fMessage" type="text" placeholder="A short message to guests"></div>
+        <div class="form-group full"><label class="form-label">Google Maps URL</label><input class="form-input" id="fMapsUrl" type="url" placeholder="https://maps.google.com/..."></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Core Photos & Music</div>
+      <div class="form-grid cols-3">
+        <div class="form-group"><label class="form-label">Swipe Image A (Bride)</label><div class="upload-area" id="uploadA"><input type="file" accept="image/*" onchange="handleUpload(this,'swipeA','uploadA','previewSwipeA')"><img class="upload-preview" id="previewSwipeA"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Bride Photo</div><div class="upload-sub">JPG / PNG / WEBP</div></div><input type="hidden" id="fSwipeA"></div>
+        <div class="form-group"><label class="form-label">Swipe Image B (Groom)</label><div class="upload-area" id="uploadB"><input type="file" accept="image/*" onchange="handleUpload(this,'swipeB','uploadB','previewSwipeB')"><img class="upload-preview" id="previewSwipeB"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Groom Photo</div><div class="upload-sub">JPG / PNG / WEBP</div></div><input type="hidden" id="fSwipeB"></div>
+        <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="handleUpload(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div></div><input type="hidden" id="fCouplePhoto"></div>
+      </div>
+      <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mp3,audio/*" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div></div><input type="hidden" id="fMusicUrl"></div>
+    </div>
+
+    <!-- PRE-SHOOT SECTION -->
+    <div class="form-section">
+      <div class="form-section-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Pre-Shoot Gallery <span style="color:var(--text3);font-weight:400;font-style:italic;font-size:10px;margin-left:6px">(optional)</span></span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:11px;color:var(--text2);font-weight:normal;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="preshootEnabled" onchange="togglePreshoot(this.checked)" style="width:14px;height:14px;cursor:pointer">
+          Enable pre-shoot section
+        </label>
+      </div>
+      <div id="preshootFields" style="display:none;margin-top:12px">
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label class="form-label">Section Title</label><input class="form-input" id="fPreshootTitle" type="text" placeholder="e.g. Our Pre-Shoot" value="Our Pre-Shoot"></div>
+          <div class="form-group"><label class="form-label">Video Link (optional)</label><input class="form-input" id="fPreshootVideo" type="url" placeholder="YouTube / Vimeo / direct MP4 URL"></div>
+        </div>
+        <div class="form-label" style="margin-bottom:8px">Pre-Shoot Photos (up to 10) — click any slot to upload</div>
+        <div class="preshoot-upload-grid" id="preshootGrid"></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" id="saveBtn" onclick="saveInvitation()">
+        <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+        Save Invitation
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIAL MODAL -->
+<div class="modal-backdrop" id="testModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title" id="testModalTitle">Add Testimonial</div>
+      <div class="modal-close" onclick="closeTestimonialModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Details</div>
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div class="form-group"><label class="form-label">Couple Name *</label><input class="form-input" id="tCoupleName" type="text" placeholder="e.g. Ayasha & Rohan"></div>
+        <div class="form-group"><label class="form-label">Caption / Review (optional)</label><input class="form-input" id="tCaption" type="text" placeholder="e.g. Beautiful invitation!"></div>
+        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Ratha Mala">Ratha Mala</option><option value="Vaanam">Vaanam</option></select></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Image *</div>
+      <div class="upload-area" id="testImgUpload" style="min-height:140px">
+        <input type="file" accept="image/*" onchange="handleTestimonialUpload(this)">
+        <img class="upload-preview" id="testImgPreview" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none">
+        <div class="upload-icon" id="testUploadIcon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>
+        <div class="upload-label" id="testUploadLabel">Upload Screenshot / Photo</div>
+        <div class="upload-sub" id="testUploadSub">JPG, PNG, WEBP</div>
+      </div>
+      <input type="hidden" id="tImageUrl">
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Display Settings</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Sort Order</label><input class="form-input" id="tOrder" type="number" value="1" min="1"></div>
+        <div class="form-group"><label class="form-label">Visibility</label><select class="form-input" id="tVisible"><option value="true">Visible on landing page</option><option value="false">Hidden</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeTestimonialModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveTestimonial()">
+        <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+        Save Testimonial
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://uodiuclpqnhwsiclrbsq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZGl1Y2xwcW5od3NpY2xyYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2Njk2NDMsImV4cCI6MjA5NjI0NTY0M30.Jcw3HtHJY7jfwBqoNexDOQTegYzqi5X8AyRK3-IMbxE";
+const ADMIN_PASS = "I@mfc!sm@S";
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let allInvitations = [], editingId = null, selectedTheme = 1;
+let editingTestId = null;
+let preshootUrls = new Array(10).fill(''); // 10 slots
+
+// ─── AUTH ───
+function attemptLogin() {
+  if (document.getElementById('loginPass').value === ADMIN_PASS) {
+    sessionStorage.setItem('inv_auth', '1');
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+    initDashboard();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginPass').value = '';
+  }
+}
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+function logout() { sessionStorage.removeItem('inv_auth'); location.reload(); }
+if (sessionStorage.getItem('inv_auth') === '1') {
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('dashboard').classList.add('active');
+  initDashboard();
+}
+
+// ─── INIT ───
+async function initDashboard() { await loadInvitations(); populateRSVPSelect(); }
+
+// ─── LOAD INVITATIONS ───
+async function loadInvitations() {
+  try {
+    const { data, error } = await sb.from('invitations').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    allInvitations = data || [];
+    renderTable(allInvitations);
+    updateStats();
+  } catch (e) { showToast('Failed to load invitations', 'error'); }
+}
+function updateStats() {
+  document.getElementById('statTotal').textContent = allInvitations.length;
+  document.getElementById('statLive').textContent = allInvitations.filter(i => i.status === 'live').length;
+  const now = new Date();
+  document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
+  sb.from('rsvp').select('id', { count: 'exact', head: true }).then(({ count }) => document.getElementById('statRSVP').textContent = count || 0);
+}
+const themeNames = { 1: 'Western Luxury', 2: 'Ratha Mala', 3: 'Vaanam' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c' };
+
+function renderTable(invs) {
+  const body = document.getElementById('invTableBody');
+  if (!invs.length) {
+    body.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div class="empty-title">No invitations yet</div><div class="empty-sub">Click "New Invitation" to get started</div></div></td></tr>`;
+    return;
+  }
+  body.innerHTML = invs.map(inv => {
+    const hasPreshoot = hasPreshootContent(inv);
+    return `<tr>
+      <td style="color:var(--text);font-weight:500">${esc(inv.couple_name || '—')}</td>
+      <td><code style="font-size:12px;color:var(--blue)">${esc(inv.slug || '—')}</code></td>
+      <td><span class="theme-dot" style="background:${themeColors[inv.template_id] || '#666'}"></span>${themeNames[inv.template_id] || '—'}</td>
+      <td>${inv.wedding_date ? new Date(inv.wedding_date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}</td>
+      <td><span class="sbadge ${inv.status || 'live'}">${inv.status || 'live'}</span></td>
+      <td>${hasPreshoot ? `<span style="color:var(--green);font-size:12px">&#x2713; Yes</span>` : `<span style="color:var(--text3);font-size:12px">—</span>`}</td>
+      <td id="rsvpCount_${esc(inv.slug)}">—</td>
+      <td><div class="action-btns">
+        <div class="action-btn" onclick="copyLink('${esc(inv.slug)}')" title="Copy link"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></div>
+        <div class="action-btn" onclick='openRSVPForSlug("${esc(inv.slug)}")' title="RSVPs"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+        <div class="action-btn" onclick='editInvitation("${inv.id}")' title="Edit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div>
+        <div class="action-btn danger" onclick='deleteInvitation("${inv.id}")' title="Delete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+      </div></td>
+    </tr>`;
+  }).join('');
+  invs.forEach(inv => {
+    sb.from('rsvp').select('id', { count: 'exact', head: true }).eq('invitation_slug', inv.slug)
+      .then(({ count }) => { const el = document.getElementById(`rsvpCount_${inv.slug}`); if (el) el.textContent = count || 0; });
+  });
+}
+function hasPreshootContent(inv) {
+  if (inv.preshoot_video_url) return true;
+  for (let i = 1; i <= 10; i++) { if (inv['preshoot_photo_' + i]) return true; }
+  return false;
+}
+function filterTable(q) { renderTable(allInvitations.filter(i => (i.couple_name || '').toLowerCase().includes(q.toLowerCase()) || (i.slug || '').toLowerCase().includes(q.toLowerCase()))); }
+function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+// ─── SECTIONS ───
+function showSection(name, el) {
+  ['invitations', 'rsvp', 'testimonials'].forEach(s => {
+    const sec = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
+    if (sec) sec.style.display = s === name ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = { invitations: 'Invitations', rsvp: 'RSVP Results', testimonials: 'Testimonials' };
+  document.getElementById('topbarTitle').textContent = titles[name] || name;
+  const btn = document.getElementById('topCreateBtn');
+  if (name === 'invitations') { btn.style.display = ''; btn.textContent = '+ New Invitation'; btn.onclick = openCreateModal; }
+  else if (name === 'testimonials') { btn.style.display = ''; btn.textContent = '+ Add Testimonial'; btn.onclick = openTestimonialModal; }
+  else { btn.style.display = 'none'; }
+  if (name === 'testimonials') loadTestimonials();
+  closeSidebar();
+}
+
+// ─── SIDEBAR ───
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+
+// ─── PRESHOOT UI ───
+function buildPreshootGrid() {
+  const grid = document.getElementById('preshootGrid');
+  grid.innerHTML = preshootUrls.map((url, i) => `
+    <div class="preshoot-slot" id="preshootSlot${i}">
+      <input type="file" accept="image/*" onchange="handlePreshootUpload(this,${i})">
+      ${url ? `<img src="${url}" alt="">` : ''}
+      ${url ? `<button class="slot-remove" onclick="removePreshootPhoto(${i},event)">&#x2715;</button>` : ''}
+      ${!url ? `<div class="slot-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><div class="slot-num">${i + 1}</div>` : ''}
+    </div>`).join('');
+}
+function togglePreshoot(on) { document.getElementById('preshootFields').style.display = on ? '' : 'none'; if (on) buildPreshootGrid(); }
+async function handlePreshootUpload(input, idx) {
+  const file = input.files[0]; if (!file) return;
+  showLoading();
+  try {
+    const ext = file.name.split('.').pop();
+    const path = `preshoot/${Date.now()}_${idx}.${ext}`;
+    const { error } = await sb.storage.from('images').upload(path, file, { upsert: true });
+    if (error) throw error;
+    const { data: u } = sb.storage.from('images').getPublicUrl(path);
+    preshootUrls[idx] = u.publicUrl;
+    buildPreshootGrid();
+    showToast('Photo uploaded', 'success');
+  } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
+  hideLoading();
+}
+function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); preshootUrls[idx] = ''; buildPreshootGrid(); }
+
+// ─── MODAL OPEN/CLOSE ───
+function openCreateModal() {
+  editingId = null; selectedTheme = 1; preshootUrls = new Array(10).fill('');
+  document.getElementById('modalTitle').textContent = 'New Invitation';
+  clearForm(); document.getElementById('invModal').classList.add('open');
+}
+function closeModal() { document.getElementById('invModal').classList.remove('open'); }
+function clearForm() {
+  ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fPreshootTitle','fPreshootVideo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
+  document.getElementById('fStatus').value = 'live';
+  document.getElementById('fExpiry').value = ''; document.getElementById('fWeddingDate').value = '';
+  ['SwipeA','SwipeB','Couple'].forEach(k => {
+    const p = document.getElementById('preview'+k); if (p) { p.style.display='none'; p.src=''; }
+  });
+  document.getElementById('musicLabel').textContent = 'Upload MP3';
+  document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', el.dataset.val === '1'));
+  selectedTheme = 1;
+  document.getElementById('preshootEnabled').checked = false;
+  document.getElementById('preshootFields').style.display = 'none';
+}
+
+function editInvitation(id) {
+  const inv = allInvitations.find(i => i.id === id); if (!inv) return;
+  editingId = id; selectedTheme = inv.template_id || 1;
+  document.getElementById('modalTitle').textContent = 'Edit Invitation';
+  ['CoupleName','Slug','BrideFather','BrideMother','GroomFather','GroomMother','Venue','Message','MapsUrl'].forEach(k => {
+    const el = document.getElementById('f'+k); const key = k.charAt(0).toLowerCase() + k.slice(1).replace(/([A-Z])/g, m => '_' + m.toLowerCase());
+    if (el) el.value = inv[key] || inv[k.toLowerCase().replace(/([A-Z])/g, m => '_' + m.toLowerCase())] || '';
+  });
+  // Manual mapping for snake_case keys
+  document.getElementById('fCoupleName').value = inv.couple_name || '';
+  document.getElementById('fSlug').value = inv.slug || '';
+  document.getElementById('fBrideFather').value = inv.bride_father || '';
+  document.getElementById('fBrideMother').value = inv.bride_mother || '';
+  document.getElementById('fGroomFather').value = inv.groom_father || '';
+  document.getElementById('fGroomMother').value = inv.groom_mother || '';
+  document.getElementById('fVenue').value = inv.venue || '';
+  document.getElementById('fMessage').value = inv.message || '';
+  document.getElementById('fMapsUrl').value = inv.google_maps_url || '';
+  document.getElementById('fSwipeA').value = inv.swipe_image_a_url || '';
+  document.getElementById('fSwipeB').value = inv.swipe_image_b_url || '';
+  document.getElementById('fCouplePhoto').value = inv.couple_photo_url || '';
+  document.getElementById('fMusicUrl').value = inv.music_url || '';
+  document.getElementById('fStatus').value = inv.status || 'live';
+  if (inv.wedding_date) document.getElementById('fWeddingDate').value = new Date(inv.wedding_date).toISOString().slice(0, 16);
+  if (inv.expiry_date) document.getElementById('fExpiry').value = inv.expiry_date.split('T')[0];
+  ['SwipeA','SwipeB','Couple'].forEach((k, i) => {
+    const urls = [inv.swipe_image_a_url, inv.swipe_image_b_url, inv.couple_photo_url];
+    if (urls[i]) { const p = document.getElementById('preview'+k); p.src = urls[i]; p.style.display = 'block'; }
+  });
+  if (inv.music_url) document.getElementById('musicLabel').textContent = 'Music uploaded ✓';
+  document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', parseInt(el.dataset.val) === selectedTheme));
+  // Preshoot
+  preshootUrls = new Array(10).fill('');
+  for (let i = 1; i <= 10; i++) { if (inv['preshoot_photo_' + i]) preshootUrls[i - 1] = inv['preshoot_photo_' + i]; }
+  const hasPre = hasPreshootContent(inv);
+  document.getElementById('preshootEnabled').checked = hasPre;
+  document.getElementById('preshootFields').style.display = hasPre ? '' : 'none';
+  if (hasPre) {
+    document.getElementById('fPreshootTitle').value = inv.preshoot_title || 'Our Pre-Shoot';
+    document.getElementById('fPreshootVideo').value = inv.preshoot_video_url || '';
+    buildPreshootGrid();
+  }
+  document.getElementById('invModal').classList.add('open');
+}
+
+function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); }
+
+// ─── UPLOAD ───
+async function handleUpload(input, type, areaId, previewId) {
+  const file = input.files[0]; if (!file) return;
+  showLoading();
+  try {
+    const ext = file.name.split('.').pop();
+    const bucket = type === 'music' ? 'music' : 'images';
+    const path = `${type}/${Date.now()}.${ext}`;
+    const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
+    if (error) throw error;
+    const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
+    const url = u.publicUrl;
+    if (type === 'swipeA') document.getElementById('fSwipeA').value = url;
+    else if (type === 'swipeB') document.getElementById('fSwipeB').value = url;
+    else if (type === 'couple') document.getElementById('fCouplePhoto').value = url;
+    else if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
+    if (previewId) { const p = document.getElementById(previewId); p.src = url; p.style.display = 'block'; }
+    showToast('Uploaded successfully', 'success');
+  } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
+  hideLoading();
+}
+
+// ─── SAVE INVITATION ───
+async function saveInvitation() {
+  const slug = (document.getElementById('fSlug').value.trim().toLowerCase().replace(/\s+/g, '-'));
+  const couple_name = document.getElementById('fCoupleName').value.trim();
+  if (!couple_name || !slug) { showToast('Couple name and slug are required', 'error'); return; }
+  const payload = {
+    couple_name, slug, template_id: selectedTheme,
+    status: document.getElementById('fStatus').value,
+    bride_father: document.getElementById('fBrideFather').value.trim() || null,
+    bride_mother: document.getElementById('fBrideMother').value.trim() || null,
+    groom_father: document.getElementById('fGroomFather').value.trim() || null,
+    groom_mother: document.getElementById('fGroomMother').value.trim() || null,
+    venue: document.getElementById('fVenue').value.trim() || null,
+    message: document.getElementById('fMessage').value.trim() || null,
+    google_maps_url: document.getElementById('fMapsUrl').value.trim() || null,
+    swipe_image_a_url: document.getElementById('fSwipeA').value || null,
+    swipe_image_b_url: document.getElementById('fSwipeB').value || null,
+    couple_photo_url: document.getElementById('fCouplePhoto').value || null,
+    music_url: document.getElementById('fMusicUrl').value || null,
+  };
+  if (document.getElementById('fWeddingDate').value) payload.wedding_date = new Date(document.getElementById('fWeddingDate').value).toISOString();
+  if (document.getElementById('fExpiry').value) payload.expiry_date = new Date(document.getElementById('fExpiry').value).toISOString();
+  // Preshoot
+  if (document.getElementById('preshootEnabled').checked) {
+    payload.preshoot_title = document.getElementById('fPreshootTitle').value.trim() || 'Our Pre-Shoot';
+    payload.preshoot_video_url = document.getElementById('fPreshootVideo').value.trim() || null;
+    for (let i = 0; i < 10; i++) payload['preshoot_photo_' + (i + 1)] = preshootUrls[i] || null;
+  } else {
+    payload.preshoot_title = null; payload.preshoot_video_url = null;
+    for (let i = 1; i <= 10; i++) payload['preshoot_photo_' + i] = null;
+  }
+  showLoading();
+  try {
+    let err;
+    if (editingId) { ({ error: err } = await sb.from('invitations').update(payload).eq('id', editingId)); }
+    else { ({ error: err } = await sb.from('invitations').insert(payload)); }
+    if (err) throw err;
+    showToast(editingId ? 'Invitation updated!' : 'Invitation created!', 'success');
+    closeModal(); await loadInvitations(); populateRSVPSelect();
+  } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
+  hideLoading();
+}
+
+// ─── DELETE ───
+async function deleteInvitation(id) {
+  if (!confirm('Delete this invitation permanently? This cannot be undone.')) return;
+  showLoading();
+  try {
+    const { error } = await sb.from('invitations').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Invitation deleted', 'info'); await loadInvitations(); populateRSVPSelect();
+  } catch (e) { showToast('Delete failed', 'error'); }
+  hideLoading();
+}
+
+// ─── COPY LINK ───
+function copyLink(slug) {
+  const url = `${location.origin}/invitation.html?slug=${slug}`;
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied!', 'success')).catch(() => { prompt('Copy this link:', url); });
+}
+
+// ─── RSVP ───
+function populateRSVPSelect() {
+  const sel = document.getElementById('rsvpInvSelect');
+  sel.innerHTML = '<option value="">Choose invitation...</option>';
+  allInvitations.forEach(inv => { const o = document.createElement('option'); o.value = inv.slug; o.textContent = inv.couple_name || inv.slug; sel.appendChild(o); });
+}
+function openRSVPForSlug(slug) {
+  showSection('rsvp', document.getElementById('nav-rsvp'));
+  document.getElementById('rsvpInvSelect').value = slug;
+  loadRSVPForInv(slug);
+}
+async function loadRSVPForInv(slug) {
+  if (!slug) { document.getElementById('rsvpContent').style.display = 'none'; return; }
+  showLoading();
+  try {
+    const { data, error } = await sb.from('rsvp').select('*').eq('invitation_slug', slug).order('created_at', { ascending: false });
+    if (error) throw error;
+    const yes = (data || []).filter(r => r.attendance === 'yes').length;
+    const no = (data || []).filter(r => r.attendance === 'no').length;
+    document.getElementById('rsvpYesCount').textContent = yes;
+    document.getElementById('rsvpNoCount').textContent = no;
+    document.getElementById('rsvpTotalCount').textContent = data.length;
+    const body = document.getElementById('rsvpTableBody');
+    if (!data.length) {
+      body.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No responses yet</td></tr>`;
+    } else {
+      body.innerHTML = data.map(r => `<tr><td style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td><td>${esc(r.phone || '—')}</td><td><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td><td>${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td></tr>`).join('');
+    }
+    document.getElementById('rsvpContent').style.display = 'block';
+  } catch (e) { showToast('Failed to load RSVPs', 'error'); }
+  hideLoading();
+}
+function openRSVPRealtime() { const slug = document.getElementById('rsvpInvSelect').value; if (slug) window.open(`rsvp-live.html?slug=${slug}`, '_blank'); }
+
+// ─── TESTIMONIALS ───
+function openTestimonialModal(id) { editingTestId = id || null; document.getElementById('testModalTitle').textContent = id ? 'Edit Testimonial' : 'Add Testimonial'; if (!id) clearTestForm(); document.getElementById('testModal').classList.add('open'); }
+function closeTestimonialModal() { document.getElementById('testModal').classList.remove('open'); }
+function clearTestForm() { ['tCoupleName','tCaption'].forEach(id => document.getElementById(id).value = ''); document.getElementById('tTheme').value = ''; document.getElementById('tOrder').value = '1'; document.getElementById('tVisible').value = 'true'; document.getElementById('tImageUrl').value = ''; document.getElementById('testImgPreview').style.display = 'none'; document.getElementById('testImgPreview').src = ''; document.getElementById('testUploadIcon').style.display = 'flex'; document.getElementById('testUploadLabel').textContent = 'Upload Screenshot / Photo'; document.getElementById('testUploadSub').style.display = 'block'; }
+async function handleTestimonialUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  showLoading();
+  try {
+    const path = `testimonials/${Date.now()}.${file.name.split('.').pop()}`;
+    const { error } = await sb.storage.from('images').upload(path, file, { upsert: true });
+    if (error) throw error;
+    const { data: u } = sb.storage.from('images').getPublicUrl(path);
+    document.getElementById('tImageUrl').value = u.publicUrl;
+    const p = document.getElementById('testImgPreview'); p.src = u2.publicUrl; p.style.display = 'block';
+    document.getElementById('testUploadIcon').style.display = 'none';
+    document.getElementById('testUploadLabel').textContent = 'Image uploaded ✓';
+    document.getElementById('testUploadSub').style.display = 'none';
+    showToast('Image uploaded!', 'success');
+  } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
+  hideLoading();
+}
+async function saveTestimonial() {
+  const couple_name = document.getElementById('tCoupleName').value.trim();
+  const image_url = document.getElementById('tImageUrl').value;
+  if (!couple_name) { showToast('Couple name required', 'error'); return; }
+  if (!image_url) { showToast('Please upload an image', 'error'); return; }
+  const payload = { couple_name, image_url, caption: document.getElementById('tCaption').value.trim() || null, theme: document.getElementById('tTheme').value || null, sort_order: parseInt(document.getElementById('tOrder').value) || 1, is_visible: document.getElementById('tVisible').value === 'true' };
+  showLoading();
+  try {
+    let err;
+    if (editingTestId) { ({ error: err } = await sb.from('testimonials').update(payload).eq('id', editingTestId)); }
+    else { ({ error: err } = await sb.from('testimonials').insert(payload)); }
+    if (err) throw err;
+    showToast(editingTestId ? 'Updated!' : 'Added!', 'success');
+    closeTestimonialModal(); loadTestimonials();
+  } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
+  hideLoading();
+}
+async function loadTestimonials() {
+  const grid = document.getElementById('testimonialsGrid');
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px"><div class="loading-ring" style="margin:auto"></div></div>`;
+  try {
+    const { data, error } = await sb.from('testimonials').select('*').order('sort_order', { ascending: true });
+    if (error) throw error;
+    if (!data || !data.length) { grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text3);font-size:13px">No testimonials yet. Click "Add Testimonial" to upload your first one.</div>`; return; }
+    grid.innerHTML = data.map(t => `
+      <div class="test-thumb">
+        <div class="test-thumb-img"><img src="${t.image_url}" alt="" loading="lazy"></div>
+        <div class="test-thumb-body">
+          ${!t.is_visible ? `<div style="font-size:9px;color:var(--red);margin-bottom:4px">HIDDEN</div>` : ''}
+          <div class="test-thumb-name">${esc(t.couple_name)}</div>
+          ${t.theme ? `<div class="test-thumb-theme">${esc(t.theme)}</div>` : ''}
+          ${t.caption ? `<div class="test-thumb-caption">${esc(t.caption)}</div>` : ''}
+          <div class="test-thumb-actions">
+            <div class="test-thumb-btn" onclick='editTestimonial(${JSON.stringify(t).replace(/'/g,"\\'")})''>Edit</div>
+            <div class="test-thumb-btn" onclick="toggleTestVisibility('${t.id}',${t.is_visible})" style="color:${t.is_visible ? 'var(--yellow)' : 'var(--green)'}">${t.is_visible ? 'Hide' : 'Show'}</div>
+            <div class="test-thumb-btn red" onclick="deleteTestimonial('${t.id}')">Del</div>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch (e) { grid.innerHTML = `<div style="grid-column:1/-1;padding:40px;color:var(--red);font-size:13px;text-align:center">Failed to load. Make sure the "testimonials" table exists in Supabase.</div>`; }
+}
+function editTestimonial(t) {
+  editingTestId = t.id;
+  document.getElementById('testModalTitle').textContent = 'Edit Testimonial';
+  document.getElementById('tCoupleName').value = t.couple_name || '';
+  document.getElementById('tCaption').value = t.caption || '';
+  document.getElementById('tTheme').value = t.theme || '';
+  document.getElementById('tOrder').value = t.sort_order || 1;
+  document.getElementById('tVisible').value = t.is_visible ? 'true' : 'false';
+  document.getElementById('tImageUrl').value = t.image_url || '';
+  if (t.image_url) { const p = document.getElementById('testImgPreview'); p.src = t.image_url; p.style.display = 'block'; document.getElementById('testUploadIcon').style.display = 'none'; document.getElementById('testUploadLabel').textContent = 'Image uploaded ✓'; }
+  document.getElementById('testModal').classList.add('open');
+}
+async function toggleTestVisibility(id, cur) { showLoading(); try { const { error } = await sb.from('testimonials').update({ is_visible: !cur }).eq('id', id); if (error) throw error; showToast(!cur ? 'Now visible' : 'Now hidden', 'info'); loadTestimonials(); } catch (e) { showToast('Update failed', 'error'); } hideLoading(); }
+async function deleteTestimonial(id) { if (!confirm('Delete this testimonial?')) return; showLoading(); try { const { error } = await sb.from('testimonials').delete().eq('id', id); if (error) throw error; showToast('Deleted', 'info'); loadTestimonials(); } catch (e) { showToast('Delete failed', 'error'); } hideLoading(); }
+
+// ─── TOAST ───
+function showToast(msg, type = 'info') {
+  const icons = { success: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>', error: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>', info: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' };
+  const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastWrap').appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+function showLoading() { document.getElementById('loadingOverlay').classList.add('show'); }
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+document.getElementById('invModal').addEventListener('click', e => { if (e.target === document.getElementById('invModal')) closeModal(); });
+document.getElementById('testModal').addEventListener('click', e => { if (e.target === document.getElementById('testModal')) closeTestimonialModal(); });
+</script>
+</body>
+</html>
