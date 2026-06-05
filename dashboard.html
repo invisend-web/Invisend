@@ -539,6 +539,7 @@ function renderTable(invs) {
       <td><div class="action-btns">
         <div class="action-btn" onclick="copyLink('${esc(inv.slug)}')" title="Copy link"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></div>
         <div class="action-btn" onclick='openRSVPForSlug("${esc(inv.slug)}")' title="RSVPs"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+        <div class="action-btn" onclick='toggleStatus("${inv.id}","${inv.status||'live'}")' title="Toggle Live/Offline" style="color:${(inv.status||'live')==='live'?'var(--green)':'var(--red)'}"><svg viewBox="0 0 24 24"><path d="${(inv.status||'live')==='live'?'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z':'M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'}"/></svg></div>
         <div class="action-btn" onclick='editInvitation("${inv.id}")' title="Edit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div>
         <div class="action-btn danger" onclick='deleteInvitation("${inv.id}")' title="Delete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
       </div></td>
@@ -559,9 +560,11 @@ function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
 // ─── SECTIONS ───
 function showSection(name, el) {
-  ['invitations', 'rsvp', 'testimonials'].forEach(s => {
-    const sec = document.getElementById('section' + s.charAt(0).toUpperCase() + s.slice(1));
-    if (sec) sec.style.display = s === name ? '' : 'none';
+  // Explicit ID map to avoid case bugs
+  const sectionIds = { invitations:'sectionInvitations', rsvp:'sectionRSVP', testimonials:'sectionTestimonials' };
+  Object.entries(sectionIds).forEach(([key, id]) => {
+    const sec = document.getElementById(id);
+    if (sec) sec.style.display = key === name ? '' : 'none';
   });
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -572,6 +575,7 @@ function showSection(name, el) {
   else if (name === 'testimonials') { btn.style.display = ''; btn.textContent = '+ Add Testimonial'; btn.onclick = openTestimonialModal; }
   else { btn.style.display = 'none'; }
   if (name === 'testimonials') loadTestimonials();
+  if (name === 'rsvp') populateRSVPSelect();
   closeSidebar();
 }
 
@@ -877,6 +881,22 @@ function showToast(msg, type = 'info') {
   const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
   document.getElementById('toastWrap').appendChild(t); setTimeout(() => t.remove(), 3500);
 }
+
+// ─── QUICK STATUS TOGGLE ───
+async function toggleStatus(id, currentStatus) {
+  const newStatus = currentStatus === 'live' ? 'expired' : 'live';
+  const label = newStatus === 'live' ? 'live' : 'offline';
+  if (!confirm(\`Set this invitation to \${label}?\`)) return;
+  showLoading();
+  try {
+    const { error } = await sb.from('invitations').update({ status: newStatus }).eq('id', id);
+    if (error) throw error;
+    showToast(\`Invitation set to \${label}\`, newStatus === 'live' ? 'success' : 'info');
+    await loadInvitations();
+  } catch (e) { showToast('Update failed', 'error'); }
+  hideLoading();
+}
+
 function showLoading() { document.getElementById('loadingOverlay').classList.add('show'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 document.getElementById('invModal').addEventListener('click', e => { if (e.target === document.getElementById('invModal')) closeModal(); });
