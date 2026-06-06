@@ -490,15 +490,17 @@ function attemptLogin() {
   }
 }
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+// ─── INIT ───
+async function initDashboard() { await loadInvitations(); populateRSVPSelect(); }
+
 function logout() { sessionStorage.removeItem('inv_auth'); location.reload(); }
+
+// Resume session if already logged in
 if (sessionStorage.getItem('inv_auth') === '1') {
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('dashboard').classList.add('active');
   initDashboard();
 }
-
-// ─── INIT ───
-async function initDashboard() { await loadInvitations(); populateRSVPSelect(); }
 
 // ─── LOAD INVITATIONS ───
 async function loadInvitations() {
