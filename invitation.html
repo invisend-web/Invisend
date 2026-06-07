@@ -238,6 +238,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 </div>
 
 <div class="page" id="page">
+  <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
@@ -618,6 +619,7 @@ function completeReveal() {
     setTimeout(() => {
       document.getElementById('coupleNameBlock').classList.add('show');
       setTimeout(() => document.getElementById('scrollDownHint').classList.add('show'), 550);
+      setTimeout(() => particleSystem.start(), 800);
     }, 420);
   }, 540);
 }
@@ -660,7 +662,205 @@ function initScrollReveal() {
   document.querySelectorAll('.sr').forEach(el => obs.observe(el));
 }
 
+// ─── PARTICLE SYSTEM ───
+class ParticleSystem {
+  constructor() {
+    this.canvas = document.getElementById('particleCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.running = false;
+    this.startTime = 0;
+    this.mouseX = -999; this.mouseY = -999;
+    this.theme = parseInt(document.documentElement.getAttribute('data-theme')) || 1;
+    this._resize();
+    window.addEventListener('resize', () => this._resize());
+    window.addEventListener('mousemove', e => { this.mouseX = e.clientX; this.mouseY = e.clientY; });
+    window.addEventListener('touchmove', e => {
+      if (e.touches[0]) { this.mouseX = e.touches[0].clientX; this.mouseY = e.touches[0].clientY; }
+    }, { passive: true });
+    this.particles = this._initParticles();
+  }
+
+  _resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  _rand(min, max) { return min + Math.random() * (max - min); }
+
+  _initParticles() {
+    const W = this.canvas.width, H = this.canvas.height;
+    const t = this.theme;
+    const count = t === 1 ? 22 : t === 2 ? 30 : t === 3 ? 18 : 14;
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push(this._makeParticle(W, H, true));
+    }
+    return particles;
+  }
+
+  _makeParticle(W, H, scatter) {
+    const t = this.theme;
+    const p = { ox: 0, oy: 0 }; // origin offsets for mouse repulsion
+
+    if (t === 1) {
+      const colors = ['#D8B57A','#E8CC7A','#C9A84C','#F5E6C0'];
+      p.x = this._rand(0, W); p.y = scatter ? this._rand(0, H) : H + this._rand(10, 40);
+      p.radius = this._rand(1.5, 3);
+      p.color = colors[Math.floor(Math.random() * colors.length)];
+      p.speed = this._rand(0.15, 0.4);
+      p.offset = Math.random() * Math.PI * 2;
+      p.opTimer = Math.random() * Math.PI * 2;
+      p.opSpeed = this._rand(0.008, 0.018);
+    } else if (t === 2) {
+      const colors = ['#f1cb14','#e8a020','#e8450a','#FFD700'];
+      p.x = this._rand(0, W); p.y = scatter ? this._rand(0, H) : H + this._rand(10, 40);
+      p.radius = this._rand(1.5, 4); p.baseRadius = p.radius;
+      p.color = colors[Math.floor(Math.random() * colors.length)];
+      p.speed = this._rand(0.4, 1.0);
+      p.offset = Math.random() * Math.PI * 2;
+      p.opacity = this._rand(0.5, 0.8);
+      p.flashTimer = Math.floor(this._rand(40, 80));
+      p.flashFrame = -1;
+    } else if (t === 3) {
+      const colors = ['#ffc61c','#4a9e5c','#ffe566','#7ab88a'];
+      p.x = this._rand(0, W); p.y = scatter ? this._rand(0, H) : -10;
+      p.radius = this._rand(4, 7);
+      p.color = colors[Math.floor(Math.random() * colors.length)];
+      p.vx = this._rand(0.2, 0.5); p.vy = this._rand(0.3, 0.7);
+      p.angle = Math.random() * Math.PI * 2;
+      p.rotSpeed = this._rand(0.008, 0.02);
+      p.opacity = this._rand(0.4, 0.75);
+      p.opTimer = Math.random() * Math.PI * 2;
+      p.opSpeed = this._rand(0.006, 0.014);
+    } else {
+      const colors = ['#E9C9C2','#F7F3EC','#D4A6A6','#EDD9A8','#F0E0D8'];
+      p.x = this._rand(0, W); p.y = scatter ? this._rand(0, H) : -20;
+      p.radius = this._rand(5, 10);
+      p.color = colors[Math.floor(Math.random() * colors.length)];
+      p.vy = this._rand(0.1, 0.25);
+      p.offset = Math.random() * Math.PI * 2;
+      p.angle = Math.random() * Math.PI * 2;
+      p.rotSpeed = this._rand(0.002, 0.006);
+      p.opacity = this._rand(0.15, 0.45);
+    }
+    return p;
+  }
+
+  _drawParticle(p, time, ctx) {
+    const t = this.theme;
+    const W = this.canvas.width, H = this.canvas.height;
+
+    // Mouse repulsion
+    const dx = p.x - this.mouseX, dy = p.y - this.mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 80 && dist > 0) {
+      const force = (80 - dist) / 80 * 12;
+      p.ox += (dx / dist) * force * 0.08;
+      p.oy += (dy / dist) * force * 0.08;
+    }
+    p.ox *= 0.92; p.oy *= 0.92;
+    const drawX = p.x + p.ox, drawY = p.y + p.oy;
+
+    if (t === 1) {
+      p.opTimer += p.opSpeed;
+      const opacity = 0.2 + (Math.sin(p.opTimer) * 0.5 + 0.5) * 0.5;
+      // halo
+      const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, p.radius * 3.5);
+      grad.addColorStop(0, p.color + '33');
+      grad.addColorStop(1, p.color + '00');
+      ctx.beginPath(); ctx.arc(drawX, drawY, p.radius * 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = grad; ctx.fill();
+      // dot
+      ctx.beginPath(); ctx.arc(drawX, drawY, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color; ctx.globalAlpha *= opacity; ctx.fill();
+      // move
+      p.y -= p.speed;
+      p.x += Math.sin(time * 0.001 + p.offset) * 0.3;
+      if (p.y < -10) { const np = this._makeParticle(W, H, false); Object.assign(p, np); }
+
+    } else if (t === 2) {
+      // flash logic
+      if (p.flashFrame >= 0) {
+        p.flashFrame++;
+        p.opacity = p.flashFrame < 5 ? 1.0 : Math.max(0.1, 1.0 - (p.flashFrame - 5) / 15);
+        if (p.flashFrame > 20) { p.flashFrame = -1; p.flashTimer = Math.floor(this._rand(40, 80)); }
+      } else {
+        p.flashTimer--;
+        if (p.flashTimer <= 0) p.flashFrame = 0;
+      }
+      // glow
+      const grad = ctx.createRadialGradient(drawX, drawY, 0, drawX, drawY, p.radius * 2.5);
+      grad.addColorStop(0, p.color + '55');
+      grad.addColorStop(1, p.color + '00');
+      ctx.beginPath(); ctx.arc(drawX, drawY, p.radius * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = grad; ctx.fill();
+      // dot
+      ctx.beginPath(); ctx.arc(drawX, drawY, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color; ctx.globalAlpha *= p.opacity; ctx.fill();
+      // move + shrink
+      p.y -= p.speed;
+      p.x += Math.sin(time * 0.003 + p.offset) * 0.6;
+      p.radius -= 0.003;
+      if (p.y < -10 || p.radius < 0.5) { const np = this._makeParticle(W, H, false); Object.assign(p, np); }
+
+    } else if (t === 3) {
+      p.opTimer += p.opSpeed;
+      const opacity = 0.4 + (Math.sin(p.opTimer) * 0.5 + 0.5) * 0.35;
+      p.angle += p.rotSpeed;
+      ctx.save();
+      ctx.translate(drawX, drawY);
+      ctx.rotate(p.angle);
+      ctx.scale(1, 0.5);
+      ctx.beginPath();
+      ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color; ctx.globalAlpha *= opacity; ctx.fill();
+      ctx.restore();
+      // move
+      p.x += p.vx; p.y += p.vy;
+      if (p.y > H + 20 || p.x > W + 20) { const np = this._makeParticle(W, H, false); Object.assign(p, np); p.x = Math.random() < 0.5 ? this._rand(0, W) : -10; p.y = Math.random() < 0.5 ? this._rand(0, H) : -10; }
+
+    } else {
+      p.angle += p.rotSpeed;
+      ctx.save();
+      ctx.translate(drawX, drawY);
+      ctx.rotate(p.angle);
+      ctx.scale(1, 0.35);
+      ctx.beginPath();
+      ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color; ctx.globalAlpha *= p.opacity; ctx.fill();
+      ctx.restore();
+      // move
+      p.y += p.vy;
+      p.x += Math.sin(time * 0.0005 + p.offset) * 0.4;
+      if (p.y > H + 20) { const np = this._makeParticle(W, H, false); Object.assign(p, np); }
+    }
+  }
+
+  _loop(time) {
+    if (!this.running) return;
+    const ctx = this.ctx;
+    const W = this.canvas.width, H = this.canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    const fadeOpacity = Math.min(1, (time - this.startTime) / 1500);
+    for (const p of this.particles) {
+      ctx.save();
+      ctx.globalAlpha = fadeOpacity;
+      this._drawParticle(p, time, ctx);
+      ctx.restore();
+    }
+    requestAnimationFrame(t => this._loop(t));
+  }
+
+  start() {
+    if (this.running) return;
+    this.running = true;
+    this.startTime = performance.now();
+    requestAnimationFrame(t => this._loop(t));
+  }
+}
+
 init();
+const particleSystem = new ParticleSystem();
 </script>
 </body>
 </html>
