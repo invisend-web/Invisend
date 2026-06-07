@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InviSend — Live RSVP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080f;--bg2:#111118;--glass:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);--accent:#0a84ff;
+  --green:#30d158;--red:#ff453a;--yellow:#ffd60a;
+  --text:#f5f5f7;--text2:#a1a1b0;--text3:#6e6e80;
+  --font:'Inter',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
+.bg-glow{position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(10,132,255,0.06),transparent 60%)}
+
+.header{
+  padding:20px 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,8,15,0.8);backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:10;
+}
+.header-title{font-size:16px;font-weight:600}
+.header-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.live-badge{
+  display:flex;align-items:center;gap:7px;
+  font-size:11px;color:var(--green);
+  background:rgba(48,209,88,0.1);
+  border:1px solid rgba(48,209,88,0.2);
+  border-radius:20px;padding:5px 12px;
+}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
+
+.content{max-width:900px;margin:0 auto;padding:28px 20px}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.stat{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:14px;padding:20px;text-align:center;
+}
+.stat-val{font-size:36px;font-weight:700;line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11.5px;color:var(--text3)}
+
+.bar-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:14px;padding:20px;margin-bottom:20px;
+}
+.bar-title{font-size:13px;font-weight:500;margin-bottom:14px}
+.bar-wrap{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bar-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0}
+.bar-track{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.6s cubic-bezier(0.23,1,0.32,1)}
+.bar-fill.yes{background:var(--green)}
+.bar-fill.no{background:var(--red)}
+.bar-count{font-size:12px;color:var(--text2);width:24px;text-align:right;flex-shrink:0}
+
+.list-card{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+}
+.list-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.list-title{font-size:13px;font-weight:500}
+.filter-tabs{display:flex;gap:6px}
+.tab{
+  font-size:11px;padding:4px 12px;border-radius:20px;
+  cursor:pointer;border:1px solid var(--border);color:var(--text3);
+  transition:all 0.2s;
+}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.rsvp-list{list-style:none}
+.rsvp-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);
+  animation:itemIn 0.4s cubic-bezier(0.23,1,0.32,1);
+}
+.rsvp-item:last-child{border-bottom:none}
+
+@keyframes itemIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+.rsvp-name{font-size:14px;font-weight:500}
+.rsvp-phone{font-size:12px;color:var(--text3);margin-top:2px}
+.rsvp-time{font-size:11.5px;color:var(--text3)}
+.badge{
+  font-size:10.5px;font-weight:500;padding:3px 10px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%}
+.badge.yes{background:rgba(48,209,88,0.12);color:var(--green)}
+.badge.yes::before{background:var(--green)}
+.badge.no{background:rgba(255,69,58,0.1);color:var(--red)}
+.badge.no::before{background:var(--red)}
+
+.empty{padding:48px;text-align:center;color:var(--text3);font-size:13px}
+
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr}
+  .header{padding:14px 16px}
+  .content{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header class="header">
+  <div>
+    <div class="header-title" id="pageTitle">RSVP Results</div>
+    <div class="header-sub" id="pageSlug">Loading...</div>
+  </div>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    Live
+  </div>
+</header>
+
+<div class="content">
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val" style="color:var(--text)" id="sTotal">0</div>
+      <div class="stat-lbl">Total Responses</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--green)" id="sYes">0</div>
+      <div class="stat-lbl">Attending</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" style="color:var(--red)" id="sNo">0</div>
+      <div class="stat-lbl">Not Attending</div>
+    </div>
+  </div>
+
+  <div class="bar-card">
+    <div class="bar-title">Response Breakdown</div>
+    <div class="bar-wrap">
+      <div class="bar-label">Attending</div>
+      <div class="bar-track"><div class="bar-fill yes" id="barYes" style="width:0%"></div></div>
+      <div class="bar-count" id="barYesN">0</div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">Declining</div>
+      <div class="bar-track"><div class="bar-fill no" id="barNo" style="width:0%"></div></div>
+      <div class="bar-count" id="barNoN">0</div>
+    </div>
+  </div>
+
+  <div class="list-card">
+    <div class="list-header">
+      <div class="list-title">Guest List</div>
+      <div class="filter-tabs">
+        <div class="tab active" onclick="setFilter('all',this)">All</div>
+        <div class="tab" onclick="setFilter('yes',this)">Attending</div>
+        <div class="tab" onclick="setFilter('no',this)">Declining</div>
+      </div>
+    </div>
+    <ul class="rsvp-list" id="rsvpList">
+      <li class="empty">Loading responses...</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://uodiuclpqnhwsiclrbsq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZGl1Y2xwcW5od3NpY2xyYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2Njk2NDMsImV4cCI6MjA5NjI0NTY0M30.Jcw3HtHJY7jfwBqoNexDOQTegYzqi5X8AyRK3-IMbxE";
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const slug = new URLSearchParams(location.search).get('slug') || '';
+let allRsvps = [];
+let filterMode = 'all';
+let channel = null;
+
+document.getElementById('pageSlug').textContent = slug ? `/${slug}` : '';
+
+async function load() {
+  if(!slug) return;
+
+  // Get invitation name
+  const { data: inv } = await sb.from('invitations').select('couple_name').eq('slug',slug).single();
+  if(inv) document.getElementById('pageTitle').textContent = inv.couple_name || 'RSVP Results';
+
+  const { data } = await sb.from('rsvp').select('*').eq('invitation_slug',slug).order('created_at',{ascending:false});
+  allRsvps = data || [];
+  render();
+  subscribe();
+}
+
+function render() {
+  const yes = allRsvps.filter(r=>r.attendance==='yes').length;
+  const no = allRsvps.filter(r=>r.attendance==='no').length;
+  const total = allRsvps.length;
+
+  document.getElementById('sTotal').textContent = total;
+  document.getElementById('sYes').textContent = yes;
+  document.getElementById('sNo').textContent = no;
+
+  const yPct = total ? (yes/total*100).toFixed(1) : 0;
+  const nPct = total ? (no/total*100).toFixed(1) : 0;
+  document.getElementById('barYes').style.width = yPct + '%';
+  document.getElementById('barNo').style.width = nPct + '%';
+  document.getElementById('barYesN').textContent = yes;
+  document.getElementById('barNoN').textContent = no;
+
+  const filtered = filterMode==='all' ? allRsvps :
+    allRsvps.filter(r=>r.attendance===filterMode);
+
+  const list = document.getElementById('rsvpList');
+  if(!filtered.length) {
+    list.innerHTML='<li class="empty">No responses yet</li>';
+    return;
+  }
+  list.innerHTML = filtered.map(r=>`
+    <li class="rsvp-item">
+      <div>
+        <div class="rsvp-name">${esc(r.guest_name||'—')}</div>
+        <div class="rsvp-phone">${esc(r.phone||'—')}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="margin-bottom:6px"><span class="badge ${r.attendance}">${r.attendance==='yes'?'Attending':'Not Attending'}</span></div>
+        <div class="rsvp-time">${timeAgo(r.created_at)}</div>
+      </div>
+    </li>
+  `).join('');
+}
+
+function subscribe() {
+  channel = sb.channel(`rsvp-${slug}`)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'rsvp',filter:`invitation_slug=eq.${slug}`},
+      payload => {
+        allRsvps.unshift(payload.new);
+        render();
+        // Flash notification
+        const title = document.getElementById('pageTitle');
+        title.style.color = '#30d158';
+        setTimeout(()=>title.style.color='',1500);
+      })
+    .subscribe();
+}
+
+function setFilter(mode, el) {
+  filterMode = mode;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function timeAgo(iso) {
+  const d = new Date(iso), now = new Date();
+  const diff = Math.floor((now-d)/1000);
+  if(diff<60) return 'Just now';
+  if(diff<3600) return `${Math.floor(diff/60)}m ago`;
+  if(diff<86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function esc(s){ return (s||'').replace(/</g,'&lt;') }
+
+load();
+// Auto-refresh every 30s as fallback
+setInterval(load, 30000);
+</script>
+</body>
+</html>
