@@ -1,7 +1,9 @@
 <!--
-SUPABASE MIGRATION REQUIRED — run this SQL in Supabase SQL Editor:
+SUPABASE MIGRATION REQUIRED — run this SQL in Supabase SQL Editor before using table features:
 ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS guest_count integer DEFAULT 1;
 ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS background_image_url text;
+ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS table_number integer;
+ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS table_note text;
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +152,7 @@ select.form-input{cursor:pointer}
 /* RSVP */
 .rsvp-panel{background:var(--glass);border:1px solid var(--gb);border-radius:16px;margin-top:0;overflow:hidden}
 .rsvp-list-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-.rsvp-summary{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border)}
+.rsvp-summary{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
 .rsvp-stat{padding:20px;text-align:center;border-right:1px solid var(--border)}
 .rsvp-stat:last-child{border-right:none}
 .rsvp-stat-val{font-size:28px;font-weight:600;line-height:1;margin-bottom:4px}
@@ -265,6 +267,32 @@ select.form-input{cursor:pointer}
   #topCreateBtn{width:36px;height:36px;border-radius:50%;padding:0 !important;min-width:0;justify-content:center;gap:0}
 }
 @media(min-width:769px){.modal-drag-handle{display:none}}
+/* ─── TABLE ASSIGNMENT ─── */
+.tbl-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;letter-spacing:0.1em;padding:4px 10px;border:1px dashed rgba(255,255,255,0.15);border-radius:20px;color:var(--text3);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:var(--font)}
+.tbl-pill:hover{border-color:var(--blue);color:var(--blue)}
+.tbl-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(10,132,255,0.15);color:var(--blue);border:1px solid rgba(10,132,255,0.25);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:var(--font)}
+.tbl-badge:hover{background:rgba(10,132,255,0.25)}
+.tbl-inp-wrap{display:inline-flex;align-items:center;gap:4px}
+.tbl-inp{width:70px;height:28px;background:rgba(255,255,255,0.06);border:1px solid var(--blue);border-radius:8px;color:var(--text);font-family:var(--font);font-size:13px;text-align:center;outline:none;-webkit-appearance:none;-moz-appearance:textfield}
+.tbl-inp::-webkit-outer-spin-button,.tbl-inp::-webkit-inner-spin-button{-webkit-appearance:none}
+.tbl-save-btn{width:24px;height:24px;background:var(--blue);border:none;border-radius:5px;color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity 0.2s}
+.tbl-save-btn:hover{opacity:0.85}
+.tbl-save-btn svg{width:13px;height:13px;fill:currentColor}
+.tbl-note-text{font-size:12px;color:var(--text2);font-style:italic;cursor:pointer;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;transition:color 0.2s;font-family:var(--font)}
+.tbl-note-text:hover{color:var(--text)}
+.tbl-note-inp{width:140px;height:28px;background:rgba(255,255,255,0.06);border:1px solid var(--blue);border-radius:8px;color:var(--text);font-family:var(--font);font-size:12px;padding:0 8px;outline:none}
+/* ─── TABLE SUMMARY PANEL ─── */
+.tbl-summary-wrap{display:none;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.tbl-summary-wrap.open{display:block;animation:toastIn 0.2s var(--ease)}
+.tbl-summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px}
+.tbl-card{background:var(--glass);border:1px solid var(--gb);border-radius:12px;padding:14px 16px}
+.tbl-card-header{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.tbl-count-badge{font-size:10px;font-weight:500;background:rgba(48,209,88,0.12);color:var(--green);border-radius:20px;padding:2px 8px;white-space:nowrap}
+.tbl-card-guest{font-size:12px;color:var(--text2);margin-bottom:2px;line-height:1.4}
+.tbl-card-note{font-size:11px;color:var(--text3);font-style:italic;margin-bottom:4px;padding-left:8px}
+.tbl-card.unassigned{border-color:rgba(255,159,10,0.3)}
+.tbl-card.unassigned .tbl-card-header{color:var(--orange)}
+.tbl-card.unassigned .tbl-count-badge{background:rgba(255,159,10,0.12);color:var(--orange)}
 </style>
 </head>
 <body>
@@ -368,17 +396,29 @@ select.form-input{cursor:pointer}
               <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--green)" id="rsvpYesCount">0</div><div class="rsvp-stat-label">Attending</div></div>
               <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--red)" id="rsvpNoCount">0</div><div class="rsvp-stat-label">Not Attending</div></div>
               <div class="rsvp-stat"><div class="rsvp-stat-val" id="rsvpTotalCount">0</div><div class="rsvp-stat-label">Total Responses</div></div>
+              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--yellow)" id="rsvpGuestCount">0</div><div class="rsvp-stat-label">Total Guests</div></div>
             </div>
             <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
               <span style="font-size:13px;color:var(--text2)">Guest Responses</span>
-              <button class="btn-ghost" onclick="openRSVPRealtime()">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                Open Live View
-              </button>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="btn-ghost" id="tblSummaryBtn" onclick="toggleTableSummary()" style="font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
+                  View Table Summary
+                </button>
+                <button class="btn-ghost" onclick="copyTableLookupLink()" style="font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                  Copy Table Lookup Link
+                </button>
+                <button class="btn-ghost" onclick="openRSVPRealtime()" style="font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                  Open Live View
+                </button>
+              </div>
             </div>
+            <div class="tbl-summary-wrap" id="tblSummaryWrap"></div>
             <div style="overflow-x:auto">
               <table class="rsvp-table">
-                <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Submitted</th></tr></thead>
+                <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
                 <tbody id="rsvpTableBody"></tbody>
               </table>
             </div>
@@ -579,7 +619,8 @@ try {
 // ─── STATE ───
 let allInvitations = [], editingId = null, selectedTheme = 1;
 let editingTestId = null;
-let preshootUrls = new Array(10).fill(''); // 10 slots
+let preshootUrls = new Array(10).fill('');
+let currentRsvpData = [];
 
 // ─── SESSION CHECK ───
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
@@ -969,22 +1010,157 @@ async function loadRSVPForInv(slug) {
   try {
     const { data, error } = await sb.from('rsvp').select('*').eq('invitation_slug', slug).order('created_at', { ascending: false });
     if (error) throw error;
-    const yes = (data || []).filter(r => r.attendance === 'yes').length;
-    const no = (data || []).filter(r => r.attendance === 'no').length;
+    currentRsvpData = data || [];
+    const yes = currentRsvpData.filter(r => r.attendance === 'yes').length;
+    const no = currentRsvpData.filter(r => r.attendance === 'no').length;
+    const totalGuests = currentRsvpData.filter(r => r.attendance === 'yes').reduce((s, r) => s + (r.guest_count || 1), 0);
     document.getElementById('rsvpYesCount').textContent = yes;
     document.getElementById('rsvpNoCount').textContent = no;
-    document.getElementById('rsvpTotalCount').textContent = data.length;
+    document.getElementById('rsvpTotalCount').textContent = currentRsvpData.length;
+    document.getElementById('rsvpGuestCount').textContent = totalGuests;
     const body = document.getElementById('rsvpTableBody');
-    if (!data.length) {
-      body.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No responses yet</td></tr>`;
+    if (!currentRsvpData.length) {
+      body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No responses yet</td></tr>`;
     } else {
-      body.innerHTML = data.map(r => `<tr><td style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td><td>${esc(r.phone || '—')}</td><td><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td><td>${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td></tr>`).join('');
+      body.innerHTML = currentRsvpData.map(r => `<tr>
+        <td style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td>
+        <td>${esc(r.phone || '—')}</td>
+        <td><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td>
+        <td id="tblnum_${r.id}">${tblNumHTML(r)}</td>
+        <td id="tblnote_${r.id}">${tblNoteHTML(r)}</td>
+        <td>${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+      </tr>`).join('');
     }
     document.getElementById('rsvpContent').style.display = 'block';
+    const sw = document.getElementById('tblSummaryWrap');
+    if (sw?.classList.contains('open')) renderTableSummary();
   } catch (e) { showToast('Failed to load RSVPs', 'error'); }
   hideLoading();
 }
 function openRSVPRealtime() { const slug = document.getElementById('rsvpInvSelect').value; if (slug) window.open(`rsvp-live.html?slug=${slug}`, '_blank'); }
+
+// ─── TABLE ASSIGNMENT ───
+function tblNumHTML(r) {
+  if (r.table_number) return `<span class="tbl-badge" onclick="editTableNum('${r.id}')">Table ${r.table_number}</span>`;
+  return `<span class="tbl-pill" onclick="editTableNum('${r.id}')">Assign Table</span>`;
+}
+function tblNoteHTML(r) {
+  if (!r.table_note) return `<span style="color:var(--text3);cursor:pointer;font-size:13px" onclick="editNote('${r.id}')">—</span>`;
+  const trunc = r.table_note.length > 20 ? r.table_note.substring(0, 20) + '…' : r.table_note;
+  return `<span class="tbl-note-text" onclick="editNote('${r.id}')" title="${esc(r.table_note)}">${esc(trunc)}</span>`;
+}
+
+function editTableNum(rsvpId) {
+  const cell = document.getElementById('tblnum_' + rsvpId);
+  if (!cell) return;
+  const rec = currentRsvpData.find(r => r.id === rsvpId);
+  const prev = rec?.table_number ?? '';
+  cell.innerHTML = `<div class="tbl-inp-wrap"><input class="tbl-inp" id="tinp_${rsvpId}" type="number" min="1" max="100" value="${prev}" placeholder="#" onkeydown="if(event.key==='Enter'){event.preventDefault();this.onblur=null;confirmTableNum('${rsvpId}')}else if(event.key==='Escape'){event.preventDefault();this.onblur=null;refreshTableNumCell('${rsvpId}')}" onblur="confirmTableNum('${rsvpId}')"><button class="tbl-save-btn" onmousedown="event.preventDefault()" onclick="document.getElementById('tinp_${rsvpId}').onblur=null;confirmTableNum('${rsvpId}')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button></div>`;
+  setTimeout(() => document.getElementById('tinp_' + rsvpId)?.focus(), 0);
+}
+async function confirmTableNum(rsvpId) {
+  const inp = document.getElementById('tinp_' + rsvpId);
+  if (!inp) return;
+  inp.onblur = null;
+  const num = inp.value.trim() ? parseInt(inp.value.trim()) : null;
+  await saveTableAssignment(rsvpId, num, undefined);
+  refreshTableNumCell(rsvpId);
+  if (document.getElementById('tblSummaryWrap')?.classList.contains('open')) renderTableSummary();
+}
+function refreshTableNumCell(rsvpId) {
+  const cell = document.getElementById('tblnum_' + rsvpId);
+  if (!cell) return;
+  const rec = currentRsvpData.find(r => r.id === rsvpId);
+  cell.innerHTML = rec?.table_number
+    ? `<span class="tbl-badge" onclick="editTableNum('${rsvpId}')">Table ${rec.table_number}</span>`
+    : `<span class="tbl-pill" onclick="editTableNum('${rsvpId}')">Assign Table</span>`;
+}
+
+function editNote(rsvpId) {
+  const cell = document.getElementById('tblnote_' + rsvpId);
+  if (!cell) return;
+  const rec = currentRsvpData.find(r => r.id === rsvpId);
+  const prev = rec?.table_note ?? '';
+  cell.innerHTML = `<input class="tbl-note-inp" id="noteinp_${rsvpId}" type="text" maxlength="40" value="${esc(prev)}" placeholder="e.g. Vegetarian" onkeydown="if(event.key==='Enter'){event.preventDefault();this.onblur=null;confirmNote('${rsvpId}')}else if(event.key==='Escape'){event.preventDefault();this.onblur=null;refreshNoteCell('${rsvpId}')}" onblur="confirmNote('${rsvpId}')">`;
+  setTimeout(() => document.getElementById('noteinp_' + rsvpId)?.focus(), 0);
+}
+async function confirmNote(rsvpId) {
+  const inp = document.getElementById('noteinp_' + rsvpId);
+  if (!inp) return;
+  inp.onblur = null;
+  const val = inp.value.trim();
+  await saveTableAssignment(rsvpId, undefined, val);
+  refreshNoteCell(rsvpId);
+  if (document.getElementById('tblSummaryWrap')?.classList.contains('open')) renderTableSummary();
+}
+function refreshNoteCell(rsvpId) {
+  const cell = document.getElementById('tblnote_' + rsvpId);
+  if (!cell) return;
+  const rec = currentRsvpData.find(r => r.id === rsvpId);
+  cell.innerHTML = tblNoteHTML(rec || { id: rsvpId });
+}
+
+async function saveTableAssignment(rsvpId, tableNumber, note) {
+  try {
+    const updates = {};
+    if (tableNumber !== undefined) updates.table_number = tableNumber || null;
+    if (note !== undefined) updates.table_note = note || null;
+    const { error } = await sb.from('rsvp').update(updates).eq('id', rsvpId);
+    if (error) throw error;
+    const rec = currentRsvpData.find(r => r.id === rsvpId);
+    if (rec) {
+      if (tableNumber !== undefined) rec.table_number = tableNumber || null;
+      if (note !== undefined) rec.table_note = note || null;
+    }
+    showToast('Table saved', 'success');
+  } catch (e) { showToast('Failed to save', 'error'); }
+}
+
+function toggleTableSummary() {
+  const wrap = document.getElementById('tblSummaryWrap');
+  const btn = document.getElementById('tblSummaryBtn');
+  const isOpen = wrap.classList.toggle('open');
+  const svgHtml = btn.querySelector('svg').outerHTML;
+  btn.innerHTML = svgHtml + (isOpen ? ' Hide Summary' : ' View Table Summary');
+  if (isOpen) renderTableSummary();
+}
+function renderTableSummary() {
+  const wrap = document.getElementById('tblSummaryWrap');
+  if (!wrap) return;
+  const tableMap = {}, unassigned = [];
+  currentRsvpData.forEach(r => {
+    if (r.attendance !== 'yes') return;
+    if (r.table_number) { if (!tableMap[r.table_number]) tableMap[r.table_number] = []; tableMap[r.table_number].push(r); }
+    else unassigned.push(r);
+  });
+  const sorted = Object.keys(tableMap).map(Number).sort((a, b) => a - b);
+  let html = '<div style="font-size:11px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">Table Summary</div><div class="tbl-summary-grid">';
+  sorted.forEach(num => {
+    const guests = tableMap[num];
+    html += `<div class="tbl-card"><div class="tbl-card-header">Table ${num}<span class="tbl-count-badge">${guests.length} guest${guests.length !== 1 ? 's' : ''}</span></div>`;
+    guests.forEach(g => { html += `<div class="tbl-card-guest">${esc(g.guest_name || '—')}</div>${g.table_note ? `<div class="tbl-card-note">${esc(g.table_note)}</div>` : ''}`; });
+    html += `</div>`;
+  });
+  if (unassigned.length) {
+    html += `<div class="tbl-card unassigned"><div class="tbl-card-header">Unassigned<span class="tbl-count-badge">${unassigned.length}</span></div>`;
+    unassigned.forEach(g => { html += `<div class="tbl-card-guest">${esc(g.guest_name || '—')}</div>`; });
+    html += `</div>`;
+  }
+  if (!sorted.length && !unassigned.length) html += `<div style="color:var(--text3);font-size:13px;padding:4px 0">No attending guests loaded yet</div>`;
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+function copyTableLookupLink() {
+  const slug = document.getElementById('rsvpInvSelect').value;
+  if (!slug) { showToast('Please select an invitation first', 'error'); return; }
+  const url = `${location.origin}/table-lookup.html?slug=${slug}`;
+  navigator.clipboard.writeText(url).then(() => showToast('Table lookup link copied — share with guests', 'success')).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = url; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    showToast('Table lookup link copied — share with guests', 'success');
+  });
+}
 
 // ─── TESTIMONIALS ───
 function openTestimonialModal(id) { editingTestId = id || null; document.getElementById('testModalTitle').textContent = id ? 'Edit Testimonial' : 'Add Testimonial'; if (!id) clearTestForm(); document.getElementById('testModal').classList.add('open'); }

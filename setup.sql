@@ -87,7 +87,7 @@ CREATE POLICY "Anon full access invitations"
   ON public.invitations FOR ALL
   USING (true) WITH CHECK (true);
 
--- RSVP: guests can insert, anon can read all (for dashboard)
+-- RSVP: guests can insert, anon can read/update all (for dashboard table assignment)
 DROP POLICY IF EXISTS "Anyone can insert rsvp" ON public.rsvp;
 CREATE POLICY "Anyone can insert rsvp"
   ON public.rsvp FOR INSERT
@@ -97,6 +97,11 @@ DROP POLICY IF EXISTS "Anon can read rsvp" ON public.rsvp;
 CREATE POLICY "Anon can read rsvp"
   ON public.rsvp FOR SELECT
   USING (true);
+
+DROP POLICY IF EXISTS "Anon can update rsvp" ON public.rsvp;
+CREATE POLICY "Anon can update rsvp"
+  ON public.rsvp FOR UPDATE
+  USING (true) WITH CHECK (true);
 
 -- Testimonials: public reads visible ones, anon full access for dashboard
 DROP POLICY IF EXISTS "Public read visible testimonials" ON public.testimonials;
@@ -113,6 +118,8 @@ CREATE POLICY "Anon full access testimonials"
 -- COLUMN ADDITIONS (safe to run on existing tables)
 -- ─────────────────────────────────────────────────────────────
 ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS guest_count integer DEFAULT 1;
+ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS table_number integer;
+ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS table_note text;
 ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS view_count integer DEFAULT 0;
 ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS background_image_url text;
 

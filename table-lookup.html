@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<title>Find Your Table — InviSend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #C9A96E;
+  --gold2: #e8c97e;
+  --text1: #3A2E26;
+  --text2: #6b5c4e;
+  --text3: #9c8878;
+  --card-bg: rgba(255,255,255,0.75);
+  --radius: 24px;
+}
+
+html, body {
+  min-height: 100%;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 30%, rgba(233,201,194,0.3), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(216,181,122,0.15), transparent 60%),
+    #F7F3EC;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.page-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-wrap img { display: block; }
+
+.card {
+  width: 100%;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  border: 1px solid rgba(201,169,110,0.18);
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 32px;
+  color: var(--text1);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.card-sub {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.couple-context {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+}
+
+.input-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+
+input[type="tel"], input[type="text"] {
+  width: 100%;
+  height: 52px;
+  border: 1.5px solid rgba(201,169,110,0.3);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.6);
+  padding: 0 18px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--text1);
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+input[type="tel"]:focus, input[type="text"]:focus {
+  border-color: var(--gold);
+}
+input::placeholder { color: var(--text3); font-size: 16px; }
+
+.find-btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #C9A96E 0%, #e8c97e 50%, #C9A96E 100%);
+  color: #fff;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: opacity 0.2s, transform 0.15s;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.find-btn:hover { opacity: 0.9; }
+.find-btn:active { transform: scale(0.98); }
+.find-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── RESULT STATES ─── */
+.result-wrap {
+  width: 100%;
+  margin-top: 24px;
+  display: none;
+  animation: fadeUp 0.4s ease;
+}
+.result-wrap.show { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Found */
+.result-found {
+  background: rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(201,169,110,0.25);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+}
+.result-found .tbl-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  font-weight: 500;
+  line-height: 1;
+  background: linear-gradient(135deg, #C9A96E, #e8c97e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+.result-found .tbl-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+.result-found .guest-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--text1);
+  margin-bottom: 6px;
+}
+.result-found .tbl-note {
+  font-size: 12px;
+  color: var(--text2);
+  font-style: italic;
+}
+
+/* Not assigned */
+.result-info {
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(201,169,110,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+.result-info .ri-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+.result-info .ri-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  color: var(--text1);
+  margin-bottom: 6px;
+}
+.result-info .ri-msg {
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+.result-error .ri-icon { opacity: 0.5; }
+
+/* ─── FOOTER ─── */
+.footer {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: center;
+  opacity: 0.7;
+}
+.footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="logo-wrap">
+    <img src="logo.png" alt="InviSend" width="100">
+  </div>
+
+  <div class="card">
+    <div class="card-title">Find Your Table</div>
+    <div class="card-sub">Enter your phone number to find your seat</div>
+
+    <div id="coupleContext" class="couple-context" style="display:none"></div>
+
+    <div class="input-group">
+      <div id="slugGroup" style="display:none">
+        <div class="field-label">Invitation Code</div>
+        <input type="text" id="slugInput" placeholder="e.g. ayasha-rohan">
+      </div>
+      <div>
+        <div class="field-label">Your Phone Number</div>
+        <input type="tel" id="phoneInput" placeholder="e.g. 0771234567" inputmode="tel" onkeydown="if(event.key==='Enter')findTable()">
+      </div>
+      <button class="find-btn" id="findBtn" onclick="findTable()">Find My Table</button>
+    </div>
+
+    <div class="result-wrap" id="resultWrap"></div>
+  </div>
+
+  <div class="footer">Powered by <span>InviSend</span> × TG Wedding Films</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://uodiuclpqnhwsiclrbsq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZGl1Y2xwcW5od3NpY2xyYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjE5NTIsImV4cCI6MjA2MzIzNzk1Mn0.Z6L3KP_3fHNgknXnbDLXI4MLBPuPfQQ4f0Zz3NcJvRQ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let pageSlug = null;
+
+(async function init() {
+  const params = new URLSearchParams(location.search);
+  const slugParam = params.get('slug');
+
+  if (slugParam) {
+    pageSlug = slugParam;
+    // Try to load couple name for context
+    const { data } = await sb.from('invitations').select('couple_name').eq('slug', slugParam).maybeSingle();
+    if (data?.couple_name) {
+      const ctx = document.getElementById('coupleContext');
+      ctx.textContent = data.couple_name + ' Wedding';
+      ctx.style.display = 'block';
+    }
+  } else {
+    document.getElementById('slugGroup').style.display = 'block';
+  }
+
+  document.getElementById('phoneInput').focus();
+})();
+
+async function findTable() {
+  const phoneRaw = document.getElementById('phoneInput').value.trim();
+  const slugVal = pageSlug || document.getElementById('slugInput')?.value.trim();
+  const btn = document.getElementById('findBtn');
+  const resultWrap = document.getElementById('resultWrap');
+
+  if (!phoneRaw) { shake(document.getElementById('phoneInput')); return; }
+  if (!slugVal) { shake(document.getElementById('slugInput')); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Looking up…';
+  resultWrap.classList.remove('show');
+
+  try {
+    const { data: rows, error } = await sb
+      .from('rsvp')
+      .select('id,guest_name,phone,attendance,table_number,table_note')
+      .eq('invitation_slug', slugVal);
+
+    if (error) throw error;
+
+    const match = findMatch(rows || [], phoneRaw);
+
+    if (!match) {
+      showResult('not-found');
+    } else if (match.attendance === 'no') {
+      showResult('declined', match);
+    } else if (!match.table_number) {
+      showResult('not-assigned', match);
+    } else {
+      showResult('found', match);
+    }
+  } catch (e) {
+    showResult('error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Find My Table';
+  }
+}
+
+function findMatch(rows, phoneRaw) {
+  // 1. Exact match
+  let match = rows.find(r => r.phone === phoneRaw);
+  if (match) return match;
+
+  // 2. Normalize and compare: strip spaces, dashes, parentheses
+  const normalize = p => (p || '').replace(/[\s\-()]/g, '');
+  const normInput = normalize(phoneRaw);
+  match = rows.find(r => normalize(r.phone) === normInput);
+  if (match) return match;
+
+  // 3. Strip country code: last 9 digits
+  const last9 = p => normalize(p).replace(/^\+?94/, '').replace(/^0/, '');
+  const inputLast = last9(phoneRaw);
+  if (inputLast.length >= 7) {
+    match = rows.find(r => last9(r.phone) === inputLast);
+  }
+  return match || null;
+}
+
+function showResult(state, rec) {
+  const wrap = document.getElementById('resultWrap');
+  let html = '';
+
+  if (state === 'found') {
+    html = `<div class="result-found">
+      <div class="tbl-num">${rec.table_number}</div>
+      <div class="tbl-label">Your Table Number</div>
+      <div class="guest-name">${escHtml(rec.guest_name)}</div>
+      ${rec.table_note ? `<div class="tbl-note">${escHtml(rec.table_note)}</div>` : ''}
+    </div>`;
+  } else if (state === 'not-assigned') {
+    html = `<div class="result-info">
+      <div class="ri-icon">🕐</div>
+      <div class="ri-title">Not Yet Assigned</div>
+      <div class="ri-msg">Hi ${escHtml(rec.guest_name)}, your table assignment is not ready yet.<br>Please check back closer to the event or ask the organizer.</div>
+    </div>`;
+  } else if (state === 'declined') {
+    html = `<div class="result-info">
+      <div class="ri-icon">💌</div>
+      <div class="ri-title">RSVP Recorded</div>
+      <div class="ri-msg">Hi ${escHtml(rec.guest_name)}, our records show you are unable to attend.<br>You are missed and warmly wished all the best!</div>
+    </div>`;
+  } else if (state === 'not-found') {
+    html = `<div class="result-info result-error">
+      <div class="ri-icon">🔍</div>
+      <div class="ri-title">Not Found</div>
+      <div class="ri-msg">We couldn't find a record matching that number.<br>Please double-check or contact the organizer.</div>
+    </div>`;
+  } else {
+    html = `<div class="result-info result-error">
+      <div class="ri-icon">⚠️</div>
+      <div class="ri-title">Something Went Wrong</div>
+      <div class="ri-msg">There was an error looking up your table.<br>Please try again in a moment.</div>
+    </div>`;
+  }
+
+  wrap.innerHTML = html;
+  wrap.classList.add('show');
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function shake(el) {
+  if (!el) return;
+  el.style.animation = 'none';
+  el.style.borderColor = '#e57373';
+  setTimeout(() => { el.style.borderColor = ''; }, 800);
+  el.focus();
+}
+</script>
+</body>
+</html>
