@@ -19,15 +19,22 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 }
 /* THEME 1: WESTERN LUXURY */
 [data-theme="1"]{--bg:#07060a;--bg2:#0f0d14;--card:#161220;--accent:#c9a84c;--accent2:#e8cc7a;--glow:rgba(201,168,76,0.35);--text:#f5ead4;--text2:#9a8468;--text3:#52463a;--border:rgba(201,168,76,0.18);--merge-glow:radial-gradient(ellipse at center,rgba(201,168,76,0.7) 0%,rgba(201,168,76,0.1) 50%,transparent 70%);--section-bg:rgba(255,255,255,0.02);}
-/* THEME 2: RATHA MALA */
+/* THEME 2: UDARATA SINHALA */
 [data-theme="2"]{--bg:#160404;--bg2:#200808;--card:#2d0c0c;--accent:#f1cb14;--accent2:#ffe066;--glow:rgba(241,203,20,0.4);--text:#fff5e0;--text2:#c4903a;--text3:#7a4a20;--border:rgba(241,203,20,0.2);--merge-glow:radial-gradient(ellipse at center,rgba(241,203,20,0.8) 0%,rgba(228,74,10,0.3) 40%,transparent 70%);--section-bg:rgba(255,255,255,0.025);}
-/* THEME 3: VAANAM */
+/* THEME 3: KALYANAM */
 [data-theme="3"]{--bg:#061208;--bg2:#0c1e0e;--card:#132818;--accent:#ffc61c;--accent2:#ffe566;--glow:rgba(255,198,28,0.4);--text:#f0fff4;--text2:#7ab88a;--text3:#3d6644;--border:rgba(255,198,28,0.18);--merge-glow:radial-gradient(ellipse at center,rgba(255,198,28,0.8) 0%,rgba(74,158,92,0.3) 40%,transparent 70%);--section-bg:rgba(255,255,255,0.02);}
+/* THEME 4: INVISEND IVORY */
+[data-theme="4"]{--bg:#F7F3EC;--bg2:#EDE8E0;--card:#E8E2D9;--accent:#D8B57A;--accent2:#E8C98A;--glow:rgba(216,181,122,0.35);--text:#5E4A3A;--text2:#8E715C;--text3:#B09880;--border:rgba(216,181,122,0.28);--merge-glow:radial-gradient(ellipse at center,rgba(216,181,122,0.9) 0%,rgba(233,201,194,0.45) 40%,transparent 70%);--section-bg:rgba(94,74,58,0.04);}
 body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x:hidden;background:var(--bg)}
 .bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0}
 [data-theme="1"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(201,168,76,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(201,168,76,0.05) 0%,transparent 60%),#07060a}
 [data-theme="2"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404}
 [data-theme="3"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208}
+[data-theme="4"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(216,181,122,0.15) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(212,166,166,0.12) 0%,transparent 60%),#F7F3EC}
+[data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
+[data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
+[data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
+[data-theme="4"] .family-card{border-top:2px solid var(--accent)}
 /* LOADER */
 .loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity 0.8s var(--ease)}
 .loader.out{opacity:0;pointer-events:none}
@@ -78,6 +85,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes arrowL{0%,100%{opacity:0.3;transform:rotate(225deg) translateX(0)}50%{opacity:0.7;transform:rotate(225deg) translateX(-3px)}}
 @keyframes arrowR{0%,100%{opacity:0.3;transform:rotate(45deg) translateX(0)}50%{opacity:0.7;transform:rotate(45deg) translateX(3px)}}
 .hint-text{font-family:var(--font-ui);font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
+/* SCROLL DOWN HINT */
+.scroll-down-hint{display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;transition:opacity 0.9s var(--ease);pointer-events:none;margin-top:36px}
+.scroll-down-hint.show{opacity:1}
+.scroll-down-chevron{width:18px;height:18px;border-right:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent);transform:rotate(45deg);animation:chevronBounce 1.7s ease-in-out infinite}
+.scroll-down-chevron:nth-child(2){animation-delay:0.22s;margin-top:-10px;opacity:0.45}
+.scroll-down-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.38em;text-transform:uppercase;color:var(--text3);margin-top:12px}
+@keyframes chevronBounce{0%,100%{opacity:0.35;transform:rotate(45deg) translateY(0)}55%{opacity:1;transform:rotate(45deg) translateY(5px)}}
 /* COUPLE NAME */
 .couple-name-block{margin-top:80px;text-align:center;padding:0 24px;opacity:0;transform:translateY(14px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
 .couple-name-block.show{opacity:1;transform:none}
@@ -121,34 +135,49 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .location-btn:active{transform:scale(0.97);background:var(--accent);color:var(--bg)}
 .location-btn svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
 
-/* ═══════════════ PRESHOOT GALLERY ═══════════════ */
-.preshoot-section{padding:40px 20px;max-width:640px;margin:0 auto}
-.preshoot-header{text-align:center;margin-bottom:28px}
+/* ═══════════════ PRESHOOT CAROUSEL ═══════════════ */
+.preshoot-section{padding:40px 0 40px;max-width:100%;margin:0 auto}
+.preshoot-header{text-align:center;margin-bottom:28px;padding:0 20px}
 .preshoot-title{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:0.06em;color:var(--text);margin-bottom:6px}
 .preshoot-sub{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
-/* Photo grid */
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.photo-item{aspect-ratio:3/4;overflow:hidden;border-radius:10px;cursor:pointer;position:relative;background:var(--card)}
-.photo-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s var(--ease)}
-.photo-item:hover img{transform:scale(1.06)}
-.photo-item::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.3),transparent 50%);opacity:0;transition:opacity 0.3s}
-.photo-item:hover::after{opacity:1}
+/* Carousel container */
+.ps-carousel-wrap{position:relative;width:100%}
+.ps-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-behavior:smooth;padding:0 10%}
+.ps-carousel::-webkit-scrollbar{display:none}
+.ps-slide{min-width:80%;scroll-snap-align:center;padding:0 7px;transform:translateX(55px);opacity:0;transition:transform 0.7s var(--ease),opacity 0.7s var(--ease)}
+.ps-slide.in{transform:none;opacity:1}
+@media(max-width:600px){.ps-carousel{padding:0}.ps-slide{min-width:100%;padding:0 16px}}
+.ps-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);display:block;cursor:pointer;transition:transform 0.3s var(--ease)}
+.ps-slide img:active{transform:scale(0.99)}
+/* Nav arrows */
+.ps-nav{position:absolute;top:38%;transform:translateY(-50%);width:40px;height:40px;background:rgba(0,0,0,0.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.14);border-radius:50%;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background 0.2s,opacity 0.25s;line-height:1}
+.ps-nav:hover{background:rgba(0,0,0,0.7)}
+.ps-nav.hidden{opacity:0;pointer-events:none}
+.ps-prev{left:7px}
+.ps-next{right:7px}
+/* Counter */
+.ps-counter{position:absolute;top:12px;right:calc(10% + 18px);font-family:var(--font-ui);font-size:10px;letter-spacing:0.18em;color:rgba(255,255,255,0.78);background:rgba(0,0,0,0.42);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;z-index:5}
+@media(max-width:600px){.ps-counter{right:24px}}
+/* Dots */
+.ps-dots{display:flex;justify-content:center;gap:7px;margin-top:16px;padding:0 20px}
+.ps-dot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:background 0.3s,transform 0.3s;cursor:pointer}
+.ps-dot.active{background:var(--accent);transform:scale(1.6)}
 /* Video block */
-.video-block{margin-top:16px;border-radius:14px;overflow:hidden;background:var(--card);position:relative}
+.video-block{margin:20px 20px 0;border-radius:14px;overflow:hidden;background:var(--card);position:relative}
 .video-block video{width:100%;display:block;max-height:380px;object-fit:cover}
 .video-block iframe{width:100%;height:280px;border:none;display:block}
 .video-label{font-family:var(--font-ui);font-size:8.5px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text3);text-align:center;padding:10px 0 4px}
 /* Lightbox */
-.lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.93);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:none;align-items:center;justify-content:center;padding:20px}
 .lightbox.open{display:flex}
-.lightbox-img{max-width:90vw;max-height:90dvh;object-fit:contain;border-radius:8px}
-.lightbox-close{position:fixed;top:16px;right:16px;width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:50%;border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:201;transition:background 0.2s}
-.lightbox-close:hover{background:rgba(255,255,255,0.2)}
-.lightbox-nav{position:fixed;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:201;transition:background 0.2s}
-.lightbox-nav:hover{background:rgba(255,255,255,0.25)}
-.lightbox-prev{left:12px}
-.lightbox-next{right:12px}
-.lightbox-counter{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;color:rgba(255,255,255,0.5)}
+.lightbox-img{max-width:min(88vw,380px);max-height:90dvh;object-fit:contain;border-radius:16px;box-shadow:0 28px 80px rgba(0,0,0,0.8)}
+.lightbox-close{position:fixed;top:16px;right:16px;width:38px;height:38px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border-radius:50%;border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:201;transition:background 0.2s}
+.lightbox-close:hover{background:rgba(255,255,255,0.25)}
+.lightbox-nav{position:fixed;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:201;transition:background 0.2s}
+.lightbox-nav:hover{background:rgba(255,255,255,0.28)}
+.lightbox-prev{left:10px}
+.lightbox-next{right:10px}
+.lightbox-counter{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;color:rgba(255,255,255,0.55);background:rgba(0,0,0,0.4);padding:4px 14px;border-radius:20px}
 /* ═══════════════════════════════════════════════ */
 
 /* RSVP */
@@ -232,6 +261,11 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="couple-names" id="coupleNamesEl"></div>
       <div class="couple-tagline">Together Forever</div>
     </div>
+    <div class="scroll-down-hint" id="scrollDownHint">
+      <div class="scroll-down-chevron"></div>
+      <div class="scroll-down-chevron"></div>
+      <span class="scroll-down-label">Scroll to explore</span>
+    </div>
   </section>
 
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
@@ -279,7 +313,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="preshoot-title" id="preshootTitle">Our Pre-Shoot</div>
       <div class="preshoot-sub">A glimpse of our story before the big day</div>
     </div>
-    <div class="photo-grid" id="photoGrid"></div>
+    <div class="ps-carousel-wrap" id="psWrap">
+      <div class="ps-carousel" id="psCarousel"></div>
+      <button class="ps-nav ps-prev hidden" id="psPrev">&#x2039;</button>
+      <button class="ps-nav ps-next" id="psNext">&#x203a;</button>
+      <div class="ps-counter" id="psCounter"></div>
+    </div>
+    <div class="ps-dots" id="psDots"></div>
     <div id="videoBlock"></div>
   </section>
 
@@ -311,7 +351,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
   </section>
 
-  <footer class="inv-footer"><div class="footer-brand">Crafted with InviSend</div></footer>
+  <footer class="inv-footer"><div class="footer-brand">Powered by InviSend &times; TG Wedding Films</div></footer>
 </div>
 
 <script>
@@ -322,6 +362,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let invData = null, swipeProgress = 0, isDragging = false, startX = 0, revealed = false, attendChoice = null;
 let preshootPhotos = [], lbIndex = 0;
+let hintTimeout, psCurrentIdx = 0, psScrollTimer;
 
 async function init() {
   const slug = new URLSearchParams(location.search).get('slug') ||
@@ -348,6 +389,7 @@ function hideLoader() {
   l.classList.add('out');
   setTimeout(() => l.style.display = 'none', 900);
   document.getElementById('page').classList.add('show');
+  scheduleSwipeDemo();
 }
 function showErr() {
   document.getElementById('loader').classList.add('out');
@@ -377,7 +419,7 @@ function render(d) {
 
 function setImg(id, url) { if (url) document.getElementById(id).src = url; }
 
-// ─── PRESHOOT ───
+// ─── PRESHOOT CAROUSEL ───
 function loadPreshoot(d) {
   const photos = [];
   for (let i = 1; i <= 10; i++) { if (d['preshoot_photo_' + i]) photos.push(d['preshoot_photo_' + i]); }
@@ -388,11 +430,52 @@ function loadPreshoot(d) {
   document.getElementById('preshootSection').style.display = '';
   if (d.preshoot_title) document.getElementById('preshootTitle').textContent = d.preshoot_title;
 
-  const grid = document.getElementById('photoGrid');
-  grid.innerHTML = photos.map((url, i) => `
-    <div class="photo-item" onclick="openLightbox(${i})">
-      <img src="${url}" alt="Pre-shoot photo ${i+1}" loading="lazy">
-    </div>`).join('');
+  if (photos.length) {
+    const carousel = document.getElementById('psCarousel');
+    carousel.innerHTML = photos.map((url, i) => `
+      <div class="ps-slide" id="psSlide${i}">
+        <img src="${url}" alt="Pre-shoot photo ${i+1}" loading="lazy" onclick="openLightbox(${i})">
+      </div>`).join('');
+
+    const dots = document.getElementById('psDots');
+    dots.innerHTML = photos.map((_, i) => `<div class="ps-dot${i===0?' active':''}" onclick="psGoTo(${i})"></div>`).join('');
+    psUpdateCounter(0, photos.length);
+    psUpdateNav(0, photos.length);
+
+    let psScrollTimer2;
+    carousel.addEventListener('scroll', () => {
+      clearTimeout(psScrollTimer2);
+      psScrollTimer2 = setTimeout(() => {
+        const slides = carousel.querySelectorAll('.ps-slide');
+        let best = 0, bestDist = Infinity;
+        const cMid = carousel.getBoundingClientRect().left + carousel.offsetWidth / 2;
+        slides.forEach((s, i) => {
+          const r = s.getBoundingClientRect();
+          const dist = Math.abs(r.left + r.width / 2 - cMid);
+          if (dist < bestDist) { bestDist = dist; best = i; }
+        });
+        psCurrentIdx = best;
+        psUpdateCounter(best, photos.length);
+        psUpdateNav(best, photos.length);
+        dots.querySelectorAll('.ps-dot').forEach((dot, i) => dot.classList.toggle('active', i === best));
+      }, 60);
+    }, { passive: true });
+
+    document.getElementById('psPrev').onclick = () => psGoTo(psCurrentIdx - 1);
+    document.getElementById('psNext').onclick = () => psGoTo(psCurrentIdx + 1);
+
+    // Slide-in animation on scroll into view
+    const obs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        carousel.querySelectorAll('.ps-slide').forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 90));
+        obs.disconnect();
+      }
+    }, { threshold: 0.15 });
+    obs.observe(document.getElementById('preshootSection'));
+  } else {
+    document.getElementById('psWrap').style.display = 'none';
+    document.getElementById('psDots').style.display = 'none';
+  }
 
   if (hasVideo) {
     const vb = document.getElementById('videoBlock');
@@ -407,6 +490,25 @@ function loadPreshoot(d) {
       vb.innerHTML = `<div class="video-label">Watch Our Story</div><div class="video-block"><video controls playsinline preload="metadata"><source src="${url}"></video></div>`;
     }
   }
+}
+function psGoTo(idx) {
+  const carousel = document.getElementById('psCarousel');
+  const slides = Array.from(carousel.querySelectorAll('.ps-slide'));
+  idx = Math.max(0, Math.min(slides.length - 1, idx));
+  psCurrentIdx = idx;
+  slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  psUpdateCounter(idx, slides.length);
+  psUpdateNav(idx, slides.length);
+  document.querySelectorAll('.ps-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function psUpdateCounter(idx, total) {
+  const el = document.getElementById('psCounter');
+  if (el) el.textContent = `${idx + 1} / ${total}`;
+}
+function psUpdateNav(idx, total) {
+  const prev = document.getElementById('psPrev'), next = document.getElementById('psNext');
+  if (prev) prev.classList.toggle('hidden', idx === 0);
+  if (next) next.classList.toggle('hidden', idx === total - 1);
 }
 
 // ─── LIGHTBOX ───
@@ -437,17 +539,37 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightboxDirect();
 });
 
+// ─── SWIPE DEMO HINT ───
+function scheduleSwipeDemo() {
+  let count = 0;
+  const sp = 'cubic-bezier(0.34,1.56,0.64,1)';
+  function playOnce() {
+    if (revealed || count >= 2) return;
+    const L = document.getElementById('cardLeft'), R = document.getElementById('cardRight');
+    L.style.transition = R.style.transition = `transform 0.55s ${sp}`;
+    L.style.transform = 'translateX(15%)'; R.style.transform = 'translateX(-15%)';
+    setTimeout(() => {
+      if (revealed) return;
+      L.style.transition = R.style.transition = `transform 0.65s ${sp}`;
+      L.style.transform = R.style.transform = '';
+    }, 560);
+    count++;
+    if (count < 2) hintTimeout = setTimeout(playOnce, 3200);
+  }
+  hintTimeout = setTimeout(playOnce, 2000);
+}
+
 // ─── SWIPE ───
 function initSwipe() {
   const a = document.getElementById('arena');
   a.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
-  a.addEventListener('touchmove', e => { e.preventDefault(); onMove(e.touches[0].clientX); }, { passive: false });
+  a.addEventListener('touchmove', e => { if (revealed) return; e.preventDefault(); onMove(e.touches[0].clientX); }, { passive: false });
   a.addEventListener('touchend', onEnd, { passive: true });
   a.addEventListener('mousedown', e => onStart(e.clientX));
   window.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
-function onStart(x) { if (revealed) return; startX = x; isDragging = true; }
+function onStart(x) { if (revealed) return; clearTimeout(hintTimeout); startX = x; isDragging = true; }
 function onMove(x) {
   if (!isDragging || revealed) return;
   const dx = Math.abs(x - startX);
@@ -492,7 +614,11 @@ function completeReveal() {
   setTimeout(() => {
     g.style.opacity = '0';
     document.getElementById('coupleReveal').classList.add('show');
-    setTimeout(() => document.getElementById('coupleNameBlock').classList.add('show'), 420);
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      document.getElementById('coupleNameBlock').classList.add('show');
+      setTimeout(() => document.getElementById('scrollDownHint').classList.add('show'), 550);
+    }, 420);
   }, 540);
 }
 
