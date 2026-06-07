@@ -31,13 +31,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="2"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404}
 [data-theme="3"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208}
 [data-theme="4"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(216,181,122,0.15) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(212,166,166,0.12) 0%,transparent 60%),#F7F3EC}
-.bg-image-layer{position:fixed;inset:0;z-index:0;display:none;pointer-events:none}
+.bg-image-layer{position:absolute;inset:0;z-index:0;display:none;pointer-events:none}
 .bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease}
 .bg-overlay{position:absolute;inset:0}
-[data-theme="1"] .bg-overlay{background:rgba(7,6,10,0.72)}
-[data-theme="2"] .bg-overlay{background:rgba(22,4,4,0.70)}
-[data-theme="3"] .bg-overlay{background:rgba(6,18,8,0.70)}
-[data-theme="4"] .bg-overlay{background:rgba(247,243,236,0.65)}
+[data-theme="1"] .bg-overlay{background:rgba(0,0,0,0.55)}
+[data-theme="2"] .bg-overlay{background:rgba(0,0,0,0.55)}
+[data-theme="3"] .bg-overlay{background:rgba(0,0,0,0.55)}
+[data-theme="4"] .bg-overlay{background:rgba(247,243,236,0.50)}
 [data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
 [data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
@@ -64,6 +64,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .music-label{font-family:var(--font-ui);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3)}
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0 48px;position:relative;overflow:hidden}
+.hero > *:not(.bg-image-layer){position:relative;z-index:1}
 .hero-tag{font-family:var(--font-ui);font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:44px;animation:fadeUp 0.7s var(--ease) 0.2s both}
 [data-theme="2"] .hero-tag,[data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 /* SWIPE ARENA */
@@ -191,22 +192,55 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .rsvp-section{padding:48px 20px;max-width:480px;margin:0 auto}
 .rsvp-title{font-family:var(--font-display);font-size:26px;font-weight:400;color:var(--text);text-align:center;margin-bottom:5px;letter-spacing:0.04em}
 .rsvp-sub{font-family:var(--font-ui);font-size:9.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:30px}
-.rsvp-form{display:flex;flex-direction:column;gap:14px}
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-lbl{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
-.form-inp{background:var(--section-bg);border:1px solid var(--border);border-radius:8px;padding:13px 15px;color:var(--text);font-family:var(--font-body);font-size:15px;outline:none;width:100%;transition:border-color 0.3s;-webkit-appearance:none}
-.form-inp:focus{border-color:var(--accent)}
-.form-inp::placeholder{color:var(--text3)}
-.attend-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.attend-btn{padding:13px;background:var(--section-bg);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font-ui);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;-webkit-appearance:none}
-.attend-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.rsvp-submit{padding:15px;background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-family:var(--font-ui);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;cursor:pointer;margin-top:6px;transition:opacity 0.2s,transform 0.2s;-webkit-appearance:none;width:100%}
+.rsvp-form{display:flex;flex-direction:column;gap:16px;background:var(--section-bg);border:1px solid var(--border);border-radius:16px;padding:28px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.rsvp-field-group{display:flex;flex-direction:column;gap:6px;position:relative}
+.rsvp-field-lbl{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
+.rsvp-inp{background:var(--section-bg);border:1px solid var(--border);border-radius:8px;padding:14px 15px;color:var(--text);font-family:var(--font-body);font-size:16px;outline:none;width:100%;transition:border-color 0.3s,box-shadow 0.3s;-webkit-appearance:none}
+.rsvp-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.rsvp-inp::placeholder{color:var(--text3)}
+.rsvp-inp.error{border-color:#ff6b6b}
+.rsvp-phone-wrap{position:relative}
+.rsvp-phone-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:0.4;display:flex;align-items:center}
+.rsvp-phone-icon svg{width:15px;height:15px;fill:var(--text3)}
+.rsvp-phone-inp{padding-left:38px}
+/* Attendance buttons */
+.attend-wrap{display:flex;flex-direction:column;gap:10px}
+.attend-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-family:var(--font-ui);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;-webkit-appearance:none}
+.attend-btn svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+.attend-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
+.attend-btn.bounce{animation:btnBounce 0.4s var(--spring)}
+@keyframes btnBounce{0%,100%{transform:scale(1)}40%{transform:scale(1.04)}70%{transform:scale(0.97)}}
+/* Guest count stepper */
+.guest-count-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height 0.38s var(--ease),opacity 0.3s var(--ease)}
+.guest-count-wrap.show{max-height:130px;opacity:1}
+.guest-count-inner{background:var(--section-bg);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.gc-labels{display:flex;flex-direction:column;gap:3px}
+.gc-lbl{font-family:var(--font-ui);font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text3)}
+.gc-sub{font-family:var(--font-body);font-size:11px;font-style:italic;color:var(--text3)}
+.gc-stepper{display:flex;align-items:center;gap:12px}
+.gc-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:var(--bg);font-size:18px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s,opacity 0.15s;-webkit-appearance:none}
+.gc-btn:active{transform:scale(0.88);opacity:0.8}
+.gc-inp{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-display);font-size:22px;font-weight:400;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;appearance:textfield}
+.gc-inp::-webkit-inner-spin-button,.gc-inp::-webkit-outer-spin-button{-webkit-appearance:none}
+/* Inline errors */
+.rsvp-err{font-family:var(--font-ui);font-size:11px;color:#ff6b6b;letter-spacing:0.02em;opacity:0;max-height:0;overflow:hidden;transition:opacity 0.25s,max-height 0.25s}
+.rsvp-err.show{opacity:1;max-height:28px}
+/* Duplicate message */
+.rsvp-dupe{display:none;text-align:center;padding:14px 0 4px;color:var(--accent);font-family:var(--font-body);font-size:15px;font-style:italic;align-items:center;justify-content:center;gap:8px;line-height:1.5}
+.rsvp-dupe.show{display:flex}
+/* Submit */
+.rsvp-submit{padding:0 15px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:var(--bg);font-family:var(--font-ui);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:opacity 0.2s,transform 0.15s;-webkit-appearance:none;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
 .rsvp-submit:active{opacity:0.85;transform:scale(0.98)}
 .rsvp-submit:disabled{opacity:0.4;cursor:not-allowed}
-.rsvp-success{display:none;text-align:center;padding:28px 20px;background:var(--section-bg);border:1px solid var(--border);border-radius:12px}
+.rsvp-submit-spinner{width:15px;height:15px;border:2px solid rgba(0,0,0,0.2);border-top-color:rgba(0,0,0,0.65);border-radius:50%;animation:spin 0.8s linear infinite;display:none;flex-shrink:0}
+/* Success */
+.rsvp-success{display:none;text-align:center;padding:36px 24px;background:var(--section-bg);border:1px solid var(--border);border-radius:16px}
 .rsvp-success.show{display:block}
-.rsvp-success-title{font-family:var(--font-display);font-size:20px;color:var(--accent);margin-bottom:6px}
-.rsvp-success-sub{font-family:var(--font-ui);font-size:9.5px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase}
+.rsvp-success-icon{font-size:36px;margin-bottom:14px;color:var(--accent)}
+.rsvp-success-name{font-family:var(--font-display);font-size:22px;color:var(--accent);margin-bottom:10px;letter-spacing:0.04em}
+.rsvp-success-sub{font-family:var(--font-body);font-size:15px;font-style:italic;color:var(--text2);line-height:1.75}
+@keyframes shakeField{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shakeField 0.3s ease}
 /* FOOTER */
 .inv-footer{padding:28px 20px 40px;text-align:center;border-top:1px solid var(--border);margin-top:20px}
 .footer-brand{font-family:var(--font-ui);font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);opacity:0.45}
@@ -218,7 +252,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 </head>
 <body>
 <div class="bg-layer"></div>
-<div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
 <div class="loader" id="loader">
   <div class="loader-ring"></div>
   <div class="loader-text">Opening your invitation</div>
@@ -249,6 +282,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
   <section class="hero" id="heroSection">
+    <div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
     <div class="hero-tag">A Wedding Invitation</div>
     <div class="arena" id="arena">
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
@@ -337,26 +371,60 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="rsvp-title">RSVP</div>
     <div class="rsvp-sub">Kindly confirm your attendance</div>
     <div class="rsvp-form" id="rsvpForm">
-      <div class="form-group">
-        <label class="form-lbl" for="gName">Your Name</label>
-        <input class="form-inp" id="gName" type="text" placeholder="Full Name" autocomplete="name">
+      <div class="rsvp-dupe" id="rsvpDupe">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        You have already responded to this invitation. Thank you!
       </div>
-      <div class="form-group">
-        <label class="form-lbl" for="gPhone">Phone Number</label>
-        <input class="form-inp" id="gPhone" type="tel" placeholder="+94 77 000 0000" autocomplete="tel">
+      <div class="rsvp-field-group">
+        <label class="rsvp-field-lbl" for="gName">Your Name</label>
+        <input class="rsvp-inp" id="gName" type="text" placeholder="Your full name" autocomplete="name" oninput="clearRsvpErr('errName',this)">
+        <span class="rsvp-err" id="errName">Please enter your name</span>
       </div>
-      <div class="form-group">
-        <label class="form-lbl">Will you attend?</label>
-        <div class="attend-grid">
-          <button class="attend-btn" data-v="yes" onclick="pickAttend('yes',this)">Joyfully Accept</button>
-          <button class="attend-btn" data-v="no" onclick="pickAttend('no',this)">Regretfully Decline</button>
+      <div class="rsvp-field-group">
+        <label class="rsvp-field-lbl" for="gPhone">Phone Number</label>
+        <div class="rsvp-phone-wrap">
+          <div class="rsvp-phone-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+          <input class="rsvp-inp rsvp-phone-inp" id="gPhone" type="tel" placeholder="+94 77 000 0000" autocomplete="tel" oninput="clearRsvpErr('errPhone',this)">
+        </div>
+        <span class="rsvp-err" id="errPhone">Phone number is required</span>
+      </div>
+      <div class="rsvp-field-group">
+        <label class="rsvp-field-lbl">Will you attend?</label>
+        <div class="attend-wrap">
+          <button class="attend-btn" id="btnYes" onclick="pickAttend('yes',this)">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            Joyfully Accept
+          </button>
+          <button class="attend-btn" id="btnNo" onclick="pickAttend('no',this)">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+            Regretfully Decline
+          </button>
+        </div>
+        <span class="rsvp-err" id="errAttend">Please select your attendance</span>
+      </div>
+      <div class="guest-count-wrap" id="guestCountWrap">
+        <div class="guest-count-inner">
+          <div class="gc-labels">
+            <span class="gc-lbl">How many guests are you bringing?</span>
+            <span class="gc-sub">Include yourself in the count</span>
+          </div>
+          <div class="gc-stepper">
+            <button class="gc-btn" onclick="adjustCount(-1)" type="button">−</button>
+            <input class="gc-inp" id="guestCount" type="number" min="1" max="20" value="1">
+            <button class="gc-btn" onclick="adjustCount(1)" type="button">+</button>
+          </div>
+          <span class="rsvp-err" id="errGuest">Please enter guest count</span>
         </div>
       </div>
-      <button class="rsvp-submit" id="rsvpSubmit" onclick="submitRSVP()">Confirm Response</button>
+      <button class="rsvp-submit" id="rsvpSubmit" onclick="submitRSVP()">
+        <span class="rsvp-submit-spinner" id="rsvpSpinner"></span>
+        <span id="rsvpBtnText">Confirm Response</span>
+      </button>
     </div>
     <div class="rsvp-success" id="rsvpSuccess">
-      <div class="rsvp-success-title">Thank You</div>
-      <div class="rsvp-success-sub">Your response has been received</div>
+      <div class="rsvp-success-icon">♥</div>
+      <div class="rsvp-success-name" id="successName">Thank You!</div>
+      <div class="rsvp-success-sub" id="successSub">Your response has been received.</div>
     </div>
   </section>
 
@@ -432,12 +500,10 @@ function setImg(id, url) { if (url) document.getElementById(id).src = url; }
 function applyBackgroundImage(url) {
   const layer = document.getElementById('bgImageLayer');
   const img = document.getElementById('bgImage');
-  const bgLayer = document.querySelector('.bg-layer');
   img.src = url;
   layer.style.display = 'block';
-  bgLayer.style.opacity = '0';
   img.onload = () => { img.style.opacity = '1'; };
-  img.onerror = () => { layer.style.display = 'none'; bgLayer.style.opacity = ''; };
+  img.onerror = () => { layer.style.display = 'none'; };
 }
 
 // ─── PRESHOOT CAROUSEL ───
@@ -661,19 +727,76 @@ function pickAttend(v, el) {
   attendChoice = v;
   document.querySelectorAll('.attend-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+  clearRsvpErr('errAttend');
+  const wrap = document.getElementById('guestCountWrap');
+  if (v === 'yes') { wrap.classList.add('show'); document.getElementById('guestCount').value = '1'; }
+  else wrap.classList.remove('show');
+}
+function adjustCount(delta) {
+  const inp = document.getElementById('guestCount');
+  inp.value = Math.max(1, Math.min(20, (parseInt(inp.value) || 1) + delta));
+  clearRsvpErr('errGuest');
+}
+function clearRsvpErr(id, input) {
+  const el = document.getElementById(id); if (el) el.classList.remove('show');
+  if (input) input.classList.remove('error');
+}
+function showRsvpErr(id, msg) {
+  const el = document.getElementById(id); if (!el) return;
+  if (msg) el.textContent = msg;
+  el.classList.add('show');
 }
 async function submitRSVP() {
+  ['errName','errPhone','errAttend','errGuest'].forEach(id => { const e = document.getElementById(id); if(e) e.classList.remove('show'); });
+  document.getElementById('gName').classList.remove('error');
+  document.getElementById('gPhone').classList.remove('error');
   const name = document.getElementById('gName').value.trim();
   const phone = document.getElementById('gPhone').value.trim();
-  if (!name || !attendChoice) { alert('Please fill in your name and attendance.'); return; }
+  let valid = true;
+  if (!name) {
+    document.getElementById('gName').classList.add('error','shake');
+    setTimeout(() => document.getElementById('gName').classList.remove('shake'), 350);
+    showRsvpErr('errName'); valid = false;
+  }
+  if (!phone) {
+    document.getElementById('gPhone').classList.add('error','shake');
+    setTimeout(() => document.getElementById('gPhone').classList.remove('shake'), 350);
+    showRsvpErr('errPhone', 'Phone number is required'); valid = false;
+  } else if (phone.replace(/\D/g,'').length < 7) {
+    document.getElementById('gPhone').classList.add('error');
+    showRsvpErr('errPhone', 'Please enter a valid phone number'); valid = false;
+  }
+  if (!attendChoice) {
+    ['btnYes','btnNo'].forEach(id => { const b = document.getElementById(id); b.classList.add('bounce'); setTimeout(() => b.classList.remove('bounce'), 450); });
+    showRsvpErr('errAttend'); valid = false;
+  }
+  if (attendChoice === 'yes' && (parseInt(document.getElementById('guestCount').value) || 0) < 1) {
+    showRsvpErr('errGuest'); valid = false;
+  }
+  if (!valid) return;
   const btn = document.getElementById('rsvpSubmit');
-  btn.disabled = true; btn.textContent = 'Submitting...';
+  const spinner = document.getElementById('rsvpSpinner');
+  const btnText = document.getElementById('rsvpBtnText');
+  btn.disabled = true; spinner.style.display = 'block'; btnText.textContent = 'Submitting...';
   try {
-    const { error } = await sb.from('rsvp').insert({ invitation_slug: invData.slug, guest_name: name, phone: phone || null, attendance: attendChoice });
+    const { data: existing } = await sb.from('rsvp').select('id').eq('invitation_slug', invData.slug).eq('phone', phone).single();
+    if (existing) {
+      btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
+      document.getElementById('rsvpDupe').classList.add('show'); return;
+    }
+    const guestCount = attendChoice === 'yes' ? (parseInt(document.getElementById('guestCount').value) || 1) : 0;
+    const { error } = await sb.from('rsvp').insert({ invitation_slug: invData.slug, guest_name: name, phone, attendance: attendChoice, guest_count: guestCount });
     if (error) throw error;
     document.getElementById('rsvpForm').style.display = 'none';
+    document.getElementById('successName').textContent = `Thank You, ${name}!`;
+    document.getElementById('successSub').textContent = attendChoice === 'yes'
+      ? 'Your response has been received. We look forward to celebrating with you.'
+      : 'We understand and appreciate you letting us know.';
     document.getElementById('rsvpSuccess').classList.add('show');
-  } catch (e) { btn.disabled = false; btn.textContent = 'Confirm Response'; alert('Something went wrong. Please try again.'); }
+  } catch (e) {
+    btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
+    showRsvpErr('errAttend', 'Something went wrong. Please try again.');
+  }
 }
 
 // ─── SCROLL REVEAL ───
