@@ -90,6 +90,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .action-btn{width:28px;height:28px;border-radius:7px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text3)}
 .action-btn:hover{background:var(--gh);color:var(--text)}
 .action-btn.danger:hover{background:rgba(255,69,58,0.12);color:var(--red);border-color:rgba(255,69,58,0.2)}
+.action-btn.preview:hover{background:rgba(48,209,88,0.12);color:var(--green);border-color:rgba(48,209,88,0.2)}
 .action-btn svg{width:13px;height:13px;fill:currentColor}
 .empty-state{padding:60px 20px;text-align:center}
 .empty-icon{width:48px;height:48px;background:var(--glass);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
@@ -430,7 +431,6 @@ select.form-input{cursor:pointer}
         <div class="form-group"><label class="form-label">Couple Name</label><input class="form-input" id="fCoupleName" placeholder="e.g. Ayasha & Rohan" type="text" oninput="onCoupleNameInput()"></div>
         <div class="form-group" id="slugGroup"><label class="form-label">URL Slug</label><div class="slug-input-wrap"><input class="form-input" id="fSlug" placeholder="e.g. ayasha-rohan" type="text" oninput="onSlugInput(this)" style="flex:1;min-width:0"><button type="button" class="auto-slug-btn" id="autoSlugBtn" onclick="autoGenerateSlug()">✦ Auto</button><svg class="slug-valid-check" id="slugValidCheck" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div><div class="slug-preview" id="slugPreview">invisend.com/invitation.html?slug=<span class="slug-preview-val" id="slugPreviewVal"></span></div></div>
         <div class="form-group"><label class="form-label">Status</label><select class="form-input" id="fStatus"><option value="live">Live</option><option value="expired">Expired</option></select></div>
-        <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" id="fExpiry" type="date"></div>
       </div>
     </div>
 
@@ -630,6 +630,7 @@ function renderTable(invs) {
       <td id="rsvpCount_${esc(inv.slug)}">—</td>
       <td><div class="action-btns">
         <div class="action-btn" onclick="copyLink('${esc(inv.slug)}')" title="Copy link"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></div>
+        <div class="action-btn preview" onclick="previewInvitation('${esc(inv.slug)}')" title="Preview Invitation"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
         <div class="action-btn" onclick='openRSVPForSlug("${esc(inv.slug)}")' title="RSVPs"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
         <div class="action-btn" onclick='toggleStatus("${inv.id}","${inv.status||'live'}")' title="Toggle Live/Offline" style="color:${(inv.status||'live')==='live'?'var(--green)':'var(--red)'}"><svg viewBox="0 0 24 24"><path d="${(inv.status||'live')==='live'?'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z':'M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'}"/></svg></div>
         <div class="action-btn" onclick='editInvitation("${inv.id}")' title="Edit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div>
@@ -660,6 +661,7 @@ function renderMobileCards(invs) {
       ${hasPre ? `<div class="inv-card-row" style="color:var(--green)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>Pre-shoot included</div>` : ''}
       <div class="inv-card-actions">
         <div class="inv-card-act" onclick="copyLink('${esc(inv.slug)}')">Copy Link</div>
+        <div class="inv-card-act" onclick="previewInvitation('${esc(inv.slug)}')">Preview</div>
         <div class="inv-card-act" onclick='openRSVPForSlug("${esc(inv.slug)}")'>RSVPs</div>
         <div class="inv-card-act blue" onclick='editInvitation("${inv.id}")'>Edit</div>
         <div class="inv-card-act icon-btn" onclick='toggleStatus("${inv.id}","${inv.status||'live'}")' style="color:${isLive?'var(--green)':'var(--red)'}"><svg viewBox="0 0 24 24"><path d="${isLive?'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z':'M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'}"/></svg></div>
@@ -741,7 +743,7 @@ function clearForm() {
   ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fBgImage','fPreshootTitle','fPreshootVideo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
   document.getElementById('fStatus').value = 'live';
-  document.getElementById('fExpiry').value = ''; document.getElementById('fWeddingDate').value = '';
+  document.getElementById('fWeddingDate').value = '';
   [['SwipeA','uploadA','swipeA'],['SwipeB','uploadB','swipeB'],['Couple','uploadCouple','couple']].forEach(([k,aId,t]) => {
     const p = document.getElementById('preview'+k); if (p) { p.style.display='none'; p.src=''; }
     const a = document.getElementById(aId); if(a){a.classList.remove('has-media');a.querySelector('.upload-del-btn')?.remove();a.querySelector('.upload-status-lbl')?.remove();a.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el=>el.style.removeProperty('display'));}
@@ -780,7 +782,6 @@ function editInvitation(id) {
   document.getElementById('fMusicUrl').value = inv.music_url || '';
   document.getElementById('fStatus').value = inv.status || 'live';
   if (inv.wedding_date) document.getElementById('fWeddingDate').value = new Date(inv.wedding_date).toISOString().slice(0, 16);
-  if (inv.expiry_date) document.getElementById('fExpiry').value = inv.expiry_date.split('T')[0];
   ['SwipeA','SwipeB','Couple'].forEach((k, i) => {
     const areaIds = ['uploadA','uploadB','uploadCouple'];
     const types = ['swipeA','swipeB','couple'];
@@ -898,7 +899,13 @@ async function saveInvitation() {
     background_image_url: document.getElementById('fBgImage').value || null,
   };
   if (document.getElementById('fWeddingDate').value) payload.wedding_date = new Date(document.getElementById('fWeddingDate').value).toISOString();
-  if (document.getElementById('fExpiry').value) payload.expiry_date = new Date(document.getElementById('fExpiry').value).toISOString();
+  let expiryDate = null;
+  if (document.getElementById('fWeddingDate').value) {
+    const wDate = new Date(document.getElementById('fWeddingDate').value);
+    wDate.setDate(wDate.getDate() + 30);
+    expiryDate = wDate.toISOString();
+  }
+  payload.expiry_date = expiryDate;
   // Preshoot
   if (document.getElementById('preshootEnabled').checked) {
     payload.preshoot_title = document.getElementById('fPreshootTitle').value.trim() || 'Our Pre-Shoot';
@@ -936,6 +943,13 @@ async function deleteInvitation(id) {
 function copyLink(slug) {
   const url = `${location.origin}/invitation.html?slug=${slug}`;
   navigator.clipboard.writeText(url).then(() => showToast('Link copied!', 'success')).catch(() => { prompt('Copy this link:', url); });
+}
+
+// ─── PREVIEW ───
+function previewInvitation(slug) {
+  if (!slug) return;
+  const url = `${location.origin}/invitation.html?slug=${slug}&preview=true`;
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 // ─── RSVP ───
