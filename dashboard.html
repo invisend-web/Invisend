@@ -1,3 +1,6 @@
+<!-- ⚠️  RUN THIS IN SUPABASE SQL EDITOR BEFORE USING BACKGROUND UPLOAD:
+     ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS background_image_url text;
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -398,6 +401,7 @@ select.form-input{cursor:pointer}
         <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="handleUpload(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div></div><input type="hidden" id="fCouplePhoto"></div>
       </div>
       <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mp3,audio/*" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div></div><input type="hidden" id="fMusicUrl"></div>
+      <div class="form-group full" style="margin-top:12px"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="handleUpload(this,'backgrounds','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div></div><input type="hidden" id="fBgImage"></div>
     </div>
 
     <!-- PRE-SHOOT SECTION -->
@@ -647,7 +651,7 @@ function openCreateModal() {
 }
 function closeModal() { document.getElementById('invModal').classList.remove('open'); }
 function clearForm() {
-  ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fPreshootTitle','fPreshootVideo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fBgImage','fPreshootTitle','fPreshootVideo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
   document.getElementById('fStatus').value = 'live';
   document.getElementById('fExpiry').value = ''; document.getElementById('fWeddingDate').value = '';
@@ -655,6 +659,8 @@ function clearForm() {
     const p = document.getElementById('preview'+k); if (p) { p.style.display='none'; p.src=''; }
   });
   document.getElementById('musicLabel').textContent = 'Upload MP3';
+  document.getElementById('bgImageLabel').textContent = 'Upload Background';
+  const pBg = document.getElementById('previewBgImage'); if (pBg) { pBg.style.display = 'none'; pBg.src = ''; }
   document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', el.dataset.val === '1'));
   selectedTheme = 1;
   document.getElementById('preshootEnabled').checked = false;
@@ -691,6 +697,9 @@ function editInvitation(id) {
     if (urls[i]) { const p = document.getElementById('preview'+k); p.src = urls[i]; p.style.display = 'block'; }
   });
   if (inv.music_url) document.getElementById('musicLabel').textContent = 'Music uploaded ✓';
+  document.getElementById('fBgImage').value = inv.background_image_url || '';
+  if (inv.background_image_url) { const pBg = document.getElementById('previewBgImage'); pBg.src = inv.background_image_url; pBg.style.display = 'block'; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; }
+  else { const pBg = document.getElementById('previewBgImage'); pBg.style.display = 'none'; pBg.src = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
   document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', parseInt(el.dataset.val) === selectedTheme));
   // Preshoot
   preshootUrls = new Array(10).fill('');
@@ -724,6 +733,7 @@ async function handleUpload(input, type, areaId, previewId) {
     else if (type === 'swipeB') document.getElementById('fSwipeB').value = url;
     else if (type === 'couple') document.getElementById('fCouplePhoto').value = url;
     else if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
+    else if (type === 'backgrounds') { document.getElementById('fBgImage').value = url; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; }
     if (previewId) { const p = document.getElementById(previewId); p.src = url; p.style.display = 'block'; }
     showToast('Uploaded successfully', 'success');
   } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
@@ -749,6 +759,7 @@ async function saveInvitation() {
     swipe_image_b_url: document.getElementById('fSwipeB').value || null,
     couple_photo_url: document.getElementById('fCouplePhoto').value || null,
     music_url: document.getElementById('fMusicUrl').value || null,
+    background_image_url: document.getElementById('fBgImage').value || null,
   };
   if (document.getElementById('fWeddingDate').value) payload.wedding_date = new Date(document.getElementById('fWeddingDate').value).toISOString();
   if (document.getElementById('fExpiry').value) payload.expiry_date = new Date(document.getElementById('fExpiry').value).toISOString();

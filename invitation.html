@@ -31,6 +31,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="2"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404}
 [data-theme="3"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208}
 [data-theme="4"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(216,181,122,0.15) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(212,166,166,0.12) 0%,transparent 60%),#F7F3EC}
+.bg-image-layer{position:fixed;inset:0;z-index:0;display:none;pointer-events:none}
+.bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease}
+.bg-overlay{position:absolute;inset:0}
+[data-theme="1"] .bg-overlay{background:rgba(7,6,10,0.72)}
+[data-theme="2"] .bg-overlay{background:rgba(22,4,4,0.70)}
+[data-theme="3"] .bg-overlay{background:rgba(6,18,8,0.70)}
+[data-theme="4"] .bg-overlay{background:rgba(247,243,236,0.65)}
 [data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
 [data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
@@ -211,6 +218,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 </head>
 <body>
 <div class="bg-layer"></div>
+<div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
 <div class="loader" id="loader">
   <div class="loader-ring"></div>
   <div class="loader-text">Opening your invitation</div>
@@ -416,9 +424,21 @@ function render(d) {
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
+  if (d.background_image_url) applyBackgroundImage(d.background_image_url);
 }
 
 function setImg(id, url) { if (url) document.getElementById(id).src = url; }
+
+function applyBackgroundImage(url) {
+  const layer = document.getElementById('bgImageLayer');
+  const img = document.getElementById('bgImage');
+  const bgLayer = document.querySelector('.bg-layer');
+  img.src = url;
+  layer.style.display = 'block';
+  bgLayer.style.opacity = '0';
+  img.onload = () => { img.style.opacity = '1'; };
+  img.onerror = () => { layer.style.display = 'none'; bgLayer.style.opacity = ''; };
+}
 
 // ─── PRESHOOT CAROUSEL ───
 function loadPreshoot(d) {
