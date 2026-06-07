@@ -7,6 +7,8 @@ ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS background_image_url tex
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InviSend — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +28,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .login-overlay{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center}
 .login-card{background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:40px 36px;width:min(400px,90vw);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
 .login-logo{text-align:center;margin-bottom:28px}
-.login-logo-text{font-size:22px;font-weight:700;background:linear-gradient(135deg,#0a84ff,#bf5af2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .login-title{font-size:20px;font-weight:600;margin-bottom:6px;text-align:center}
 .login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:28px}
 .login-field{background:rgba(255,255,255,0.05);border:1px solid var(--gb);border-radius:10px;padding:13px 16px;color:var(--text);font-family:var(--font);font-size:14px;width:100%;outline:none;margin-bottom:12px;transition:border-color 0.2s;-webkit-appearance:none}
@@ -42,7 +43,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .dashboard.active{display:flex}
 .sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform 0.3s var(--ease)}
 .sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
-.sidebar-logo-text{font-size:17px;font-weight:700;background:linear-gradient(135deg,#0a84ff,#bf5af2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sidebar-label{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:0 20px;margin:12px 0 6px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;margin:1px 8px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--text2);transition:all 0.2s;user-select:none}
 .nav-item:hover{background:var(--gh);color:var(--text)}
@@ -272,7 +272,7 @@ select.form-input{cursor:pointer}
 <!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
-    <div class="login-logo"><div class="login-logo-text">InviSend</div></div>
+    <div class="login-logo"><img src="logo.png" alt="InviSend" style="height:56px;width:auto;display:block;margin:0 auto;filter:drop-shadow(0 2px 8px rgba(255,255,255,0.15))"></div>
     <div class="login-title">Admin Dashboard</div>
     <div class="login-sub">Enter password to continue</div>
     <div style="position:relative;margin-bottom:12px">
@@ -293,7 +293,7 @@ select.form-input{cursor:pointer}
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="sidebar-logo-text">InviSend</div></div>
+    <div class="sidebar-logo"><img src="logo.png" alt="InviSend" style="height:36px;width:auto;display:block;filter:drop-shadow(0 2px 8px rgba(255,255,255,0.15))"></div>
     <div class="sidebar-label">Management</div>
     <div class="nav-item active" id="nav-invitations" onclick="showSection('invitations',this)">
       <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
