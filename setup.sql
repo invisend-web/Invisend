@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS public.rsvp (
   guest_name          text NOT NULL,
   phone               text,
   attendance          text NOT NULL CHECK (attendance IN ('yes','no')),
+  guest_count         integer DEFAULT 1,
   created_at          timestamp with time zone DEFAULT now()
 );
 
@@ -107,6 +108,13 @@ DROP POLICY IF EXISTS "Anon full access testimonials" ON public.testimonials;
 CREATE POLICY "Anon full access testimonials"
   ON public.testimonials FOR ALL
   USING (true) WITH CHECK (true);
+
+-- ─────────────────────────────────────────────────────────────
+-- COLUMN ADDITIONS (safe to run on existing tables)
+-- ─────────────────────────────────────────────────────────────
+ALTER TABLE public.rsvp ADD COLUMN IF NOT EXISTS guest_count integer DEFAULT 1;
+ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS view_count integer DEFAULT 0;
+ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS background_image_url text;
 
 -- ─────────────────────────────────────────────────────────────
 -- REALTIME (for live RSVP updates)
