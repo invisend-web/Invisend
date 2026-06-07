@@ -912,12 +912,12 @@ function showToast(msg, type = 'info') {
 async function toggleStatus(id, currentStatus) {
   const newStatus = currentStatus === 'live' ? 'expired' : 'live';
   const label = newStatus === 'live' ? 'live' : 'offline';
-  if (!confirm(\`Set this invitation to \${label}?\`)) return;
+  if (!confirm(`Set this invitation to ${label}?`)) return;
   showLoading();
   try {
     const { error } = await sb.from('invitations').update({ status: newStatus }).eq('id', id);
     if (error) throw error;
-    showToast(\`Invitation set to \${label}\`, newStatus === 'live' ? 'success' : 'info');
+    showToast(`Invitation set to ${label}`, newStatus === 'live' ? 'success' : 'info');
     await loadInvitations();
   } catch (e) { showToast('Update failed', 'error'); }
   hideLoading();
