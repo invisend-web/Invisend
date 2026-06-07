@@ -1,3 +1,4 @@
+<!-- SUPABASE: ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS view_count integer DEFAULT 0; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -271,6 +272,59 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .sr{opacity:0;transform:translateY(20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
 .sr.in{opacity:1;transform:none}
+/* PROGRESS DOTS */
+.progress-dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+@media(max-width:480px){.progress-dots{display:none}}
+.pdot{position:relative;display:flex;align-items:center;gap:8px}
+.pdot-inner{width:7px;height:7px;border-radius:50%;background:transparent;border:1.5px solid var(--accent);opacity:0.4;transition:all 0.3s ease;flex-shrink:0}
+.pdot.active .pdot-inner{background:var(--accent);opacity:1;transform:scale(1.3)}
+.pdot-tip{font-family:var(--font-ui);font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text);background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:3px 8px;border-radius:4px;opacity:0;transition:opacity 0.2s ease;white-space:nowrap;pointer-events:none}
+.pdot:hover .pdot-tip{opacity:1}
+/* COUNTDOWN */
+.countdown-wrap{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);text-align:center}
+.countdown-label{font-family:var(--font-ui);font-size:8.5px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.countdown-units{display:flex;align-items:center;justify-content:center;gap:6px}
+.countdown-unit{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:44px}
+.countdown-num{font-family:var(--font-display);font-size:clamp(22px,5vw,30px);font-weight:600;color:var(--accent);line-height:1;transition:all 0.3s ease;letter-spacing:0.02em}
+.countdown-unit-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
+.countdown-sep{font-family:var(--font-display);font-size:20px;color:var(--accent);opacity:0.4;padding-bottom:12px}
+/* SHARE BLOCK */
+.share-block{padding:0 20px 32px;max-width:480px;margin:0 auto}
+.share-inner{display:flex;align-items:center;justify-content:space-between;background:var(--section-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+.share-text{font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
+.share-btns{display:flex;gap:8px}
+.share-btn{width:36px;height:36px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s ease}
+.share-btn svg{width:17px;height:17px;fill:currentColor}
+.share-btn.wa{background:rgba(37,211,102,0.15);color:#25d366}
+.share-btn.wa:hover{background:#25d366;color:#fff;transform:scale(1.08)}
+.share-btn.copy{background:var(--section-bg);border:1px solid var(--border);color:var(--text2)}
+.share-btn.copy:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);transform:scale(1.08)}
+/* SECTION-SPECIFIC ANIMATIONS */
+.sr-left{opacity:0;transform:translateX(-20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
+.sr-left.in{opacity:1;transform:none}
+.sr-right{opacity:0;transform:translateX(20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
+.sr-right.in{opacity:1;transform:none}
+.sr-scale{opacity:0;transform:scale(0.95);transition:opacity 0.6s var(--ease),transform 0.6s var(--ease)}
+.sr-scale.in{opacity:1;transform:scale(1)}
+@keyframes rsvpGlow{0%,100%{box-shadow:0 8px 32px rgba(0,0,0,0.1)}50%{box-shadow:0 8px 32px rgba(0,0,0,0.1),0 0 0 2px var(--accent),0 0 20px var(--glow)}}
+.rsvp-form.glow-pulse{animation:rsvpGlow 1s ease-in-out 2}
+/* HAND SWIPE HINT */
+.swipe-hand-hint{flex-shrink:0;opacity:0;display:block;animation:handSwipeAnim 4.2s ease-in-out 1.5s 1 forwards}
+@keyframes handSwipeAnim{
+  0%{opacity:0;transform:translateX(0)}6%{opacity:1;transform:translateX(0)}
+  23%{opacity:1;transform:translateX(24px)}34%{opacity:1;transform:translateX(0)}
+  52%{opacity:1;transform:translateX(-24px)}63%{opacity:1;transform:translateX(0)}
+  78%{opacity:1;transform:translateX(24px)}89%{opacity:1;transform:translateX(0)}
+  94%{opacity:1}100%{opacity:0;transform:translateX(0)}
+}
+/* SCROLL LINE ANIMATION */
+.sdh-line{width:1px;height:0;background:var(--accent);opacity:0.6;margin-bottom:6px;transition:height 0.6s var(--ease)}
+.scroll-down-hint.show .sdh-line{height:32px}
+/* RSVP SUCCESS UPDATES */
+.rsvp-success-title{font-family:var(--font-display);font-size:22px;color:var(--accent);margin-bottom:8px;letter-spacing:0.04em}
+.rsvp-success-msg{font-family:var(--font-body);font-size:15px;font-style:italic;color:var(--text2);line-height:1.7;margin-top:6px}
+@keyframes successPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.rsvp-success.show .rsvp-success-icon{animation:successPulse 1.5s ease-in-out 3}
 </style>
 </head>
 <body>
@@ -294,6 +348,14 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 
+<div class="progress-dots" id="progressDots" style="display:none">
+  <div class="pdot active" id="pdot-0"><span class="pdot-tip">Reveal</span><div class="pdot-inner"></div></div>
+  <div class="pdot" id="pdot-1"><span class="pdot-tip">Family</span><div class="pdot-inner"></div></div>
+  <div class="pdot" id="pdot-2"><span class="pdot-tip">Date</span><div class="pdot-inner"></div></div>
+  <div class="pdot" id="pdot-3"><span class="pdot-tip">Message</span><div class="pdot-inner"></div></div>
+  <div class="pdot" id="pdot-4"><span class="pdot-tip">Gallery</span><div class="pdot-inner"></div></div>
+  <div class="pdot" id="pdot-5"><span class="pdot-tip">RSVP</span><div class="pdot-inner"></div></div>
+</div>
 <div class="page" id="page">
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
@@ -309,6 +371,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         <div class="couple-card"><img id="coupleImg" src="" alt=""></div>
       </div>
       <div class="swipe-hint" id="swipeHint">
+        <svg class="swipe-hand-hint" id="swipeHandHint" width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 12.5V8a1.5 1.5 0 013 0v4.5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/><path d="M11 12V7.5a1.5 1.5 0 013 0V12" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/><path d="M14 12V9a1.5 1.5 0 013 0v3c0 3.5-1.5 6-4.5 6.5H11c-2 0-3-1-4-2.5L6 14" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div class="hint-arrows"><div class="hint-arr r"></div><div class="hint-arr l"></div></div>
         <span class="hint-text">Swipe inward to reveal</span>
       </div>
@@ -321,6 +384,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="couple-tagline">Together Forever</div>
     </div>
     <div class="scroll-down-hint" id="scrollDownHint">
+      <div class="sdh-line"></div>
       <div class="scroll-down-chevron"></div>
       <div class="scroll-down-chevron"></div>
       <span class="scroll-down-label">Scroll to explore</span>
@@ -330,24 +394,36 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
   <!-- FAMILY -->
-  <section class="section sr">
+  <section class="section sr" id="familySection">
     <span class="section-eyebrow">With the Blessings of</span>
     <div class="family-grid">
-      <div class="family-card"><div class="family-side">Bride's Family</div><div class="family-names" id="brideParents"></div></div>
-      <div class="family-card"><div class="family-side">Groom's Family</div><div class="family-names" id="groomParents"></div></div>
+      <div class="family-card sr-left"><div class="family-side">Bride's Family</div><div class="family-names" id="brideParents"></div></div>
+      <div class="family-card sr-right"><div class="family-side">Groom's Family</div><div class="family-names" id="groomParents"></div></div>
     </div>
   </section>
 
   <!-- EVENT -->
-  <section class="section sr" style="padding-top:0">
+  <section class="section sr" id="eventSection" style="padding-top:0">
     <span class="section-eyebrow">Save the Date</span>
-    <div class="event-card">
+    <div class="event-card sr-scale">
       <div class="event-date-label">Wedding Ceremony</div>
       <div class="event-date-num" id="eventDay"></div>
       <div class="event-date-full" id="eventDateFull"></div>
       <div class="event-sep"></div>
       <div class="event-venue" id="eventVenue"></div>
       <div class="event-time" id="eventTime"></div>
+      <div class="countdown-wrap" id="countdownWrap">
+        <div class="countdown-label">Until the celebration</div>
+        <div class="countdown-units">
+          <div class="countdown-unit"><div class="countdown-num" id="cdDays">00</div><div class="countdown-unit-label">Days</div></div>
+          <div class="countdown-sep">·</div>
+          <div class="countdown-unit"><div class="countdown-num" id="cdHours">00</div><div class="countdown-unit-label">Hours</div></div>
+          <div class="countdown-sep">·</div>
+          <div class="countdown-unit"><div class="countdown-num" id="cdMins">00</div><div class="countdown-unit-label">Mins</div></div>
+          <div class="countdown-sep">·</div>
+          <div class="countdown-unit"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-unit-label">Secs</div></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -382,10 +458,25 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div id="videoBlock"></div>
   </section>
 
+  <!-- SHARE -->
+  <div class="share-block sr" id="shareBlock">
+    <div class="share-inner">
+      <div class="share-text">Share this invitation</div>
+      <div class="share-btns">
+        <button class="share-btn wa" onclick="shareWhatsApp()" aria-label="Share on WhatsApp">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </button>
+        <button class="share-btn copy" onclick="copyInviteLink()" aria-label="Copy link" id="copyBtn">
+          <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- RSVP -->
-  <section class="rsvp-section sr">
-    <div class="rsvp-title">RSVP</div>
-    <div class="rsvp-sub">Kindly confirm your attendance</div>
+  <section class="rsvp-section sr" id="rsvpSection">
+    <div class="rsvp-title">Will You Join Us?</div>
+    <div class="rsvp-sub">Your presence would mean the world to us</div>
     <div class="rsvp-form" id="rsvpForm">
       <div class="rsvp-dupe" id="rsvpDupe">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
@@ -499,6 +590,12 @@ async function init() {
     initMusic(data.music_url);
     loadPreshoot(data);
     initScrollReveal();
+    incrementViewCount(data.slug);
+    const hasPreshoot = (function(d) {
+      for (let i = 1; i <= 10; i++) { if (d['preshoot_photo_' + i]) return true; }
+      return !!d.preshoot_video_url;
+    })(data);
+    initProgressDots(!!data.message, hasPreshoot);
     hideLoader();
   } catch (e) { showErr(); }
 }
@@ -536,6 +633,7 @@ function render(d) {
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
   if (d.background_image_url) applyBackgroundImage(d.background_image_url);
+  initCountdown(d.wedding_date);
 }
 
 function setImg(id, url) { if (url) document.getElementById(id).src = url; }
@@ -699,7 +797,13 @@ function initSwipe() {
   window.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
-function onStart(x) { if (revealed) return; clearTimeout(hintTimeout); startX = x; isDragging = true; }
+function onStart(x) {
+  if (revealed) return;
+  clearTimeout(hintTimeout);
+  const hand = document.getElementById('swipeHandHint');
+  if (hand) { hand.style.animation = 'none'; hand.style.opacity = '0'; }
+  startX = x; isDragging = true;
+}
 function onMove(x) {
   if (!isDragging || revealed) return;
   const dx = Math.abs(x - startX);
@@ -747,7 +851,17 @@ function completeReveal() {
     document.body.style.overflow = '';
     setTimeout(() => {
       document.getElementById('coupleNameBlock').classList.add('show');
-      setTimeout(() => document.getElementById('scrollDownHint').classList.add('show'), 550);
+      setTimeout(() => {
+        const hint = document.getElementById('scrollDownHint');
+        hint.classList.add('show');
+        window.addEventListener('scroll', function fadeHint() {
+          const hero = document.getElementById('heroSection');
+          if (window.scrollY > (hero ? hero.offsetHeight + 50 : window.innerHeight)) {
+            hint.style.opacity = '0'; hint.style.pointerEvents = 'none';
+            window.removeEventListener('scroll', fadeHint);
+          }
+        }, { passive: true });
+      }, 1200);
       setTimeout(() => particleSystem.start(), 800);
     }, 420);
   }, 540);
@@ -879,11 +993,17 @@ async function submitRSVP() {
     const { error } = await sb.from('rsvp').insert({ invitation_slug: invData.slug, guest_name: name, phone, attendance: attendChoice, guest_count: guestCount });
     if (error) throw error;
     document.getElementById('rsvpForm').style.display = 'none';
-    document.getElementById('successName').textContent = `Thank You, ${name}!`;
-    document.getElementById('successSub').textContent = attendChoice === 'yes'
-      ? 'Your response has been received. We look forward to celebrating with you.'
-      : 'We understand and appreciate you letting us know.';
-    document.getElementById('rsvpSuccess').classList.add('show');
+    const firstName = name.split(' ')[0];
+    const isAttending = attendChoice === 'yes';
+    const successEl = document.getElementById('rsvpSuccess');
+    successEl.innerHTML = `<div class="rsvp-success-icon">${isAttending ? '♡' : '✦'}</div><div class="rsvp-success-title">Thank you, ${firstName}!</div><div class="rsvp-success-msg">${isAttending ? 'We cannot wait to celebrate with you. See you on the big day!' : 'We completely understand and truly appreciate you letting us know.'}</div>`;
+    successEl.classList.add('show');
+    setTimeout(() => {
+      if (!isAttending) return;
+      const weddingName = invData.couple_name || 'the wedding';
+      const shareData = { title: `RSVP — ${weddingName}`, text: `Hi! I am joyfully accepting the invitation to ${weddingName}'s wedding! — ${name}`, url: window.location.href.split('?')[0] + '?slug=' + invData.slug };
+      if (navigator.share) { navigator.share(shareData).catch(() => {}); }
+    }, 1500);
   } catch (e) {
     btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
     showRsvpErr('errAttend', 'Something went wrong. Please try again.');
@@ -894,6 +1014,96 @@ async function submitRSVP() {
 function initScrollReveal() {
   const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } }), { threshold: 0.12 });
   document.querySelectorAll('.sr').forEach(el => obs.observe(el));
+  const obsDir = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obsDir.unobserve(e.target); } }), { threshold: 0.18 });
+  document.querySelectorAll('.sr-left,.sr-right,.sr-scale').forEach(el => obsDir.observe(el));
+  const rsvpSection = document.getElementById('rsvpSection');
+  if (rsvpSection) {
+    const rsvpObs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        const form = document.getElementById('rsvpForm');
+        if (form) { form.classList.add('glow-pulse'); setTimeout(() => form.classList.remove('glow-pulse'), 2200); }
+        rsvpObs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    rsvpObs.observe(rsvpSection);
+  }
+}
+
+// ─── PROGRESS DOTS ───
+function initProgressDots(hasMessage, hasGallery) {
+  const dots = document.getElementById('progressDots');
+  if (!dots) return;
+  if (!hasMessage) { const d = document.getElementById('pdot-3'); if (d) d.style.display = 'none'; }
+  if (!hasGallery) { const d = document.getElementById('pdot-4'); if (d) d.style.display = 'none'; }
+  dots.style.display = 'flex';
+  const targets = [
+    document.getElementById('heroSection'),
+    document.getElementById('familySection'),
+    document.getElementById('eventSection'),
+    document.getElementById('msgBlock'),
+    document.getElementById('preshootSection'),
+    document.getElementById('rsvpSection')
+  ];
+  const allDots = dots.querySelectorAll('.pdot');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const idx = targets.indexOf(entry.target);
+      if (idx === -1) return;
+      allDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    });
+  }, { threshold: 0.4 });
+  targets.forEach(t => { if (t) obs.observe(t); });
+}
+
+// ─── COUNTDOWN ───
+function initCountdown(weddingDateStr) {
+  if (!weddingDateStr) return;
+  const wrap = document.getElementById('countdownWrap');
+  if (!wrap) return;
+  const target = new Date(weddingDateStr).getTime();
+  if (isNaN(target) || target <= Date.now()) { wrap.style.display = 'none'; return; }
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) { wrap.style.display = 'none'; return; }
+    document.getElementById('cdDays').textContent  = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+    document.getElementById('cdMins').textContent  = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    document.getElementById('cdSecs').textContent  = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ─── VIEW COUNT ───
+async function incrementViewCount(slug) {
+  try {
+    const { data: inv } = await sb.from('invitations').select('view_count').eq('slug', slug).single();
+    const current = (inv && inv.view_count) || 0;
+    await sb.from('invitations').update({ view_count: current + 1 }).eq('slug', slug);
+  } catch (e) {}
+}
+
+// ─── SHARE ───
+function shareWhatsApp() {
+  const base = window.location.href.split('?')[0];
+  const slug = invData ? invData.slug : '';
+  const url = base + '?slug=' + slug;
+  const couple = invData ? invData.couple_name : '';
+  const text = couple ? `You are warmly invited to ${couple}'s wedding! Open this beautiful invitation: ${url}` : url;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+function copyInviteLink() {
+  const base = window.location.href.split('?')[0];
+  const slug = invData ? invData.slug : '';
+  const url = base + '?slug=' + slug;
+  const btn = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.innerHTML;
+    btn.style.background = 'var(--accent)'; btn.style.color = 'var(--bg)'; btn.style.borderColor = 'var(--accent)';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    setTimeout(() => { btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; btn.innerHTML = orig; }, 2000);
+  }).catch(() => shareWhatsApp());
 }
 
 // ─── PARTICLE SYSTEM ───
