@@ -55,13 +55,21 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* PAGE */
 .page{position:relative;z-index:1;opacity:0;transition:opacity 0.8s var(--ease)}
 .page.show{opacity:1}
-/* MUSIC */
-.music-pill{position:fixed;bottom:20px;right:16px;z-index:50;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:40px;padding:8px 16px 8px 8px;opacity:0;transform:translateY(8px);transition:opacity 0.5s,transform 0.5s}
-.music-pill.show{opacity:1;transform:none}
-.music-btn{width:30px;height:30px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.2s}
-.music-btn:active{transform:scale(0.88)}
-.music-btn svg{width:13px;height:13px;fill:#000}
-.music-label{font-family:var(--font-ui);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3)}
+/* MUSIC CONTROL */
+.music-control{position:fixed;bottom:28px;right:20px;z-index:50;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;transform:translateY(8px);transition:opacity 0.5s,transform 0.5s;pointer-events:none}
+.music-control.visible{opacity:1;transform:none;pointer-events:auto}
+.music-toggle-wrap{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.45);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:50px;padding:8px 14px 8px 10px;cursor:pointer;transition:background 0.3s,transform 0.2s;user-select:none}
+.music-toggle-wrap:hover{background:rgba(0,0,0,0.62);transform:scale(1.03)}
+.music-toggle-wrap:active{transform:scale(0.97)}
+.music-icon-wrap{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.music-wave-icon{width:20px;height:20px;overflow:visible}
+.wave-bar{fill:var(--accent);transform-origin:center bottom;animation:wavePulse 1.2s ease-in-out infinite}
+.bar1{animation-delay:0s}.bar2{animation-delay:0.15s}.bar3{animation-delay:0.3s}.bar4{animation-delay:0.15s}.bar5{animation-delay:0s}
+@keyframes wavePulse{0%,100%{transform:scaleY(1);opacity:0.7}50%{transform:scaleY(1.6);opacity:1}}
+.music-mute-icon{width:20px;height:20px;fill:var(--text3)}
+.music-toggle-track{width:36px;height:20px;border-radius:10px;background:var(--text3);transition:background 0.3s;position:relative;flex-shrink:0}
+.music-toggle-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.music-control-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);transition:color 0.3s}
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0 48px;position:relative;overflow:hidden}
 .hero > *:not(.bg-image-layer){position:relative;z-index:1}
@@ -261,12 +269,25 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <p>This invitation link may have expired or is invalid.<br>Please check the link and try again.</p>
 </div>
 <audio id="bgAudio" loop preload="auto"></audio>
-<div class="music-pill" id="musicPill">
-  <button class="music-btn" id="musicBtn" aria-label="Toggle music">
-    <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-  </button>
-  <span class="music-label">Music</span>
+<div class="music-control" id="musicControl">
+  <div class="music-toggle-wrap" id="musicToggleWrap" onclick="toggleMusic()">
+    <div class="music-icon-wrap">
+      <svg class="music-wave-icon" id="musicWaveIcon" viewBox="0 0 24 24">
+        <rect class="wave-bar bar1" x="2" y="10" width="2.5" height="4" rx="1.25"/>
+        <rect class="wave-bar bar2" x="6" y="7" width="2.5" height="10" rx="1.25"/>
+        <rect class="wave-bar bar3" x="10" y="4" width="2.5" height="16" rx="1.25"/>
+        <rect class="wave-bar bar4" x="14" y="7" width="2.5" height="10" rx="1.25"/>
+        <rect class="wave-bar bar5" x="18" y="10" width="2.5" height="4" rx="1.25"/>
+      </svg>
+      <svg class="music-mute-icon" id="musicMuteIcon" viewBox="0 0 24 24" style="display:none">
+        <path d="M16.5 12A4.5 4.5 0 0014 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+      </svg>
+    </div>
+    <div class="music-toggle-track" id="musicTrack">
+      <div class="music-toggle-thumb" id="musicThumb"></div>
+    </div>
+  </div>
+  <span class="music-control-label" id="musicControlLabel">Music</span>
 </div>
 
 <!-- LIGHTBOX -->
@@ -713,13 +734,34 @@ function completeReveal() {
 // ─── MUSIC ───
 function initMusic(url) {
   if (!url) return;
-  const a = document.getElementById('bgAudio'); a.src = url;
-  document.getElementById('musicPill').classList.add('show');
-  a.play().then(() => { document.getElementById('playIcon').style.display = 'none'; document.getElementById('pauseIcon').style.display = ''; }).catch(() => {});
-  document.getElementById('musicBtn').onclick = () => {
-    if (a.paused) { a.play(); document.getElementById('playIcon').style.display = 'none'; document.getElementById('pauseIcon').style.display = ''; }
-    else { a.pause(); document.getElementById('playIcon').style.display = ''; document.getElementById('pauseIcon').style.display = 'none'; }
-  };
+  const audio = document.getElementById('bgAudio');
+  audio.src = url;
+  document.getElementById('musicControl').classList.add('visible');
+  audio.play().then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
+}
+function setMusicPlaying(isPlaying) {
+  const waveIcon = document.getElementById('musicWaveIcon');
+  const muteIcon = document.getElementById('musicMuteIcon');
+  const track = document.getElementById('musicTrack');
+  const thumb = document.getElementById('musicThumb');
+  const label = document.getElementById('musicControlLabel');
+  const bars = document.querySelectorAll('.wave-bar');
+  if (isPlaying) {
+    waveIcon.style.display = ''; muteIcon.style.display = 'none';
+    track.style.background = 'var(--accent)'; thumb.style.transform = 'translateX(16px)';
+    bars.forEach(b => b.style.animationPlayState = 'running');
+    label.textContent = 'Music'; label.style.color = 'var(--accent)';
+  } else {
+    waveIcon.style.display = 'none'; muteIcon.style.display = '';
+    track.style.background = 'var(--text3)'; thumb.style.transform = 'translateX(0)';
+    bars.forEach(b => b.style.animationPlayState = 'paused');
+    label.textContent = 'Muted'; label.style.color = 'var(--text3)';
+  }
+}
+function toggleMusic() {
+  const audio = document.getElementById('bgAudio');
+  if (audio.paused) { audio.play(); setMusicPlaying(true); }
+  else { audio.pause(); setMusicPlaying(false); }
 }
 
 // ─── RSVP ───

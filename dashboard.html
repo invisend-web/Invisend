@@ -208,6 +208,62 @@ select.form-input{cursor:pointer}
   .rsvp-summary{grid-template-columns:1fr}
   .rsvp-stat{border-right:none;border-bottom:1px solid var(--border)}
 }
+/* ─── AUTO SLUG ─── */
+.slug-input-wrap{display:flex;align-items:center;gap:8px}
+.auto-slug-btn{flex-shrink:0;display:none;align-items:center;gap:4px;height:28px;padding:0 12px;background:var(--blue);border:none;border-radius:50px;color:#fff;font-family:var(--font);font-size:10px;letter-spacing:0.08em;cursor:pointer;transition:opacity 0.2s,transform 0.2s;white-space:nowrap}
+.auto-slug-btn:hover{opacity:0.88;transform:scale(1.03)}
+.slug-valid-check{display:none;flex-shrink:0;width:16px;height:16px;fill:var(--green)}
+.slug-preview{font-family:'SFMono-Regular',Consolas,'Courier New',monospace;font-size:10px;color:var(--text3);margin-top:5px;display:none;line-height:1.6;word-break:break-all}
+.slug-preview-val{color:var(--blue)}
+/* ─── UPLOAD WITH MEDIA ─── */
+.upload-area.has-media{padding:0;border-style:solid;overflow:hidden}
+.upload-area.has-media .upload-icon,.upload-area.has-media .upload-label,
+.upload-area.has-media .upload-sub,.upload-area.has-media .upload-hint{display:none !important}
+.upload-area.has-media .upload-preview{display:block !important;width:100%;min-height:90px;max-height:none;object-fit:cover;border-radius:0}
+.upload-del-btn{position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(255,69,58,0.9);border-radius:50%;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:transform 0.15s;line-height:1}
+.upload-del-btn:active{transform:scale(0.88)}
+.upload-del-btn.confirming{font-size:8.5px;letter-spacing:-0.01em;background:var(--red)}
+.upload-status-lbl{position:absolute;bottom:7px;left:7px;background:rgba(0,0,0,0.62);color:#fff;font-size:9.5px;padding:3px 9px;border-radius:10px;pointer-events:none;font-family:var(--font);letter-spacing:0.02em}
+/* MUSIC WAVE STATE */
+.music-wave-bars{display:flex;align-items:flex-end;justify-content:center;gap:2px;height:28px}
+.music-wave-bars span{display:inline-block;width:3px;border-radius:1.5px;background:var(--blue);animation:waveDash 1.1s ease-in-out infinite}
+.music-wave-bars span:nth-child(1){height:10px;animation-delay:0s}
+.music-wave-bars span:nth-child(2){height:18px;animation-delay:0.18s}
+.music-wave-bars span:nth-child(3){height:26px;animation-delay:0.36s}
+.music-wave-bars span:nth-child(4){height:18px;animation-delay:0.18s}
+.music-wave-bars span:nth-child(5){height:10px;animation-delay:0s}
+@keyframes waveDash{0%,100%{transform:scaleY(0.5);opacity:0.6}50%{transform:scaleY(1);opacity:1}}
+/* ─── MOBILE CARD LIST ─── */
+.inv-card-list{display:none;margin-top:4px}
+.inv-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:16px;margin-bottom:10px;animation:toastIn 0.25s var(--ease)}
+.inv-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px}
+.inv-card-name{font-size:15px;font-weight:600;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inv-card-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);margin-bottom:3px}
+.inv-card-row svg{width:11px;height:11px;fill:var(--text3);flex-shrink:0}
+.inv-card-actions{display:flex;align-items:center;gap:7px;margin-top:12px}
+.inv-card-act{flex:1;padding:9px 6px;background:var(--glass);border:1px solid var(--gb);border-radius:8px;color:var(--text2);font-family:var(--font);font-size:11px;cursor:pointer;text-align:center;transition:all 0.2s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inv-card-act:active{transform:scale(0.97)}
+.inv-card-act.blue{background:rgba(10,132,255,0.12);border-color:rgba(10,132,255,0.25);color:var(--blue)}
+.inv-card-act.icon-btn{flex:none;width:36px;height:36px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center}
+.inv-card-act.icon-btn svg{width:14px;height:14px;fill:currentColor}
+.inv-card-act.icon-btn.red{background:rgba(255,69,58,0.1);border-color:rgba(255,69,58,0.2);color:var(--red)}
+/* ─── MOBILE LAYOUT ─── */
+@media(max-width:768px){
+  .modal-backdrop{padding:0;align-items:flex-end}
+  .modal{border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;margin:0;animation:slideUp 0.35s cubic-bezier(0.32,0.72,0,1)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-drag-handle{width:32px;height:4px;background:rgba(255,255,255,0.28);border-radius:2px;margin:0 auto 18px}
+  .form-section-title{border-left:3px solid var(--blue);padding-left:10px;padding-bottom:0;border-bottom:none;margin-bottom:10px}
+  .form-input{font-size:16px !important;min-height:44px}
+  .inv-table-wrap{display:none}
+  .inv-card-list{display:block}
+  .stats-row{grid-template-columns:1fr 1fr !important}
+  .topbar{height:52px}
+  .topbar-title{font-size:15px}
+  .btn-primary-text{display:none}
+  #topCreateBtn{width:36px;height:36px;border-radius:50%;padding:0 !important;min-width:0;justify-content:center;gap:0}
+}
+@media(min-width:769px){.modal-drag-handle{display:none}}
 </style>
 </head>
 <body>
@@ -267,7 +323,7 @@ select.form-input{cursor:pointer}
       <div class="topbar-actions">
         <button class="btn-primary" id="topCreateBtn" onclick="openCreateModal()">
           <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          New Invitation
+          <span class="btn-primary-text">New Invitation</span>
         </button>
       </div>
     </header>
@@ -287,13 +343,14 @@ select.form-input{cursor:pointer}
             <div class="table-title">All Invitations</div>
             <input class="search-input" type="text" placeholder="Search..." oninput="filterTable(this.value)">
           </div>
-          <div style="overflow-x:auto">
+          <div class="inv-table-wrap" style="overflow-x:auto">
             <table class="inv-table">
               <thead><tr><th>Couple</th><th>Slug</th><th>Theme</th><th>Wedding Date</th><th>Status</th><th>Pre-Shoot</th><th>RSVPs</th><th>Actions</th></tr></thead>
               <tbody id="invTableBody"><tr><td colspan="8"><div class="empty-state"><div class="loading-ring" style="margin:auto"></div></div></td></tr></tbody>
             </table>
           </div>
         </div>
+        <div class="inv-card-list" id="invCardList"></div>
       </div>
 
       <!-- RSVP -->
@@ -351,6 +408,7 @@ select.form-input{cursor:pointer}
 <!-- INVITATION MODAL -->
 <div class="modal-backdrop" id="invModal">
   <div class="modal">
+    <div class="modal-drag-handle"></div>
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">New Invitation</div>
       <div class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
@@ -369,8 +427,8 @@ select.form-input{cursor:pointer}
     <div class="form-section">
       <div class="form-section-title">Basic Info</div>
       <div class="form-grid">
-        <div class="form-group"><label class="form-label">Couple Name</label><input class="form-input" id="fCoupleName" placeholder="e.g. Ayasha & Rohan" type="text"></div>
-        <div class="form-group"><label class="form-label">URL Slug</label><input class="form-input" id="fSlug" placeholder="e.g. ayasha-rohan" type="text"></div>
+        <div class="form-group"><label class="form-label">Couple Name</label><input class="form-input" id="fCoupleName" placeholder="e.g. Ayasha & Rohan" type="text" oninput="onCoupleNameInput()"></div>
+        <div class="form-group" id="slugGroup"><label class="form-label">URL Slug</label><div class="slug-input-wrap"><input class="form-input" id="fSlug" placeholder="e.g. ayasha-rohan" type="text" oninput="onSlugInput(this)" style="flex:1;min-width:0"><button type="button" class="auto-slug-btn" id="autoSlugBtn" onclick="autoGenerateSlug()">✦ Auto</button><svg class="slug-valid-check" id="slugValidCheck" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div><div class="slug-preview" id="slugPreview">invisend.com/invitation.html?slug=<span class="slug-preview-val" id="slugPreviewVal"></span></div></div>
         <div class="form-group"><label class="form-label">Status</label><select class="form-input" id="fStatus"><option value="live">Live</option><option value="expired">Expired</option></select></div>
         <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" id="fExpiry" type="date"></div>
       </div>
@@ -403,7 +461,7 @@ select.form-input{cursor:pointer}
         <div class="form-group"><label class="form-label">Swipe Image B (Groom)</label><div class="upload-area" id="uploadB"><input type="file" accept="image/*" onchange="handleUpload(this,'swipeB','uploadB','previewSwipeB')"><img class="upload-preview" id="previewSwipeB"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Groom Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeB"></div>
         <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="handleUpload(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 3:4 portrait · min 800×1067px · faces in upper half</div></div><input type="hidden" id="fCouplePhoto"></div>
       </div>
-      <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mp3,audio/*" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div><div class="upload-hint">MP3 format · max recommended 5MB · 128kbps or higher</div></div><input type="hidden" id="fMusicUrl"></div>
+      <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mpeg,audio/mp3,.mp3" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div><div class="upload-hint">MP3 format · max recommended 5MB · 128kbps or higher</div></div><input type="hidden" id="fMusicUrl"></div>
       <div class="form-group full" style="margin-top:12px"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="handleUpload(this,'backgrounds','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div><div class="upload-hint">Best: 9:16 or 16:9 · min 1080px wide · avoid busy center</div></div><input type="hidden" id="fBgImage"></div>
     </div>
 
@@ -583,6 +641,32 @@ function renderTable(invs) {
     sb.from('rsvp').select('id', { count: 'exact', head: true }).eq('invitation_slug', inv.slug)
       .then(({ count }) => { const el = document.getElementById(`rsvpCount_${inv.slug}`); if (el) el.textContent = count || 0; });
   });
+  renderMobileCards(invs);
+}
+function renderMobileCards(invs) {
+  const list = document.getElementById('invCardList'); if (!list) return;
+  if (!invs.length) { list.innerHTML = ''; return; }
+  list.innerHTML = invs.map(inv => {
+    const hasPre = hasPreshootContent(inv);
+    const dateStr = inv.wedding_date ? new Date(inv.wedding_date).toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const isLive = (inv.status || 'live') === 'live';
+    return `<div class="inv-card">
+      <div class="inv-card-top">
+        <div class="inv-card-name">${esc(inv.couple_name || '—')}</div>
+        <span class="sbadge ${inv.status || 'live'}">${inv.status || 'live'}</span>
+      </div>
+      <div class="inv-card-row"><span class="theme-dot" style="background:${themeColors[inv.template_id]||'#666'}"></span>${themeNames[inv.template_id]||'—'}</div>
+      <div class="inv-card-row"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>${dateStr}</div>
+      ${hasPre ? `<div class="inv-card-row" style="color:var(--green)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>Pre-shoot included</div>` : ''}
+      <div class="inv-card-actions">
+        <div class="inv-card-act" onclick="copyLink('${esc(inv.slug)}')">Copy Link</div>
+        <div class="inv-card-act" onclick='openRSVPForSlug("${esc(inv.slug)}")'>RSVPs</div>
+        <div class="inv-card-act blue" onclick='editInvitation("${inv.id}")'>Edit</div>
+        <div class="inv-card-act icon-btn" onclick='toggleStatus("${inv.id}","${inv.status||'live'}")' style="color:${isLive?'var(--green)':'var(--red)'}"><svg viewBox="0 0 24 24"><path d="${isLive?'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z':'M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'}"/></svg></div>
+        <div class="inv-card-act icon-btn red" onclick='deleteInvitation("${inv.id}")'><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+      </div>
+    </div>`;
+  }).join('');
 }
 function hasPreshootContent(inv) {
   if (inv.preshoot_video_url) return true;
@@ -658,11 +742,13 @@ function clearForm() {
   document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
   document.getElementById('fStatus').value = 'live';
   document.getElementById('fExpiry').value = ''; document.getElementById('fWeddingDate').value = '';
-  ['SwipeA','SwipeB','Couple'].forEach(k => {
+  [['SwipeA','uploadA','swipeA'],['SwipeB','uploadB','swipeB'],['Couple','uploadCouple','couple']].forEach(([k,aId,t]) => {
     const p = document.getElementById('preview'+k); if (p) { p.style.display='none'; p.src=''; }
+    const a = document.getElementById(aId); if(a){a.classList.remove('has-media');a.querySelector('.upload-del-btn')?.remove();a.querySelector('.upload-status-lbl')?.remove();a.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el=>el.style.removeProperty('display'));}
   });
   document.getElementById('musicLabel').textContent = 'Upload MP3';
   document.getElementById('bgImageLabel').textContent = 'Upload Background';
+  ['uploadMusic','uploadBgImage'].forEach(aId => { const a=document.getElementById(aId); if(a){a.classList.remove('has-media');a.querySelector('.upload-del-btn')?.remove();a.querySelector('.upload-status-lbl')?.remove();a.querySelector('.music-wave-bars')?.remove();a.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el=>el.style.removeProperty('display'));} });
   const pBg = document.getElementById('previewBgImage'); if (pBg) { pBg.style.display = 'none'; pBg.src = ''; }
   document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', el.dataset.val === '1'));
   selectedTheme = 1;
@@ -696,10 +782,14 @@ function editInvitation(id) {
   if (inv.wedding_date) document.getElementById('fWeddingDate').value = new Date(inv.wedding_date).toISOString().slice(0, 16);
   if (inv.expiry_date) document.getElementById('fExpiry').value = inv.expiry_date.split('T')[0];
   ['SwipeA','SwipeB','Couple'].forEach((k, i) => {
+    const areaIds = ['uploadA','uploadB','uploadCouple'];
+    const types = ['swipeA','swipeB','couple'];
     const urls = [inv.swipe_image_a_url, inv.swipe_image_b_url, inv.couple_photo_url];
-    if (urls[i]) { const p = document.getElementById('preview'+k); p.src = urls[i]; p.style.display = 'block'; }
+    const p = document.getElementById('preview'+k);
+    if (urls[i]) { p.src = urls[i]; p.style.display = 'block'; markUploadArea(areaIds[i], types[i], ''); }
+    else { if (p) { p.src=''; p.style.display='none'; } const a=document.getElementById(areaIds[i]); if(a){a.classList.remove('has-media');a.querySelector('.upload-del-btn')?.remove();a.querySelector('.upload-status-lbl')?.remove();a.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el=>el.style.removeProperty('display'));} }
   });
-  if (inv.music_url) document.getElementById('musicLabel').textContent = 'Music uploaded ✓';
+  if (inv.music_url) { document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; markUploadArea('uploadMusic','music',''); }
   document.getElementById('fBgImage').value = inv.background_image_url || '';
   if (inv.background_image_url) { const pBg = document.getElementById('previewBgImage'); pBg.src = inv.background_image_url; pBg.style.display = 'block'; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; }
   else { const pBg = document.getElementById('previewBgImage'); pBg.style.display = 'none'; pBg.src = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
@@ -723,6 +813,16 @@ function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => 
 // ─── UPLOAD ───
 async function handleUpload(input, type, areaId, previewId) {
   const file = input.files[0]; if (!file) return;
+  // Music validation
+  if (type === 'music') {
+    const allowed = ['audio/mpeg','audio/mp3','audio/x-mp3'];
+    if (!allowed.includes(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
+      showToast('Only MP3 audio files are allowed for music upload', 'error'); input.value = ''; return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Music file is too large. Please use a file under 10MB', 'error'); input.value = ''; return;
+    }
+  }
   showLoading();
   try {
     const ext = file.name.split('.').pop();
@@ -738,9 +838,42 @@ async function handleUpload(input, type, areaId, previewId) {
     else if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
     else if (type === 'backgrounds') { document.getElementById('fBgImage').value = url; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; }
     if (previewId) { const p = document.getElementById(previewId); p.src = url; p.style.display = 'block'; }
+    markUploadArea(areaId, type, file.name);
     showToast('Uploaded successfully', 'success');
   } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
   hideLoading();
+}
+function markUploadArea(areaId, type, fileName) {
+  const area = document.getElementById(areaId); if (!area) return;
+  area.classList.add('has-media');
+  area.querySelector('.upload-del-btn')?.remove();
+  area.querySelector('.upload-status-lbl')?.remove();
+  area.querySelector('.music-wave-bars')?.remove();
+  if (type === 'music') {
+    const bars = document.createElement('div'); bars.className = 'music-wave-bars';
+    bars.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
+    area.appendChild(bars);
+  }
+  const lbl = document.createElement('div'); lbl.className = 'upload-status-lbl';
+  lbl.textContent = type === 'music' ? (fileName || 'Music uploaded') : 'Uploaded ✓';
+  area.appendChild(lbl);
+  const del = document.createElement('button'); del.className = 'upload-del-btn'; del.innerHTML = '&#x2715;'; del.title = 'Remove';
+  del.onclick = (e) => { e.preventDefault(); e.stopPropagation(); clearUploadArea(areaId, type); };
+  area.appendChild(del);
+}
+function clearUploadArea(areaId, type) {
+  const area = document.getElementById(areaId); if (!area) return;
+  area.classList.remove('has-media');
+  area.querySelector('.upload-del-btn')?.remove();
+  area.querySelector('.upload-status-lbl')?.remove();
+  area.querySelector('.music-wave-bars')?.remove();
+  const prev = area.querySelector('.upload-preview'); if (prev) { prev.src=''; prev.style.display='none'; }
+  if (type === 'swipeA') document.getElementById('fSwipeA').value = '';
+  else if (type === 'swipeB') document.getElementById('fSwipeB').value = '';
+  else if (type === 'couple') document.getElementById('fCouplePhoto').value = '';
+  else if (type === 'music') { document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
+  else if (type === 'backgrounds') { document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
+  area.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el => el.style.removeProperty('display'));
 }
 
 // ─── SAVE INVITATION ───
@@ -936,6 +1069,40 @@ async function toggleStatus(id, currentStatus) {
     await loadInvitations();
   } catch (e) { showToast('Update failed', 'error'); }
   hideLoading();
+}
+
+// ─── AUTO SLUG ───
+function generateSlugFromName(name) {
+  return name.toLowerCase().replace(/\s*&\s*/g,'-and-').replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+function onCoupleNameInput() {
+  const name = document.getElementById('fCoupleName').value.trim();
+  const btn = document.getElementById('autoSlugBtn');
+  if (btn) btn.style.display = name.length >= 3 ? 'flex' : 'none';
+}
+function onSlugInput(input) {
+  const raw = input.value;
+  const clean = raw.toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-');
+  if (raw !== clean) input.value = clean;
+  const preview = document.getElementById('slugPreview');
+  const previewVal = document.getElementById('slugPreviewVal');
+  const check = document.getElementById('slugValidCheck');
+  const valid = clean.length >= 3;
+  if (preview) preview.style.display = valid ? 'block' : 'none';
+  if (previewVal) previewVal.textContent = clean;
+  if (check) check.style.display = valid ? 'block' : 'none';
+}
+function autoGenerateSlug() {
+  const name = document.getElementById('fCoupleName').value.trim();
+  if (!name) {
+    const cn = document.getElementById('fCoupleName');
+    cn.style.boxShadow = '0 0 0 3px rgba(255,69,58,0.25)'; cn.style.borderColor = 'var(--red)'; cn.focus();
+    setTimeout(() => { cn.style.boxShadow = ''; cn.style.borderColor = ''; }, 1000); return;
+  }
+  const slug = generateSlugFromName(name);
+  const inp = document.getElementById('fSlug'); inp.value = slug; onSlugInput(inp);
+  inp.style.borderColor = 'var(--green)'; inp.style.boxShadow = '0 0 0 3px rgba(48,209,88,0.2)';
+  setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 900);
 }
 
 function showLoading() { document.getElementById('loadingOverlay').classList.add('show'); }
