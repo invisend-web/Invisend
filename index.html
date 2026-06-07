@@ -80,7 +80,7 @@ nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4p
 .themes-wrap .sec-eye{color:var(--gold)}
 .themes-wrap .sec-title{color:#f5ede0}
 .themes-wrap .sec-sub{color:rgba(245,237,224,0.45)}
-.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px;margin:40px auto 0}
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1200px;margin:40px auto 0}
 .theme-card{border-radius:18px;padding:26px 20px;border:1px solid transparent;transition:transform 0.3s var(--ease),box-shadow 0.3s}
 .theme-card:hover{transform:translateY(-6px)}
 .tc-w{background:linear-gradient(135deg,#0a0804,#1a1508);border-color:rgba(201,168,76,0.28)}
@@ -89,10 +89,13 @@ nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4p
 .tc-r:hover{box-shadow:0 20px 60px rgba(241,203,20,0.13)}
 .tc-v{background:linear-gradient(135deg,#0d2a14,#1a4020);border-color:rgba(255,198,28,0.22)}
 .tc-v:hover{box-shadow:0 20px 60px rgba(255,198,28,0.1)}
+.tc-i{background:linear-gradient(135deg,#f0ebe0,#e8e0d4);border-color:rgba(216,181,122,0.45)}
+.tc-i:hover{box-shadow:0 20px 60px rgba(216,181,122,0.22)}
 .tc-swatch{width:100%;height:70px;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:7px}
 .tc-w .tc-swatch{background:linear-gradient(135deg,#1a1508,#2a2010);border:1px solid rgba(201,168,76,0.18)}
 .tc-r .tc-swatch{background:linear-gradient(135deg,#4b1010,#6b1515);border:1px solid rgba(241,203,20,0.18)}
 .tc-v .tc-swatch{background:linear-gradient(135deg,#1a4020,#255030);border:1px solid rgba(255,198,28,0.15)}
+.tc-i .tc-swatch{background:linear-gradient(135deg,#ede8e0,#e5ddd4);border:1px solid rgba(216,181,122,0.3)}
 .tc-dot{width:11px;height:11px;border-radius:50%}
 .tc-name{font-family:var(--fd);font-size:12px;letter-spacing:0.1em;font-weight:500;margin-bottom:5px}
 .tc-sub{font-family:var(--fu);font-size:8.5px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.45;margin-bottom:10px}
@@ -103,6 +106,8 @@ nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4p
 .tc-r .tc-desc{color:#fff5e0}
 .tc-v .tc-name,.tc-v .tc-sub{color:#ffc61c}
 .tc-v .tc-desc{color:#f0fff4}
+.tc-i .tc-name,.tc-i .tc-sub{color:#D8B57A}
+.tc-i .tc-desc{color:#5E4A3A}
 
 /* FEATURES */
 .feat-wrap{background:var(--cream2);padding:80px 40px}
@@ -185,13 +190,14 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
   .hero-sub{margin-left:auto;margin-right:auto}
   .hero-btns{justify-content:center}
   .steps{grid-template-columns:1fr 1fr}
-  .themes{grid-template-columns:1fr}
+  .themes{grid-template-columns:repeat(2,1fr)}
   .feat-inner{grid-template-columns:1fr;gap:40px}
   .feat-env{width:min(300px,70vw)}
   .test-card,.skel{flex:0 0 calc(50% - 10px)}
   .how,.feat-wrap,.test-wrap,.themes-wrap,.soc-wrap{padding:60px 24px}
 }
 @media(max-width:600px){
+  .themes{grid-template-columns:1fr}
   nav{padding:12px 20px}
   nav.scrolled{padding:9px 20px}
   .nav-links{display:none}
@@ -287,7 +293,7 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 <section class="themes-wrap" id="themes">
   <div style="position:relative;z-index:1;text-align:center">
     <span class="sec-eye rev">Theme Collection</span>
-    <h2 class="sec-title rev">Three Worlds, One Platform</h2>
+    <h2 class="sec-title rev">Four Worlds, One Platform</h2>
     <p class="sec-sub rev">Each theme carries the soul of a culture.</p>
   </div>
   <div class="themes">
@@ -298,13 +304,18 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
     </div>
     <div class="theme-card tc-r rev">
       <div class="tc-swatch"><div class="tc-dot" style="background:#4b1010"></div><div class="tc-dot" style="background:#f1cb14"></div><div class="tc-dot" style="background:#e8450a"></div></div>
-      <div class="tc-name">Ratha Mala</div><div class="tc-sub">Sri Lankan Traditional</div>
+      <div class="tc-name">Udarata Sinhala</div><div class="tc-sub">Sri Lankan Traditional</div>
       <p class="tc-desc">Deep crimson and radiant yellow, echoing temple flowers, kandyan ceremony, and celebration.</p>
     </div>
     <div class="theme-card tc-v rev">
       <div class="tc-swatch"><div class="tc-dot" style="background:#1a4020"></div><div class="tc-dot" style="background:#ffc61c"></div><div class="tc-dot" style="background:#4a9e5c"></div></div>
-      <div class="tc-name">Vaanam</div><div class="tc-sub">Tamil Banana Grove</div>
+      <div class="tc-name">Kalyanam</div><div class="tc-sub">Tamil Wedding</div>
       <p class="tc-desc">Lush forest greens and marigold gold, inspired by banana groves, kolam, and Tamil celebration.</p>
+    </div>
+    <div class="theme-card tc-i rev">
+      <div class="tc-swatch"><div class="tc-dot" style="background:#F7F3EC"></div><div class="tc-dot" style="background:#D8B57A"></div><div class="tc-dot" style="background:#E9C9C2"></div></div>
+      <div class="tc-name">InviSend Ivory</div><div class="tc-sub">Warm Cream Luxury</div>
+      <p class="tc-desc">Warm ivory, blush rose, and gold. A soft, romantic palette for couples who love light elegance.</p>
     </div>
   </div>
 </section>

@@ -102,7 +102,7 @@ Open the files in your browser directly before deploying:
 
 ### Creating an Invitation
 1. Click **"New Invitation"**
-2. Choose a theme (Western Luxury / Ratha Mala / Vaanam)
+2. Choose a theme (Western Luxury / Udarata Sinhala / Kalyanam / InviSend Ivory)
 3. Fill in couple name and slug (e.g. `ayasha-rohan` — this becomes the URL)
 4. Add family names, venue, date, message
 5. Upload Swipe Image A (bride), Swipe Image B (groom), Couple Photo
@@ -189,6 +189,7 @@ The pre-shoot section only appears on the invitation if it has content. If a cou
 | ID | Name | Colors | Best for |
 |----|------|--------|---------|
 | 1 | Western Luxury | Black & Gold | Modern, elegant couples |
-| 2 | Ratha Mala | Deep Red & Yellow | Sri Lankan traditional weddings |
-| 3 | Vaanam | Forest Green & Gold | Tamil cultural weddings |
+| 2 | Udarata Sinhala | Deep Red & Yellow | Sri Lankan traditional weddings |
+| 3 | Kalyanam | Forest Green & Gold | Tamil cultural weddings |
+| 4 | InviSend Ivory | Warm Cream & Gold | Light, romantic luxury weddings |
 
