@@ -25,6 +25,25 @@ CREATE POLICY "Anon full access bin"
   USING (true) WITH CHECK (true);
 
 ALTER PUBLICATION supabase_realtime ADD TABLE public.bin;
+
+-- Storage files tracking table
+CREATE TABLE IF NOT EXISTS public.storage_files (
+  id              uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  file_path       text NOT NULL,
+  bucket          text NOT NULL,
+  public_url      text NOT NULL,
+  file_type       text,
+  referenced_by   text,
+  reference_id    text,
+  is_orphaned     boolean DEFAULT false,
+  uploaded_at     timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE public.storage_files ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anon full access storage_files"
+  ON public.storage_files FOR ALL
+  USING (true) WITH CHECK (true);
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +54,8 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.bin;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InviSend — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -85,7 +106,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-ghost:hover{background:var(--gh);color:var(--text)}
 .content{padding:28px;flex:1}
 /* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
 .stat-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
 .stat-label{font-size:11.5px;color:var(--text3)}
 .stat-value{font-size:26px;font-weight:600;line-height:1}
@@ -314,6 +335,10 @@ select.form-input{cursor:pointer}
 .tbl-card.unassigned{border-color:rgba(255,159,10,0.3)}
 .tbl-card.unassigned .tbl-card-header{color:var(--orange)}
 .tbl-card.unassigned .tbl-count-badge{background:rgba(255,159,10,0.12);color:var(--orange)}
+/* ─── CROP ─── */
+.crop-ratio-btn{font-family:var(--font);font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--gb);background:var(--glass);color:var(--text2);cursor:pointer;transition:all 0.2s;letter-spacing:0.03em}
+.crop-ratio-btn:hover{background:var(--gh);color:var(--text)}
+.crop-ratio-btn.active{background:rgba(10,132,255,0.15);border-color:var(--blue);color:var(--blue)}
 /* ─── BIN BADGE ─── */
 .bin-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:600;padding:0 5px;margin-left:auto;animation:badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1)}
 @keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
@@ -437,7 +462,6 @@ select.form-input{cursor:pointer}
         <div class="stats-row">
           <div class="stat-card"><div class="stat-label">Total Invitations</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">All time</div></div>
           <div class="stat-card"><div class="stat-label">Live</div><div class="stat-value" style="color:var(--green)" id="statLive">—</div><div class="stat-sub">Active now</div></div>
-          <div class="stat-card"><div class="stat-label">Total RSVPs</div><div class="stat-value" style="color:var(--blue)" id="statRSVP">—</div><div class="stat-sub">All invitations</div></div>
           <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" style="color:var(--purple)" id="statMonth">—</div><div class="stat-sub">New invitations</div></div>
         </div>
         <div class="table-card">
@@ -651,12 +675,12 @@ select.form-input{cursor:pointer}
     <div class="form-section">
       <div class="form-section-title">Core Photos & Music</div>
       <div class="form-grid cols-3">
-        <div class="form-group"><label class="form-label">Swipe Image A (Bride)</label><div class="upload-area" id="uploadA"><input type="file" accept="image/*" onchange="handleUpload(this,'swipeA','uploadA','previewSwipeA')"><img class="upload-preview" id="previewSwipeA"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Bride Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeA"></div>
-        <div class="form-group"><label class="form-label">Swipe Image B (Groom)</label><div class="upload-area" id="uploadB"><input type="file" accept="image/*" onchange="handleUpload(this,'swipeB','uploadB','previewSwipeB')"><img class="upload-preview" id="previewSwipeB"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Groom Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeB"></div>
-        <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="handleUpload(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 3:4 portrait · min 800×1067px · faces in upper half</div></div><input type="hidden" id="fCouplePhoto"></div>
+        <div class="form-group"><label class="form-label">Swipe Image A (Bride)</label><div class="upload-area" id="uploadA"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'swipeA','uploadA','previewSwipeA')"><img class="upload-preview" id="previewSwipeA"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Bride Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeA"></div>
+        <div class="form-group"><label class="form-label">Swipe Image B (Groom)</label><div class="upload-area" id="uploadB"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'swipeB','uploadB','previewSwipeB')"><img class="upload-preview" id="previewSwipeB"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Groom Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeB"></div>
+        <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 3:4 portrait · min 800×1067px · faces in upper half</div></div><input type="hidden" id="fCouplePhoto"></div>
       </div>
       <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mpeg,audio/mp3,.mp3" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div><div class="upload-hint">MP3 format · max recommended 5MB · 128kbps or higher</div></div><input type="hidden" id="fMusicUrl"></div>
-      <div class="form-group full" style="margin-top:12px"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="handleUpload(this,'backgrounds','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div><div class="upload-hint">Best: 9:16 or 16:9 · min 1080px wide · avoid busy center</div></div><input type="hidden" id="fBgImage"></div>
+      <div class="form-group full" style="margin-top:12px"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="interceptUploadForCrop(this,'background','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div><div class="upload-hint">Best: 9:16 or 16:9 · min 1080px wide · avoid busy center</div></div><input type="hidden" id="fBgImage"></div>
     </div>
 
     <!-- PRE-SHOOT SECTION -->
@@ -726,6 +750,34 @@ select.form-input{cursor:pointer}
       <button class="btn-primary" onclick="saveTestimonial()">
         <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
         Save Testimonial
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CROP MODAL -->
+<div class="modal-backdrop" id="cropModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">Crop Photo</div>
+      <div class="modal-close" onclick="closeCropModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="crop-ratio-btn active" onclick="setCropRatio(9,16,this)" data-ratio="9:16">9:16 Portrait</button>
+      <button class="crop-ratio-btn" onclick="setCropRatio(3,4,this)" data-ratio="3:4">3:4 Portrait</button>
+      <button class="crop-ratio-btn" onclick="setCropRatio(1,1,this)" data-ratio="1:1">Square</button>
+      <button class="crop-ratio-btn" onclick="setCropRatio(16,9,this)" data-ratio="16:9">16:9 Wide</button>
+      <button class="crop-ratio-btn" onclick="setCropRatio(NaN,NaN,this)" data-ratio="free">Free</button>
+    </div>
+    <div style="font-family:var(--font);font-size:11px;color:var(--text3);margin-bottom:12px;letter-spacing:0.03em">Drag to reposition · Pinch or scroll to zoom · Drag corners to resize</div>
+    <div style="width:100%;background:#000;border-radius:12px;overflow:hidden;max-height:400px">
+      <img id="cropImage" style="display:block;max-width:100%">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeCropModal()">Cancel</button>
+      <button class="btn-primary" id="cropApplyBtn" onclick="applyCrop()">
+        <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Use This Crop
       </button>
     </div>
   </div>
@@ -836,7 +888,6 @@ function updateStats() {
   document.getElementById('statLive').textContent = allInvitations.filter(i => i.status === 'live').length;
   const now = new Date();
   document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
-  sb.from('rsvp').select('id', { count: 'exact', head: true }).then(({ count }) => document.getElementById('statRSVP').textContent = count || 0);
 }
 const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory' };
 const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A' };
@@ -947,18 +998,23 @@ function buildPreshootGrid() {
 function togglePreshoot(on) { document.getElementById('preshootFields').style.display = on ? '' : 'none'; if (on) buildPreshootGrid(); }
 async function handlePreshootUpload(input, idx) {
   const file = input.files[0]; if (!file) return;
-  showLoading();
-  try {
-    const ext = file.name.split('.').pop();
-    const path = `preshoot/${Date.now()}_${idx}.${ext}`;
-    const { error } = await sb.storage.from('images').upload(path, file, { upsert: true });
-    if (error) throw error;
-    const { data: u } = sb.storage.from('images').getPublicUrl(path);
-    preshootUrls[idx] = u.publicUrl;
-    buildPreshootGrid();
-    showToast('Photo uploaded', 'success');
-  } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
-  hideLoading();
+  input.value = '';
+  openCropModal(file, 'preshoot', async (croppedFile) => {
+    showLoading();
+    try {
+      const oldUrl = preshootUrls[idx];
+      if (oldUrl) markFileOrphaned(oldUrl);
+      const path = `preshoot/${Date.now()}_${idx}.jpg`;
+      const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
+      if (error) throw error;
+      const { data: u } = sb.storage.from('images').getPublicUrl(path);
+      preshootUrls[idx] = u.publicUrl;
+      trackFileUpload(path, 'images', u.publicUrl, 'preshoot_photo_' + (idx + 1), 'invitations', editingId || 'new');
+      buildPreshootGrid();
+      showToast('Photo cropped and uploaded', 'success');
+    } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
+    hideLoading();
+  });
 }
 function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); preshootUrls[idx] = ''; buildPreshootGrid(); }
 
@@ -1041,6 +1097,17 @@ function editInvitation(id) {
 
 function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); }
 
+// ─── FILE TRACKING ───
+async function trackFileUpload(filePath, bucket, publicUrl, fileType, referencedBy, referenceId) {
+  try {
+    await sb.from('storage_files').insert({ file_path: filePath, bucket, public_url: publicUrl, file_type: fileType, referenced_by: referencedBy, reference_id: referenceId || 'pending' });
+  } catch(e) {}
+}
+async function markFileOrphaned(oldUrl) {
+  if (!oldUrl) return;
+  try { await sb.from('storage_files').update({ is_orphaned: true }).eq('public_url', oldUrl); } catch(e) {}
+}
+
 // ─── UPLOAD ───
 async function handleUpload(input, type, areaId, previewId) {
   const file = input.files[0]; if (!file) return;
@@ -1059,17 +1126,17 @@ async function handleUpload(input, type, areaId, previewId) {
     const ext = file.name.split('.').pop();
     const bucket = type === 'music' ? 'music' : 'images';
     const path = `${type}/${Date.now()}.${ext}`;
+    // Mark old file orphaned
+    const oldUrl = type === 'music' ? document.getElementById('fMusicUrl')?.value : null;
+    if (oldUrl) markFileOrphaned(oldUrl);
     const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
     if (error) throw error;
     const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
     const url = u.publicUrl;
-    if (type === 'swipeA') document.getElementById('fSwipeA').value = url;
-    else if (type === 'swipeB') document.getElementById('fSwipeB').value = url;
-    else if (type === 'couple') document.getElementById('fCouplePhoto').value = url;
-    else if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
-    else if (type === 'backgrounds') { document.getElementById('fBgImage').value = url; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; }
+    if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
     if (previewId) { const p = document.getElementById(previewId); p.src = url; p.style.display = 'block'; }
     markUploadArea(areaId, type, file.name);
+    trackFileUpload(path, bucket, url, type, 'invitations', editingId || 'new');
     showToast('Uploaded successfully', 'success');
   } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
   hideLoading();
@@ -1385,7 +1452,10 @@ async function handleTestimonialUpload(input) {
     const { error } = await sb.storage.from('images').upload(path, file, { upsert: true });
     if (error) throw error;
     const { data: u } = sb.storage.from('images').getPublicUrl(path);
+    const oldTestUrl = document.getElementById('tImageUrl').value;
+    if (oldTestUrl) markFileOrphaned(oldTestUrl);
     document.getElementById('tImageUrl').value = u.publicUrl;
+    trackFileUpload(path, 'images', u.publicUrl, 'testimonial_image', 'testimonials', editingTestId || 'new');
     const p = document.getElementById('testImgPreview'); p.src = u.publicUrl; p.style.display = 'block';
     document.getElementById('testUploadIcon').style.display = 'none';
     document.getElementById('testUploadLabel').textContent = 'Image uploaded ✓';
@@ -1511,6 +1581,98 @@ function hideLoading() { document.getElementById('loadingOverlay').classList.rem
 document.getElementById('invModal').addEventListener('click', e => { if (e.target === document.getElementById('invModal')) closeModal(); });
 document.getElementById('testModal').addEventListener('click', e => { if (e.target === document.getElementById('testModal')) closeTestimonialModal(); });
 document.getElementById('dangerModal').addEventListener('click', e => { if (e.target === document.getElementById('dangerModal')) closeDangerModal(); });
+document.getElementById('cropModal').addEventListener('click', e => { if (e.target === document.getElementById('cropModal')) closeCropModal(); });
+
+// ─── CROP ───
+let cropper = null, cropCallback = null, cropFile = null;
+const uploadRatios = {
+  swipeA:  { x: 9,  y: 16 }, swipeB:  { x: 9,  y: 16 },
+  couple:  { x: 3,  y: 4  }, background: { x: 9, y: 16 }, preshoot: { x: 3, y: 4 }
+};
+
+function openCropModal(file, type, callback) {
+  cropCallback = callback; cropFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const cropImg = document.getElementById('cropImage');
+    cropImg.src = e.target.result;
+    document.getElementById('cropModal').classList.add('open');
+    if (cropper) { cropper.destroy(); cropper = null; }
+    const ratio = uploadRatios[type] || { x: 9, y: 16 };
+    document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.ratio === ratio.x + ':' + ratio.y) btn.classList.add('active');
+    });
+    cropImg.onload = () => {
+      cropper = new Cropper(cropImg, {
+        aspectRatio: ratio.x / ratio.y, viewMode: 1, dragMode: 'move',
+        autoCropArea: 0.9, restore: false, guides: true, center: true,
+        highlight: false, cropBoxMovable: true, cropBoxResizable: true,
+        toggleDragModeOnDblclick: false, background: true,
+      });
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+function setCropRatio(x, y, btn) {
+  if (!cropper) return;
+  document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  cropper.setAspectRatio(isNaN(x) ? NaN : x / y);
+}
+
+function closeCropModal() {
+  document.getElementById('cropModal').classList.remove('open');
+  if (cropper) { cropper.destroy(); cropper = null; }
+  cropCallback = null; cropFile = null;
+}
+
+async function applyCrop() {
+  if (!cropper || !cropCallback) return;
+  const btn = document.getElementById('cropApplyBtn');
+  btn.textContent = 'Processing...'; btn.disabled = true;
+  try {
+    const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 2000, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
+    canvas.toBlob(async (blob) => {
+      const croppedFile = new File([blob], cropFile.name, { type: 'image/jpeg' });
+      closeCropModal();
+      await cropCallback(croppedFile);
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop';
+      btn.disabled = false;
+    }, 'image/jpeg', 0.92);
+  } catch(e) {
+    showToast('Crop failed: ' + e.message, 'error');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop';
+    btn.disabled = false;
+  }
+}
+
+async function interceptUploadForCrop(input, type, areaId, previewId) {
+  const file = input.files[0]; if (!file) return;
+  if (type === 'music') { handleUpload(input, type, areaId, previewId); return; }
+  input.value = '';
+  openCropModal(file, type, async (croppedFile) => {
+    showLoading();
+    try {
+      const hiddenId = type === 'swipeA' ? 'fSwipeA' : type === 'swipeB' ? 'fSwipeB' : type === 'couple' ? 'fCouplePhoto' : type === 'background' ? 'fBgImage' : null;
+      const oldUrl = hiddenId ? document.getElementById(hiddenId)?.value : null;
+      if (oldUrl) markFileOrphaned(oldUrl);
+      const path = `${type}/${Date.now()}.jpg`;
+      const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
+      if (error) throw error;
+      const { data: u } = sb.storage.from('images').getPublicUrl(path);
+      const url = u.publicUrl;
+      if (hiddenId) document.getElementById(hiddenId).value = url;
+      if (type === 'background') document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓';
+      if (previewId) { const p = document.getElementById(previewId); if (p) { p.src = url; p.style.display = 'block'; } }
+      markUploadArea(areaId, type === 'background' ? 'backgrounds' : type, croppedFile.name);
+      trackFileUpload(path, 'images', url, type, 'invitations', editingId || 'new');
+      showToast('Photo cropped and uploaded', 'success');
+    } catch(e) { showToast('Upload failed: ' + e.message, 'error'); }
+    hideLoading();
+  });
+}
 
 // ─── DANGER MODAL ───
 let dangerAction = null, dangerTargetName = '';
@@ -1717,7 +1879,7 @@ async function scanVault() {
     const activeSlugs = new Set((invitations || []).map(i => i.slug));
     const { data: allRsvps } = await sb.from('rsvp').select('*');
     const ghostRsvps = (allRsvps || []).filter(r => !activeSlugs.has(r.invitation_slug));
-    renderVaultOrphans([], activeUrls);
+    scanOrphanedFiles();
     renderVaultGhosts(ghostRsvps);
     renderVaultHiddenTests(hiddenTests);
   } catch(e) { showToast('Scan failed: ' + e.message, 'error'); }
@@ -1761,16 +1923,47 @@ function renderVaultHiddenTests(tests) {
     </div>`).join('');
 }
 
-function renderVaultOrphans(files, activeUrls) {
+async function scanOrphanedFiles() {
   const list = document.getElementById('orphanList');
-  document.getElementById('orphanCount').textContent = '—';
-  document.getElementById('orphanFooter').style.display = 'none';
-  list.innerHTML = `<div class="vault-empty" style="padding:24px 20px"><div style="font-size:12px;color:var(--text3);line-height:1.7">Storage file scanning requires Supabase service role access which is not available in the browser for security reasons.<br><br>To find orphaned storage files, go to your <strong style="color:var(--text2)">Supabase Dashboard → Storage</strong> and manually review files not referenced in your invitations.</div></div>`;
+  const count = document.getElementById('orphanCount');
+  const footer = document.getElementById('orphanFooter');
+  list.innerHTML = '<div class="vault-empty"><div class="loading-ring" style="margin:auto"></div></div>';
+  try {
+    const { data: invitations } = await sb.from('invitations').select('*');
+    const activeUrls = new Set();
+    for (const inv of invitations || []) {
+      [inv.swipe_image_a_url, inv.swipe_image_b_url, inv.couple_photo_url, inv.music_url, inv.background_image_url,
+       ...Array.from({length:10}, (_,i) => inv['preshoot_photo_'+(i+1)])].filter(Boolean).forEach(u => activeUrls.add(u));
+    }
+    const { data: testimonials } = await sb.from('testimonials').select('image_url');
+    (testimonials || []).filter(t => t.image_url).forEach(t => activeUrls.add(t.image_url));
+    const { data: files } = await sb.from('storage_files').select('*').order('uploaded_at', { ascending: false });
+    const orphans = (files || []).filter(f => f.is_orphaned || !activeUrls.has(f.public_url));
+    const seen = new Set();
+    const uniqueOrphans = orphans.filter(f => { if (seen.has(f.public_url)) return false; seen.add(f.public_url); return true; });
+    count.textContent = uniqueOrphans.length + ' files';
+    footer.style.display = uniqueOrphans.length ? '' : 'none';
+    document.getElementById('orphanDeleteBtn').disabled = true;
+    if (!uniqueOrphans.length) { list.innerHTML = '<div class="vault-empty">No orphaned files found — storage is clean</div>'; return; }
+    const isImage = url => /\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url);
+    list.innerHTML = uniqueOrphans.map(f => `
+      <div class="vault-item">
+        <input type="checkbox" class="vault-item-check orphan-check" data-id="${f.id}" data-url="${f.public_url}" data-bucket="${f.bucket}" data-path="${f.file_path}" onchange="updateVaultDeleteBtn('orphan')">
+        ${isImage(f.public_url)
+          ? `<img class="vault-item-thumb" src="${f.public_url}" alt="" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="vault-item-thumb-placeholder"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>`}
+        <div class="vault-item-info">
+          <div class="vault-item-name">${f.file_type || 'Unknown type'}</div>
+          <div class="vault-item-meta">${f.bucket} · ${new Date(f.uploaded_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+        </div>
+      </div>`).join('');
+    window._orphanFiles = uniqueOrphans;
+  } catch(e) { list.innerHTML = '<div class="vault-empty">Scan failed. Please try again.</div>'; }
 }
 
 function updateVaultDeleteBtn(type) {
-  const checkClass = type === 'ghost' ? '.ghost-check' : '.hidden-test-check';
-  const btnId = type === 'ghost' ? 'ghostDeleteBtn' : 'hiddenTestDeleteBtn';
+  const checkClass = type === 'ghost' ? '.ghost-check' : type === 'orphan' ? '.orphan-check' : '.hidden-test-check';
+  const btnId = type === 'ghost' ? 'ghostDeleteBtn' : type === 'orphan' ? 'orphanDeleteBtn' : 'hiddenTestDeleteBtn';
   document.getElementById(btnId).disabled = document.querySelectorAll(checkClass + ':checked').length === 0;
 }
 
@@ -1781,6 +1974,23 @@ function selectAllVault(type) {
 }
 
 async function moveToBinSelected(type) {
+  if (type === 'orphan') {
+    const checked = [...document.querySelectorAll('.orphan-check:checked')];
+    if (!checked.length) return;
+    showLoading();
+    try {
+      for (const cb of checked) {
+        try {
+          await sb.storage.from(cb.dataset.bucket).remove([cb.dataset.path]);
+          await sb.from('storage_files').delete().eq('id', cb.dataset.id);
+        } catch(e) {}
+      }
+      showToast('Orphaned files deleted from storage', 'info');
+      scanVault();
+    } catch(e) { showToast('Failed: ' + e.message, 'error'); }
+    hideLoading();
+    return;
+  }
   const checkClass = type === 'ghost' ? '.ghost-check' : '.hidden-test-check';
   const checked = [...document.querySelectorAll(checkClass + ':checked')];
   if (!checked.length) return;

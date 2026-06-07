@@ -234,18 +234,32 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .attend-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
 .attend-btn.bounce{animation:btnBounce 0.4s var(--spring)}
 @keyframes btnBounce{0%,100%{transform:scale(1)}40%{transform:scale(1.04)}70%{transform:scale(0.97)}}
-/* Guest count stepper */
-.guest-count-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height 0.38s var(--ease),opacity 0.3s var(--ease)}
-.guest-count-wrap.show{max-height:130px;opacity:1}
-.guest-count-inner{background:var(--section-bg);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.gc-labels{display:flex;flex-direction:column;gap:3px}
-.gc-lbl{font-family:var(--font-ui);font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text3)}
-.gc-sub{font-family:var(--font-body);font-size:11px;font-style:italic;color:var(--text3)}
-.gc-stepper{display:flex;align-items:center;gap:12px}
-.gc-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:var(--bg);font-size:18px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s,opacity 0.15s;-webkit-appearance:none}
-.gc-btn:active{transform:scale(0.88);opacity:0.8}
-.gc-inp{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-display);font-size:22px;font-weight:400;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;appearance:textfield}
-.gc-inp::-webkit-inner-spin-button,.gc-inp::-webkit-outer-spin-button{-webkit-appearance:none}
+/* Guest count popup overlay */
+.gc-overlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;pointer-events:none;transition:background 0.35s ease}
+.gc-overlay.open{background:rgba(0,0,0,0.55);pointer-events:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.gc-popup{width:100%;max-width:480px;background:var(--card);border-radius:24px 24px 0 0;padding:12px 28px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);border-top:1px solid var(--border);box-shadow:0 -20px 60px rgba(0,0,0,0.4)}
+.gc-overlay.open .gc-popup{transform:translateY(0)}
+.gc-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 20px}
+.gc-header{text-align:center;margin-bottom:32px}
+.gc-title{font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--text);letter-spacing:0.04em;margin-bottom:6px}
+.gc-sub{font-family:var(--font-ui);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text3)}
+.gc-stepper{display:flex;align-items:center;justify-content:center;gap:28px;margin-bottom:36px}
+.gc-step-btn{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--border);background:var(--section-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);-webkit-tap-highlight-color:transparent;color:var(--text2)}
+.gc-step-btn svg{width:22px;height:22px;fill:currentColor}
+.gc-step-btn:active{transform:scale(0.88)}
+.gc-step-btn.gc-plus{border-color:var(--accent);color:var(--accent);background:rgba(201,168,76,0.08)}
+.gc-step-btn.gc-plus:hover{background:var(--accent);color:var(--bg);box-shadow:0 6px 20px var(--glow)}
+.gc-step-btn.gc-minus:disabled{opacity:0.25;cursor:not-allowed;transform:none}
+.gc-num-wrap{text-align:center;min-width:80px}
+.gc-num{font-family:var(--font-display);font-size:64px;font-weight:600;color:var(--accent);line-height:1;transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),opacity 0.15s;letter-spacing:-0.02em}
+.gc-num.bump{transform:scale(1.25);opacity:0.7}
+.gc-num-label{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);margin-top:4px}
+.gc-confirm-btn{width:100%;height:52px;border-radius:14px;border:none;background:var(--accent);color:var(--bg);font-family:var(--font-ui);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;cursor:pointer;margin-bottom:12px;transition:all 0.3s ease;box-shadow:0 8px 24px var(--glow);-webkit-appearance:none}
+.gc-confirm-btn:disabled{opacity:0.3;cursor:not-allowed;box-shadow:none}
+.gc-confirm-btn:not(:disabled):active{transform:scale(0.98)}
+.gc-confirm-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 32px var(--glow)}
+.gc-cancel-btn{width:100%;height:44px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;-webkit-appearance:none}
+.gc-cancel-btn:hover{color:var(--text2);border-color:rgba(255,255,255,0.15)}
 /* Inline errors */
 .rsvp-err{font-family:var(--font-ui);font-size:11px;color:#ff6b6b;letter-spacing:0.02em;opacity:0;max-height:0;overflow:hidden;transition:opacity 0.25s,max-height 0.25s}
 .rsvp-err.show{opacity:1;max-height:28px}
@@ -288,17 +302,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .countdown-num{font-family:var(--font-display);font-size:clamp(22px,5vw,30px);font-weight:600;color:var(--accent);line-height:1;transition:all 0.3s ease;letter-spacing:0.02em}
 .countdown-unit-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
 .countdown-sep{font-family:var(--font-display);font-size:20px;color:var(--accent);opacity:0.4;padding-bottom:12px}
-/* SHARE BLOCK */
-.share-block{padding:0 20px 32px;max-width:480px;margin:0 auto}
-.share-inner{display:flex;align-items:center;justify-content:space-between;background:var(--section-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
-.share-text{font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
-.share-btns{display:flex;gap:8px}
-.share-btn{width:36px;height:36px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s ease}
-.share-btn svg{width:17px;height:17px;fill:currentColor}
-.share-btn.wa{background:rgba(37,211,102,0.15);color:#25d366}
-.share-btn.wa:hover{background:#25d366;color:#fff;transform:scale(1.08)}
-.share-btn.copy{background:var(--section-bg);border:1px solid var(--border);color:var(--text2)}
-.share-btn.copy:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);transform:scale(1.08)}
 /* SECTION-SPECIFIC ANIMATIONS */
 .sr-left{opacity:0;transform:translateX(-20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
 .sr-left.in{opacity:1;transform:none}
@@ -483,7 +486,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="rsvp-field-group">
         <label class="rsvp-field-lbl">Will you attend?</label>
         <div class="attend-wrap">
-          <button class="attend-btn" id="btnYes" onclick="pickAttend('yes',this)">
+          <button class="attend-btn" id="btnYes" onclick="selectAttendYes(this)">
             <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             Joyfully Accept
           </button>
@@ -494,20 +497,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         </div>
         <span class="rsvp-err" id="errAttend">Please select your attendance</span>
       </div>
-      <div class="guest-count-wrap" id="guestCountWrap">
-        <div class="guest-count-inner">
-          <div class="gc-labels">
-            <span class="gc-lbl">How many guests are you bringing?</span>
-            <span class="gc-sub">Include yourself in the count</span>
-          </div>
-          <div class="gc-stepper">
-            <button class="gc-btn" onclick="adjustCount(-1)" type="button">−</button>
-            <input class="gc-inp" id="guestCount" type="number" min="1" max="20" value="1">
-            <button class="gc-btn" onclick="adjustCount(1)" type="button">+</button>
-          </div>
-          <span class="rsvp-err" id="errGuest">Please enter guest count</span>
-        </div>
-      </div>
       <button class="rsvp-submit" id="rsvpSubmit" onclick="submitRSVP()">
         <span class="rsvp-submit-spinner" id="rsvpSpinner"></span>
         <span id="rsvpBtnText">Confirm Response</span>
@@ -517,19 +506,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="rsvp-success-icon">♥</div>
       <div class="rsvp-success-name" id="successName">Thank You!</div>
       <div class="rsvp-success-sub" id="successSub">Your response has been received.</div>
-    </div>
-    <div class="share-block" id="shareBlock">
-      <div class="share-inner">
-        <div class="share-text">Share this invitation</div>
-        <div class="share-btns">
-          <button class="share-btn wa" onclick="shareWhatsApp()" aria-label="Share on WhatsApp">
-            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          </button>
-          <button class="share-btn copy" onclick="copyInviteLink()" aria-label="Copy link" id="copyBtn">
-            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          </button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -559,6 +535,26 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       </div>
     </button>
     <span class="sound-label" id="soundLabel">Music</span>
+  </div>
+
+  <div class="gc-overlay" id="gcOverlay" onclick="closeGcPopup(event)">
+    <div class="gc-popup" id="gcPopup">
+      <div class="gc-handle"></div>
+      <div class="gc-header">
+        <div class="gc-title">How many guests?</div>
+        <div class="gc-sub">Include yourself in the count</div>
+      </div>
+      <div class="gc-stepper">
+        <button class="gc-step-btn gc-minus" id="gcMinus" onclick="stepGuest(-1)" type="button">−</button>
+        <div class="gc-num-wrap">
+          <span class="gc-num" id="gcNum">1</span>
+          <span class="gc-num-label">guests</span>
+        </div>
+        <button class="gc-step-btn gc-plus" id="gcPlus" onclick="stepGuest(1)" type="button">+</button>
+      </div>
+      <button class="gc-confirm-btn" onclick="confirmGuestCount()" type="button">Confirm &amp; Submit</button>
+      <button class="gc-cancel-btn" onclick="cancelGcPopup()" type="button">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -931,14 +927,6 @@ function pickAttend(v, el) {
   document.querySelectorAll('.attend-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   clearRsvpErr('errAttend');
-  const wrap = document.getElementById('guestCountWrap');
-  if (v === 'yes') { wrap.classList.add('show'); document.getElementById('guestCount').value = '1'; }
-  else wrap.classList.remove('show');
-}
-function adjustCount(delta) {
-  const inp = document.getElementById('guestCount');
-  inp.value = Math.max(1, Math.min(20, (parseInt(inp.value) || 1) + delta));
-  clearRsvpErr('errGuest');
 }
 function clearRsvpErr(id, input) {
   const el = document.getElementById(id); if (el) el.classList.remove('show');
@@ -949,34 +937,91 @@ function showRsvpErr(id, msg) {
   if (msg) el.textContent = msg;
   el.classList.add('show');
 }
-async function submitRSVP() {
-  ['errName','errPhone','errAttend','errGuest'].forEach(id => { const e = document.getElementById(id); if(e) e.classList.remove('show'); });
-  document.getElementById('gName').classList.remove('error');
-  document.getElementById('gPhone').classList.remove('error');
+function showFieldError(inputId, errId, msg) {
+  const inp = document.getElementById(inputId);
+  if (inp) { inp.classList.add('error','shake'); setTimeout(() => inp.classList.remove('shake'), 350); }
+  if (errId) showRsvpErr(errId, msg);
+}
+function clearFieldErrors() {
+  ['errName','errPhone','errAttend'].forEach(id => { const e = document.getElementById(id); if(e) e.classList.remove('show'); });
+  ['gName','gPhone'].forEach(id => { const e = document.getElementById(id); if(e) e.classList.remove('error'); });
+}
+function showRsvpAlreadySubmitted() {
+  document.getElementById('rsvpDupe').classList.add('show');
+}
+function showRsvpSuccess(name, attendance) {
+  document.getElementById('rsvpForm').style.display = 'none';
+  const firstName = name.split(' ')[0];
+  const isAttending = attendance === 'yes';
+  const successEl = document.getElementById('rsvpSuccess');
+  successEl.innerHTML = `<div class="rsvp-success-icon">${isAttending ? '♡' : '✦'}</div><div class="rsvp-success-title">Thank you, ${firstName}!</div><div class="rsvp-success-msg">${isAttending ? 'We cannot wait to celebrate with you. See you on the big day!' : 'We completely understand and truly appreciate you letting us know.'}</div>`;
+  successEl.classList.add('show');
+}
+
+// ─── GUEST COUNT POPUP ───
+let gcCount = 1;
+function openGcPopup() {
+  gcCount = 1;
+  document.getElementById('gcNum').textContent = '1';
+  document.getElementById('gcMinus').disabled = true;
+  document.getElementById('gcPlus').disabled = false;
+  document.getElementById('gcOverlay').classList.add('open');
+}
+function closeGcPopup(e) {
+  if (e && e.target !== document.getElementById('gcOverlay')) return;
+  document.getElementById('gcOverlay').classList.remove('open');
+}
+function cancelGcPopup() {
+  document.getElementById('gcOverlay').classList.remove('open');
+  const btn = document.getElementById('rsvpSubmit');
+  const spinner = document.getElementById('rsvpSpinner');
+  const btnText = document.getElementById('rsvpBtnText');
+  btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
+}
+function stepGuest(dir) {
+  gcCount = Math.max(1, Math.min(20, gcCount + dir));
+  const numEl = document.getElementById('gcNum');
+  numEl.textContent = gcCount;
+  numEl.classList.remove('bump');
+  void numEl.offsetWidth;
+  numEl.classList.add('bump');
+  document.getElementById('gcMinus').disabled = gcCount <= 1;
+  document.getElementById('gcPlus').disabled = gcCount >= 20;
+}
+function confirmGuestCount() {
+  document.getElementById('gcOverlay').classList.remove('open');
+  submitRSVPWithCount(gcCount);
+}
+function selectAttendYes(el) {
+  clearFieldErrors();
   const name = document.getElementById('gName').value.trim();
   const phone = document.getElementById('gPhone').value.trim();
   let valid = true;
-  if (!name) {
-    document.getElementById('gName').classList.add('error','shake');
-    setTimeout(() => document.getElementById('gName').classList.remove('shake'), 350);
-    showRsvpErr('errName'); valid = false;
-  }
-  if (!phone) {
-    document.getElementById('gPhone').classList.add('error','shake');
-    setTimeout(() => document.getElementById('gPhone').classList.remove('shake'), 350);
-    showRsvpErr('errPhone', 'Phone number is required'); valid = false;
-  } else if (phone.replace(/\D/g,'').length < 7) {
-    document.getElementById('gPhone').classList.add('error');
-    showRsvpErr('errPhone', 'Please enter a valid phone number'); valid = false;
-  }
+  if (!name) { showFieldError('gName', 'errName', null); valid = false; }
+  if (!phone) { showFieldError('gPhone', 'errPhone', 'Phone number is required'); valid = false; }
+  else if (phone.replace(/\D/g,'').length < 7) { showFieldError('gPhone', 'errPhone', 'Please enter a valid phone number'); valid = false; }
+  pickAttend('yes', el);
+  if (valid) openGcPopup();
+}
+async function submitRSVP() {
+  clearFieldErrors();
+  const name = document.getElementById('gName').value.trim();
+  const phone = document.getElementById('gPhone').value.trim();
+  let valid = true;
+  if (!name) { showFieldError('gName', 'errName', null); valid = false; }
+  if (!phone) { showFieldError('gPhone', 'errPhone', 'Phone number is required'); valid = false; }
+  else if (phone.replace(/\D/g,'').length < 7) { showFieldError('gPhone', 'errPhone', 'Please enter a valid phone number'); valid = false; }
   if (!attendChoice) {
     ['btnYes','btnNo'].forEach(id => { const b = document.getElementById(id); b.classList.add('bounce'); setTimeout(() => b.classList.remove('bounce'), 450); });
     showRsvpErr('errAttend'); valid = false;
   }
-  if (attendChoice === 'yes' && (parseInt(document.getElementById('guestCount').value) || 0) < 1) {
-    showRsvpErr('errGuest'); valid = false;
-  }
   if (!valid) return;
+  if (attendChoice === 'yes') { openGcPopup(); return; }
+  await submitRSVPWithCount(0);
+}
+async function submitRSVPWithCount(count) {
+  const name = document.getElementById('gName').value.trim();
+  const phone = document.getElementById('gPhone').value.trim();
   const btn = document.getElementById('rsvpSubmit');
   const spinner = document.getElementById('rsvpSpinner');
   const btnText = document.getElementById('rsvpBtnText');
@@ -985,9 +1030,9 @@ async function submitRSVP() {
     const { data: existing } = await sb.from('rsvp').select('id').eq('invitation_slug', invData.slug).eq('phone', phone).single();
     if (existing) {
       btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
-      document.getElementById('rsvpDupe').classList.add('show'); return;
+      showRsvpAlreadySubmitted(); return;
     }
-    const guestCount = attendChoice === 'yes' ? (parseInt(document.getElementById('guestCount').value) || 1) : 0;
+    const guestCount = attendChoice === 'yes' ? Math.max(1, count) : 0;
     const payload = { invitation_slug: invData.slug, guest_name: name, phone, attendance: attendChoice, guest_count: guestCount };
     let result = await sb.from('rsvp').insert(payload);
     if (result.error && result.error.message && result.error.message.includes('guest_count')) {
@@ -996,18 +1041,7 @@ async function submitRSVP() {
     }
     const { error } = result;
     if (error) throw error;
-    document.getElementById('rsvpForm').style.display = 'none';
-    const firstName = name.split(' ')[0];
-    const isAttending = attendChoice === 'yes';
-    const successEl = document.getElementById('rsvpSuccess');
-    successEl.innerHTML = `<div class="rsvp-success-icon">${isAttending ? '♡' : '✦'}</div><div class="rsvp-success-title">Thank you, ${firstName}!</div><div class="rsvp-success-msg">${isAttending ? 'We cannot wait to celebrate with you. See you on the big day!' : 'We completely understand and truly appreciate you letting us know.'}</div>`;
-    successEl.classList.add('show');
-    setTimeout(() => {
-      if (!isAttending) return;
-      const weddingName = invData.couple_name || 'the wedding';
-      const shareData = { title: `RSVP — ${weddingName}`, text: `Hi! I am joyfully accepting the invitation to ${weddingName}'s wedding! — ${name}`, url: window.location.href.split('?')[0] + '?slug=' + invData.slug };
-      if (navigator.share) { navigator.share(shareData).catch(() => {}); }
-    }, 1500);
+    showRsvpSuccess(name, attendChoice);
   } catch (e) {
     btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
     showRsvpErr('errAttend', 'Something went wrong. Please try again.');
@@ -1088,27 +1122,6 @@ async function incrementViewCount(slug) {
   } catch (e) {}
 }
 
-// ─── SHARE ───
-function shareWhatsApp() {
-  const base = window.location.href.split('?')[0];
-  const slug = invData ? invData.slug : '';
-  const url = base + '?slug=' + slug;
-  const couple = invData ? invData.couple_name : '';
-  const text = couple ? `You are warmly invited to ${couple}'s wedding! Open this beautiful invitation: ${url}` : url;
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
-function copyInviteLink() {
-  const base = window.location.href.split('?')[0];
-  const slug = invData ? invData.slug : '';
-  const url = base + '?slug=' + slug;
-  const btn = document.getElementById('copyBtn');
-  navigator.clipboard.writeText(url).then(() => {
-    const orig = btn.innerHTML;
-    btn.style.background = 'var(--accent)'; btn.style.color = 'var(--bg)'; btn.style.borderColor = 'var(--accent)';
-    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    setTimeout(() => { btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; btn.innerHTML = orig; }, 2000);
-  }).catch(() => shareWhatsApp());
-}
 
 // ─── PARTICLE SYSTEM ───
 class ParticleSystem {
