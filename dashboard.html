@@ -1634,12 +1634,13 @@ async function applyCrop() {
   btn.textContent = 'Processing...'; btn.disabled = true;
   try {
     const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 2000, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
+    const cb = cropCallback;
+    const origFile = cropFile;
     canvas.toBlob(async (blob) => {
-      const croppedFile = new File([blob], cropFile.name, { type: 'image/jpeg' });
+      if (!blob) { showToast('Crop failed: could not generate image', 'error'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop'; btn.disabled = false; return; }
+      const croppedFile = new File([blob], origFile.name, { type: 'image/jpeg' });
       closeCropModal();
-      await cropCallback(croppedFile);
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop';
-      btn.disabled = false;
+      await cb(croppedFile);
     }, 'image/jpeg', 0.92);
   } catch(e) {
     showToast('Crop failed: ' + e.message, 'error');
