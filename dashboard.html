@@ -1592,6 +1592,8 @@ const uploadRatios = {
 
 function openCropModal(file, type, callback) {
   cropCallback = callback; cropFile = file;
+  const applyBtn = document.getElementById('cropApplyBtn');
+  if (applyBtn) { applyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop'; applyBtn.disabled = false; }
   const reader = new FileReader();
   reader.onload = (e) => {
     const cropImg = document.getElementById('cropImage');
@@ -1631,21 +1633,26 @@ function closeCropModal() {
 async function applyCrop() {
   if (!cropper || !cropCallback) return;
   const btn = document.getElementById('cropApplyBtn');
+  const resetBtn = () => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop'; btn.disabled = false; };
   btn.textContent = 'Processing...'; btn.disabled = true;
   try {
     const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 2000, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
     const cb = cropCallback;
     const origFile = cropFile;
     canvas.toBlob(async (blob) => {
-      if (!blob) { showToast('Crop failed: could not generate image', 'error'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop'; btn.disabled = false; return; }
-      const croppedFile = new File([blob], origFile.name, { type: 'image/jpeg' });
-      closeCropModal();
-      await cb(croppedFile);
+      try {
+        if (!blob) { showToast('Crop failed: could not generate image', 'error'); resetBtn(); return; }
+        const croppedFile = new File([blob], origFile.name, { type: 'image/jpeg' });
+        closeCropModal();
+        await cb(croppedFile);
+      } catch(e) {
+        showToast('Crop failed: ' + e.message, 'error');
+        resetBtn();
+      }
     }, 'image/jpeg', 0.92);
   } catch(e) {
     showToast('Crop failed: ' + e.message, 'error');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Use This Crop';
-    btn.disabled = false;
+    resetBtn();
   }
 }
 
