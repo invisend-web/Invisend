@@ -235,10 +235,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .attend-btn.bounce{animation:btnBounce 0.4s var(--spring)}
 @keyframes btnBounce{0%,100%{transform:scale(1)}40%{transform:scale(1.04)}70%{transform:scale(0.97)}}
 /* Guest count popup overlay */
-.gc-overlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;pointer-events:none;transition:background 0.35s ease;overflow:hidden}
-.gc-overlay.open{background:rgba(0,0,0,0.55);pointer-events:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.gc-popup{width:100%;max-width:480px;background:var(--card);border-radius:24px 24px 0 0;padding:12px 28px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);border-top:1px solid var(--border);box-shadow:0 -20px 60px rgba(0,0,0,0.4)}
-.gc-overlay.open .gc-popup{transform:translateY(0)}
+.gc-overlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0);display:none;align-items:flex-end;justify-content:center;pointer-events:none;transition:background 0.35s ease}
+.gc-overlay.open{display:flex;background:rgba(0,0,0,0.55);pointer-events:auto}
+.gc-popup{width:100%;max-width:480px;background:var(--card);border-radius:24px 24px 0 0;padding:12px 28px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);border-top:1px solid var(--border);box-shadow:none}
+.gc-overlay.open .gc-popup{transform:translateY(0);box-shadow:0 -20px 60px rgba(0,0,0,0.4)}
 .gc-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 20px}
 .gc-header{text-align:center;margin-bottom:32px}
 .gc-title{font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--text);letter-spacing:0.04em;margin-bottom:6px}
@@ -965,14 +965,21 @@ function openGcPopup() {
   document.getElementById('gcNum').textContent = '1';
   document.getElementById('gcMinus').disabled = true;
   document.getElementById('gcPlus').disabled = false;
-  document.getElementById('gcOverlay').classList.add('open');
+  const ov = document.getElementById('gcOverlay');
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('open')));
+}
+function _gcHide() {
+  const ov = document.getElementById('gcOverlay');
+  ov.classList.remove('open');
+  setTimeout(() => { ov.style.display = 'none'; }, 400);
 }
 function closeGcPopup(e) {
   if (e && e.target !== document.getElementById('gcOverlay')) return;
-  document.getElementById('gcOverlay').classList.remove('open');
+  _gcHide();
 }
 function cancelGcPopup() {
-  document.getElementById('gcOverlay').classList.remove('open');
+  _gcHide();
   const btn = document.getElementById('rsvpSubmit');
   const spinner = document.getElementById('rsvpSpinner');
   const btnText = document.getElementById('rsvpBtnText');
@@ -989,7 +996,7 @@ function stepGuest(dir) {
   document.getElementById('gcPlus').disabled = gcCount >= 20;
 }
 function confirmGuestCount() {
-  document.getElementById('gcOverlay').classList.remove('open');
+  _gcHide();
   submitRSVPWithCount(gcCount);
 }
 function selectAttendYes(el) {
