@@ -7,92 +7,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InviSend — Cinematic Wedding Invitations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;500;600&family=Josefin+Sans:wght@200;300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;500;600&family=Josefin+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 :root{
-  --cream:#F7F3EC;--cream2:#ede4d6;--blush:#E9C9C2;--rose:#D4A6A6;
-  --gold:#D8B57A;--gold2:#B8923A;--dark:#5E4A3A;--text:#4a3728;--muted:#8E715C;
-  --fd:'Cinzel',serif;--fs:'Cormorant Garamond',serif;--fu:'Jost',sans-serif;
+  --cream:#f5efe8;--cream2:#ede4d6;--blush:#e8b4a0;--rose:#c4856a;
+  --gold:#c9a96e;--gold2:#b8923a;--dark:#2a1f1a;--text:#4a3728;--muted:#7a6258;
+  --fd:'Cinzel',serif;--fs:'Cormorant Garamond',serif;--fu:'Josefin Sans',sans-serif;
   --ease:cubic-bezier(0.23,1,0.32,1);
 }
 body{background:var(--cream);color:var(--text);font-family:var(--fs);overflow-x:hidden}
 
-/* ── FLOATING PILL NAVBAR ── */
-.nav-links-pill a:hover{background:rgba(216,181,122,0.12);color:#5E4A3A}
-#floatingNav.scrolled{background:rgba(247,243,236,0.96);box-shadow:0 8px 40px rgba(94,74,58,0.14);padding:6px 6px 6px 16px}
-@media(max-width:768px){
-  #floatingNav{display:none!important}
-  #mobileLogo{display:block!important}
-  #mobileMenuBtn{display:flex!important}
-}
-#mobileMenuOverlay.open{display:flex!important;opacity:1;pointer-events:auto}
-#mobileMenuOverlay.open .mob-link{opacity:1;animation:mobLinkIn 0.5s cubic-bezier(0.23,1,0.32,1) forwards}
-#mobileMenuOverlay.open .mob-link:nth-child(3){animation-delay:0.05s}
-#mobileMenuOverlay.open .mob-link:nth-child(4){animation-delay:0.1s}
-#mobileMenuOverlay.open .mob-link:nth-child(5){animation-delay:0.15s}
-#mobileMenuOverlay.open .mob-link:nth-child(6){animation-delay:0.2s}
-#mobileMenuOverlay.open .mob-link:nth-child(7){animation-delay:0.25s}
-@keyframes mobLinkIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(245,239,232,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,0.18);transition:all 0.4s var(--ease)}
+nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4px 24px rgba(74,55,40,0.07)}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo img{height:44px;width:auto;display:block}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{font-family:var(--fu);font-size:9.5px;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold2)}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.burger span{width:22px;height:1.5px;background:var(--text);display:block;transition:all 0.3s}
+.mob-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,239,232,0.98);backdrop-filter:blur(20px);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:var(--fu);font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text);text-decoration:none;transition:color 0.2s}
+.mob-nav a:hover{color:var(--gold2)}
+.mob-close{position:absolute;top:20px;right:20px;background:none;border:none;font-size:24px;color:var(--text);cursor:pointer;padding:8px}
 
-/* ── HERO ENVELOPE ── */
-.hero-envelope-section{position:relative;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#2A1F1A}
-.hero-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
-.hero-bg-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 20%,rgba(233,201,194,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 80% 80%,rgba(216,181,122,0.1) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(94,74,58,0.3) 0%,transparent 70%),#2A1F1A}
-.hero-bg-particles{position:absolute;inset:0}
-.hero-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--gold);animation:particleDrift linear infinite;opacity:0}
-@keyframes particleDrift{0%{opacity:0;transform:translateY(0) scale(0)}10%{opacity:0.6;transform:translateY(-8px) scale(1)}90%{opacity:0.2}100%{opacity:0;transform:translateY(-80px) scale(0.5)}}
-.hero-pre{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:40px;padding:20px;width:100%}
-.hero-pre-label{display:flex;align-items:center;gap:16px;animation:fadeUp 0.8s cubic-bezier(0.23,1,0.32,1) 0.5s both}
-.hero-pre-line{display:block;width:32px;height:1px;background:rgba(216,181,122,0.5)}
-.hero-pre-text{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(216,181,122,0.7)}
-.hero-env-wrap{cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;gap:32px;-webkit-tap-highlight-color:transparent;animation:fadeUp 0.9s cubic-bezier(0.23,1,0.32,1) 0.7s both}
-.hero-env-scene{position:relative;width:min(380px,85vw);animation:envFloat 6s ease-in-out infinite}
-@keyframes envFloat{0%,100%{transform:translateY(0) rotate(-0.5deg)}50%{transform:translateY(-14px) rotate(0.5deg)}}
-.hero-env-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 48px rgba(0,0,0,0.5)) drop-shadow(0 4px 16px rgba(0,0,0,0.3));transition:transform 0.3s cubic-bezier(0.23,1,0.32,1)}
-.hero-env-wrap:hover .hero-env-svg{filter:drop-shadow(0 32px 60px rgba(0,0,0,0.55)) drop-shadow(0 4px 16px rgba(0,0,0,0.3)) drop-shadow(0 0 40px rgba(216,181,122,0.2))}
-.hero-env-wrap:active .hero-env-svg{transform:scale(0.97)}
-.hero-env-shadow{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:70%;height:20px;background:radial-gradient(ellipse,rgba(0,0,0,0.35) 0%,transparent 70%);border-radius:50%;animation:shadowPulse 6s ease-in-out infinite;pointer-events:none}
-@keyframes shadowPulse{0%,100%{transform:translateX(-50%) scaleX(1);opacity:0.5}50%{transform:translateX(-50%) scaleX(0.7);opacity:0.25}}
-#envFlap{transform-origin:center top;transform-box:fill-box;transition:transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)}
-.envelope-opened #envFlap{transform:perspective(600px) rotateX(-180deg)}
-#envSeal{transition:opacity 0.4s ease 0.2s,transform 0.4s ease 0.2s}
-.envelope-opened #envSeal{opacity:0;transform:scale(0.8)}
-.hero-env-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(237,217,168,0.9) 0%,rgba(216,181,122,0.4) 40%,transparent 70%);border-radius:50%;opacity:0;pointer-events:none;transition:opacity 0.5s ease 0.5s;mix-blend-mode:screen}
-.envelope-opened .hero-env-glow{opacity:1;animation:glowBurst 0.8s ease-out 0.4s both}
-@keyframes glowBurst{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0.7}}
-.hero-env-logo{position:absolute;top:20%;left:50%;transform:translate(-50%,30px);opacity:0;pointer-events:none;transition:opacity 0.6s ease 0.7s,transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.6s;z-index:2}
-.hero-env-logo img{width:min(120px,30vw);height:auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))}
-.envelope-opened .hero-env-logo{opacity:1;transform:translate(-50%,-60px)}
-.hero-tap-hint{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px}
-.hero-tap-ripple{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(216,181,122,0.5);animation:tapRipple 2s ease-out infinite;pointer-events:none}
-.hero-tap-ripple-2{animation-delay:0.6s}
-@keyframes tapRipple{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.8}100%{transform:translate(-50%,-50%) scale(2.2);opacity:0}}
-@keyframes particleFloat{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:1}90%{opacity:0.6}100%{transform:translateY(-100vh) scale(0.5);opacity:0}}
-.hero-tap-text{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(216,181,122,0.6);position:relative;z-index:1;animation:tapTextPulse 2s ease-in-out infinite}
-@keyframes tapTextPulse{0%,100%{opacity:0.6}50%{opacity:1}}
-.hero-post{position:relative;z-index:1;text-align:center;padding:20px 24px;max-width:600px;width:100%;animation:heroPostReveal 0.8s cubic-bezier(0.23,1,0.32,1) both}
-@keyframes heroPostReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-.hero-post-logo{margin-bottom:24px}
-.hero-post-logo img{width:min(140px,40vw);height:auto;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.3));animation:logoFloat 6s ease-in-out infinite}
-@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hero-post-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,7vw,56px);font-weight:300;font-style:italic;color:#F7F3EC;line-height:1.15;margin-bottom:16px}
-.hero-post-title em{color:var(--gold);font-style:italic}
-.hero-post-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,2.5vw,18px);font-style:italic;color:rgba(247,243,236,0.55);line-height:1.75;margin-bottom:36px;max-width:440px;margin-left:auto;margin-right:auto}
-.hero-post-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
-.hero-post-btn-primary{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.28em;text-transform:uppercase;color:#2A1F1A;background:linear-gradient(135deg,#D8B57A,#B8923A);border:none;border-radius:50px;padding:14px 30px;text-decoration:none;transition:all 0.3s cubic-bezier(0.23,1,0.32,1);box-shadow:0 8px 24px rgba(184,146,58,0.35);display:inline-block}
-.hero-post-btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(184,146,58,0.45)}
-.hero-post-btn-wa{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(247,243,236,0.8);background:rgba(247,243,236,0.08);border:1px solid rgba(247,243,236,0.2);border-radius:50px;padding:13px 24px;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
-.hero-post-btn-wa:hover{background:rgba(247,243,236,0.14);border-color:rgba(247,243,236,0.35);transform:translateY(-2px)}
-.hero-post-scroll{display:flex;flex-direction:column;align-items:center;gap:6px}
-.hero-scroll-line{width:1px;height:0;background:rgba(216,181,122,0.5);animation:scrollLineGrow 0.6s ease 0.3s forwards}
-@keyframes scrollLineGrow{to{height:32px}}
-.hero-post-scroll svg{animation:scrollArrowBounce 1.4s ease-in-out infinite}
-@keyframes scrollArrowBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
-.hero-post-scroll span{font-family:'Jost',sans-serif;font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(216,181,122,0.5)}
-@media(min-width:769px){.hero-env-scene{width:min(440px,50vw)}.hero-pre{gap:52px}}
+/* HERO */
+.hero{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 60px 60px;position:relative;overflow:hidden;gap:60px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 30% 40%,rgba(232,180,160,0.22) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 70%,rgba(201,169,110,0.12) 0%,transparent 60%);pointer-events:none}
+.hero-left{position:relative;z-index:1}
+.hero-eyebrow{font-family:var(--fu);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--rose);margin-bottom:18px;animation:fadeUp 0.7s var(--ease) 0.1s both}
+.hero-headline{font-family:var(--fs);font-weight:300;font-style:italic;font-size:clamp(40px,5vw,68px);line-height:1.1;color:var(--dark);margin-bottom:16px;animation:fadeUp 0.8s var(--ease) 0.2s both}
+.hero-headline strong{font-weight:600;color:var(--gold2);font-style:normal}
+.hero-sub{font-family:var(--fs);font-size:clamp(15px,1.8vw,18px);font-style:italic;color:var(--muted);line-height:1.8;max-width:440px;margin-bottom:36px;animation:fadeUp 0.8s var(--ease) 0.35s both}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.8s var(--ease) 0.5s both}
+.btn-dark{font-family:var(--fu);font-size:9.5px;letter-spacing:0.28em;text-transform:uppercase;color:#fff;background:var(--dark);border:none;border-radius:50px;padding:14px 30px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.btn-dark:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(184,146,58,0.35)}
+.btn-line{font-family:var(--fu);font-size:9.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text);background:transparent;border:1px solid rgba(74,55,40,0.25);border-radius:50px;padding:13px 26px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center}
+.btn-line:hover{border-color:var(--gold2);color:var(--gold2);transform:translateY(-2px)}
+.hero-right{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;animation:fadeUp 0.9s var(--ease) 0.15s both}
+.hero-img-stack{position:relative;width:min(380px,42vw)}
+.hero-env{width:100%;height:auto;filter:drop-shadow(0 24px 48px rgba(196,133,106,0.35))}
 
 /* ORNAMENT */
 .orn{display:flex;align-items:center;justify-content:center;padding:24px 40px;gap:14px;max-width:640px;margin:0 auto}
@@ -225,6 +184,11 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 
 /* RESPONSIVE */
 @media(max-width:900px){
+  .hero{grid-template-columns:1fr;text-align:center;padding:90px 28px 60px;gap:40px}
+  .hero-right{order:-1}
+  .hero-img-stack{width:min(280px,60vw)}
+  .hero-sub{margin-left:auto;margin-right:auto}
+  .hero-btns{justify-content:center}
   .steps{grid-template-columns:1fr 1fr}
   .themes{grid-template-columns:repeat(2,1fr)}
   .feat-inner{grid-template-columns:1fr;gap:40px}
@@ -234,10 +198,14 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 }
 @media(max-width:600px){
   .themes{grid-template-columns:1fr}
+  nav{padding:12px 20px}
+  nav.scrolled{padding:9px 20px}
+  .nav-links{display:none}
+  .burger{display:flex}
   .steps{grid-template-columns:1fr}
   .test-card,.skel{flex:0 0 100%}
-  .hero-post-btns{flex-direction:column;align-items:center}
-  .hero-post-btn-primary,.hero-post-btn-wa{width:100%;justify-content:center}
+  .hero-btns{flex-direction:column;align-items:center}
+  .btn-dark,.btn-line{width:100%;justify-content:center}
   footer{padding:32px 20px 20px}
   .ft-in{flex-direction:column;align-items:center;text-align:center}
 }
@@ -245,131 +213,61 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 </head>
 <body>
 
-<!-- DESKTOP FLOATING NAVBAR -->
-<nav id="floatingNav" style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:inline-flex;align-items:center;gap:0;background:rgba(247,243,236,0.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(216,181,122,0.25);border-radius:50px;padding:8px 8px 8px 20px;box-shadow:0 4px 24px rgba(94,74,58,0.1),inset 0 1px 0 rgba(255,255,255,0.8);transition:all 0.4s cubic-bezier(0.23,1,0.32,1);white-space:nowrap">
-  <a href="#home" style="display:flex;align-items:center;margin-right:24px;text-decoration:none;flex-shrink:0">
-    <img src="logo.png" alt="InviSend" style="height:30px;width:auto">
-  </a>
-  <div style="display:flex;align-items:center;gap:2px;margin-right:12px" class="nav-links-pill">
-    <a href="#features" style="font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:#8E715C;text-decoration:none;padding:8px 14px;border-radius:30px;transition:all 0.25s">Features</a>
-    <a href="#themes" style="font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:#8E715C;text-decoration:none;padding:8px 14px;border-radius:30px;transition:all 0.25s">Themes</a>
-    <a href="#testimonials" style="font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:#8E715C;text-decoration:none;padding:8px 14px;border-radius:30px;transition:all 0.25s">Gallery</a>
-    <a href="#social" style="font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:#8E715C;text-decoration:none;padding:8px 14px;border-radius:30px;transition:all 0.25s">Contact</a>
+<nav id="nav">
+  <a href="#top" class="nav-logo"><img src="logo.png" alt="InviSend" style="height:44px;width:auto;display:block;"></a>
+  <div class="nav-links">
+    <a href="#features">How It Works</a>
+    <a href="#themes">Themes</a>
+    <a href="#testimonials">Gallery</a>
+    <a href="#social">Follow Us</a>
   </div>
-  <a href="https://wa.me/94713680340" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#D8B57A,#B8923A);border:none;border-radius:40px;padding:9px 18px;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 12px rgba(184,146,58,0.3);flex-shrink:0;white-space:nowrap">
-    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    WhatsApp Us
-  </a>
+  <button class="burger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- MOBILE LOGO (always visible top-left on mobile) -->
-<div id="mobileLogo" style="position:fixed;top:16px;left:20px;z-index:101;display:none">
-  <img src="logo.png" alt="InviSend" style="height:34px;width:auto">
-</div>
-
-<!-- MOBILE MENU BUTTON (bottom right) -->
-<button id="mobileMenuBtn" onclick="openMobileMenu()" aria-label="Open menu" style="position:fixed;bottom:24px;right:20px;z-index:101;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#D8B57A,#B8923A);border:none;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(184,146,58,0.4);transition:transform 0.2s">
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</button>
-
-<!-- MOBILE MENU OVERLAY -->
-<div id="mobileMenuOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(42,31,26,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;transition:opacity 0.35s ease;pointer-events:none">
-  <button onclick="closeMobileMenu()" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(247,243,236,0.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#F7F3EC;font-size:20px">&#x2715;</button>
-  <div style="position:absolute;top:20px;left:20px"><img src="logo.png" alt="InviSend" style="height:44px;width:auto"></div>
-  <a href="#features" onclick="closeMobileMenu()" style="font-family:'Cormorant Garamond',serif;font-size:32px;font-style:italic;color:#F7F3EC;text-decoration:none;opacity:0;animation:none" class="mob-link">Features</a>
-  <a href="#themes" onclick="closeMobileMenu()" style="font-family:'Cormorant Garamond',serif;font-size:32px;font-style:italic;color:#F7F3EC;text-decoration:none;opacity:0;animation:none" class="mob-link">Themes</a>
-  <a href="#testimonials" onclick="closeMobileMenu()" style="font-family:'Cormorant Garamond',serif;font-size:32px;font-style:italic;color:#F7F3EC;text-decoration:none;opacity:0;animation:none" class="mob-link">Gallery</a>
-  <a href="#social" onclick="closeMobileMenu()" style="font-family:'Cormorant Garamond',serif;font-size:32px;font-style:italic;color:#F7F3EC;text-decoration:none;opacity:0;animation:none" class="mob-link">Contact</a>
-  <a href="https://wa.me/94713680340" target="_blank" onclick="closeMobileMenu()" style="display:inline-flex;align-items:center;gap:10px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#2A1F1A;background:linear-gradient(135deg,#D8B57A,#B8923A);border-radius:50px;padding:14px 32px;text-decoration:none;margin-top:8px;opacity:0;animation:none" class="mob-link">
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    WhatsApp Us
-  </a>
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="toggleNav()">&#x2715;</button>
+  <a href="#features" onclick="toggleNav()">How It Works</a>
+  <a href="#themes" onclick="toggleNav()">Themes</a>
+  <a href="#testimonials" onclick="toggleNav()">Gallery</a>
+  <a href="#social" onclick="toggleNav()">Follow Us</a>
 </div>
 
 <!-- HERO -->
-<section class="hero-envelope-section" id="home">
-  <div class="hero-bg">
-    <div class="hero-bg-gradient"></div>
-    <div class="hero-bg-particles" id="heroBgParticles"></div>
-  </div>
-  <div class="hero-pre" id="heroPre">
-    <div class="hero-pre-label">
-      <span class="hero-pre-line"></span>
-      <span class="hero-pre-text">A wedding invitation platform</span>
-      <span class="hero-pre-line"></span>
-    </div>
-    <div class="hero-env-wrap" id="heroEnvWrap" onclick="openEnvelope()" role="button" tabindex="0" aria-label="Open invitation">
-      <div class="hero-env-scene" id="heroEnvScene">
-        <div class="hero-env-shadow"></div>
-        <svg class="hero-env-svg" id="heroEnvSvg" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="envBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FDF8F0"/>
-              <stop offset="100%" stop-color="#F0E8D8"/>
-            </linearGradient>
-            <linearGradient id="envFlapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#F5EDE0"/>
-              <stop offset="100%" stop-color="#E8D8C0"/>
-            </linearGradient>
-            <linearGradient id="sealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#EDD9A8"/>
-              <stop offset="100%" stop-color="#C49A5A"/>
-            </linearGradient>
-            <filter id="envShadow"><feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#5E4A3A" flood-opacity="0.25"/></filter>
-            <filter id="sealGlow"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#D8B57A" flood-opacity="0.6"/></filter>
-          </defs>
-          <rect x="10" y="60" width="380" height="210" rx="12" fill="url(#envBodyGrad)" filter="url(#envShadow)"/>
-          <path d="M10,60 L200,170 L10,270" fill="#EDE3D0" opacity="0.5"/>
-          <path d="M390,60 L200,170 L390,270" fill="#E5D8C5" opacity="0.45"/>
-          <path d="M10,270 L200,170 L390,270 L390,270 Q390,272 378,272 L22,272 Q10,272 10,270Z" fill="#F0E5D2"/>
-          <rect x="10" y="60" width="380" height="210" rx="12" fill="none" stroke="rgba(216,181,122,0.3)" stroke-width="1.5"/>
-          <rect x="20" y="70" width="360" height="190" rx="8" fill="none" stroke="rgba(216,181,122,0.15)" stroke-width="1"/>
-          <g id="envFlap" style="transform-origin:200px 60px;transform:rotateX(0deg)">
-            <path d="M10,60 L200,175 L390,60 Z" fill="url(#envFlapGrad)" stroke="rgba(216,181,122,0.25)" stroke-width="1"/>
-            <path d="M10,60 L200,175 L390,60" fill="none" stroke="rgba(94,74,58,0.08)" stroke-width="2"/>
-          </g>
-          <g id="envSeal" filter="url(#sealGlow)">
-            <circle cx="200" cy="175" r="30" fill="url(#sealGrad)"/>
-            <circle cx="200" cy="175" r="24" fill="none" stroke="rgba(237,217,168,0.6)" stroke-width="1.5"/>
-            <circle cx="200" cy="175" r="26" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
-            <path d="M200,162 Q205,168 200,175 Q195,168 200,162Z" fill="rgba(255,255,255,0.55)"/>
-            <path d="M200,188 Q205,182 200,175 Q195,182 200,188Z" fill="rgba(255,255,255,0.45)"/>
-            <path d="M187,175 Q193,170 200,175 Q193,180 187,175Z" fill="rgba(255,255,255,0.5)"/>
-            <path d="M213,175 Q207,170 200,175 Q207,180 213,175Z" fill="rgba(255,255,255,0.45)"/>
-            <circle cx="200" cy="175" r="3" fill="rgba(255,255,255,0.7)"/>
-            <circle cx="200" cy="148" r="1.5" fill="rgba(255,255,255,0.4)"/>
-            <circle cx="200" cy="202" r="1.5" fill="rgba(255,255,255,0.4)"/>
-            <circle cx="174" cy="175" r="1.5" fill="rgba(255,255,255,0.4)"/>
-            <circle cx="226" cy="175" r="1.5" fill="rgba(255,255,255,0.4)"/>
-          </g>
-        </svg>
-        <div class="hero-env-glow" id="heroEnvGlow"></div>
-        <div class="hero-env-logo" id="heroEnvLogo">
-          <img src="logo.png" alt="InviSend">
-        </div>
-      </div>
-      <div class="hero-tap-hint" id="heroTapHint">
-        <div class="hero-tap-ripple"></div>
-        <div class="hero-tap-ripple hero-tap-ripple-2"></div>
-        <div class="hero-tap-text">Tap to open</div>
-      </div>
-    </div>
-  </div>
-  <div class="hero-post" id="heroPost" style="display:none">
-    <div class="hero-post-logo"><img src="logo.png" alt="InviSend"></div>
-    <h1 class="hero-post-title">Smart Invitations for<br><em>Modern Weddings</em></h1>
-    <p class="hero-post-sub">Create cinematic digital wedding invitations your guests will never forget.</p>
-    <div class="hero-post-btns">
-      <a href="#features" class="hero-post-btn-primary">See How It Works</a>
-      <a href="https://wa.me/94713680340" class="hero-post-btn-wa" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Chat on WhatsApp
+<section class="hero" id="top">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Digital Wedding Invitations</div>
+    <h1 class="hero-headline">Invitations That<br><strong>Move Hearts</strong></h1>
+    <p class="hero-sub">A cinematic swipe experience — two portraits glide together, merge in a golden glow, and reveal your couple photo. Beautiful. Emotional. Unforgettable.</p>
+    <div class="hero-btns">
+      <a href="#features" class="btn-dark">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        See How It Works
       </a>
+      <a href="#themes" class="btn-line">Explore Themes</a>
     </div>
-    <div class="hero-post-scroll">
-      <div class="hero-scroll-line"></div>
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="var(--gold)"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-      <span>Scroll to explore</span>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-stack">
+      <svg class="hero-env" viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="60" width="420" height="260" rx="16" fill="#f2d5c8" stroke="#e8b4a0" stroke-width="1.5"/>
+        <path d="M30 76 L240 200 L450 76 L450 60 L30 60 Z" fill="#edcbc0" stroke="#e0a898" stroke-width="1"/>
+        <line x1="30" y1="320" x2="240" y2="200" stroke="#dba08c" stroke-width="1" opacity="0.6"/>
+        <line x1="450" y1="320" x2="240" y2="200" stroke="#dba08c" stroke-width="1" opacity="0.6"/>
+        <circle cx="240" cy="200" r="28" fill="#c9a84c" opacity="0.92"/>
+        <circle cx="240" cy="200" r="22" fill="none" stroke="#e8cc7a" stroke-width="1.5" opacity="0.6"/>
+        <text x="240" y="207" text-anchor="middle" font-family="serif" font-size="18" fill="#fff" opacity="0.9">&#x2665;</text>
+        <path d="M30 60 Q-20 150 30 200" stroke="#c4856a" stroke-width="2.5" fill="none" opacity="0.45"/>
+        <path d="M30 60 Q10 30 -10 60 Q10 90 30 60" fill="#c4856a" opacity="0.3"/>
+        <path d="M450 60 Q500 150 450 200" stroke="#c4856a" stroke-width="2.5" fill="none" opacity="0.45"/>
+        <polygon points="450,200 460,188 465,205" fill="#c4856a" opacity="0.45"/>
+        <circle cx="140" cy="295" r="5" fill="#e8b4a0" opacity="0.4"/>
+        <circle cx="128" cy="283" r="4" fill="#e8b4a0" opacity="0.3"/>
+        <circle cx="154" cy="285" r="4" fill="#e8b4a0" opacity="0.3"/>
+        <circle cx="340" cy="290" r="5" fill="#c9a84c" opacity="0.4"/>
+        <circle cx="328" cy="278" r="4" fill="#c9a84c" opacity="0.3"/>
+        <circle cx="354" cy="280" r="4" fill="#c9a84c" opacity="0.3"/>
+      </svg>
+      <img src="logo.png" alt="InviSend" style="width:180px;height:auto;display:block;margin:0 auto;">
     </div>
   </div>
 </section>
@@ -510,104 +408,15 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 </footer>
 
 <script>
-// Floating nav — deepen shadow on scroll
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('floatingNav');
-  if (!nav) return;
-  if (scrollY > 40) {
-    nav.style.boxShadow = '0 8px 40px rgba(94,74,58,0.18),inset 0 1px 0 rgba(255,255,255,0.8)';
-    nav.style.background = 'rgba(247,243,236,0.92)';
-  } else {
-    nav.style.boxShadow = '0 4px 24px rgba(94,74,58,0.1),inset 0 1px 0 rgba(255,255,255,0.8)';
-    nav.style.background = 'rgba(247,243,236,0.75)';
-  }
-});
-
-// Smooth scroll for nav links (desktop pill nav)
+window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', scrollY > 40));
+function toggleNav() { document.getElementById('mobNav').classList.toggle('open'); }
 document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
   const t = document.querySelector(a.getAttribute('href'));
   if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  document.getElementById('mobNav').classList.remove('open');
 }));
-
-// Scroll reveal
 const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } }), { threshold: 0.1 });
 document.querySelectorAll('.rev').forEach(el => obs.observe(el));
-
-// Mobile menu
-function openMobileMenu() {
-  const ov = document.getElementById('mobileMenuOverlay');
-  ov.style.display = 'flex';
-  ov.style.pointerEvents = 'auto';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    ov.style.opacity = '1';
-    ov.querySelectorAll('.mob-link').forEach((l, i) => {
-      l.style.opacity = '0';
-      l.style.transform = 'translateY(20px)';
-      l.style.transition = `opacity 0.4s ease ${0.1 + i * 0.07}s, transform 0.4s ease ${0.1 + i * 0.07}s`;
-      requestAnimationFrame(() => { l.style.opacity = '1'; l.style.transform = 'translateY(0)'; });
-    });
-  }));
-}
-function closeMobileMenu() {
-  const ov = document.getElementById('mobileMenuOverlay');
-  ov.style.opacity = '0';
-  ov.style.pointerEvents = 'none';
-  setTimeout(() => { ov.style.display = 'none'; }, 350);
-}
-
-// Hero background particles
-(function createParticles() {
-  const container = document.getElementById('heroBgParticles');
-  if (!container) return;
-  const count = window.innerWidth < 600 ? 18 : 32;
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    const size = 2 + Math.random() * 4;
-    const x = Math.random() * 100;
-    const delay = Math.random() * 8;
-    const dur = 6 + Math.random() * 10;
-    const isGold = Math.random() > 0.5;
-    p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;left:${x}%;bottom:-10px;background:${isGold ? 'rgba(216,181,122,0.6)' : 'rgba(233,201,194,0.5)'};animation:particleFloat ${dur}s ${delay}s infinite ease-in-out;`;
-    container.appendChild(p);
-  }
-})();
-
-// Envelope open interaction
-let envelopeOpened = false;
-function openEnvelope() {
-  if (envelopeOpened) return;
-  envelopeOpened = true;
-  const hint = document.getElementById('heroTapHint');
-  const flap = document.getElementById('envFlap');
-  const seal = document.getElementById('envSeal');
-  const scene = document.getElementById('heroEnvScene');
-  const pre = document.getElementById('heroPre');
-  const post = document.getElementById('heroPost');
-  const glow = document.getElementById('heroEnvGlow');
-
-  if (hint) hint.style.opacity = '0';
-
-  if (flap) { flap.style.transition = 'transform 0.6s cubic-bezier(0.4,0,0.2,1)'; flap.style.transform = 'rotateX(-180deg)'; }
-  if (seal) { seal.style.transition = 'opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s'; seal.style.opacity = '0'; seal.style.transform = 'scale(0.7)'; }
-
-  if (glow) {
-    setTimeout(() => { glow.style.opacity = '1'; glow.style.transform = 'scale(1.8)'; setTimeout(() => { glow.style.opacity = '0'; glow.style.transform = 'scale(1)'; }, 500); }, 400);
-  }
-  setTimeout(() => {
-    if (scene) { scene.style.transition = 'transform 0.7s cubic-bezier(0.23,1,0.32,1), opacity 0.5s ease'; scene.style.transform = 'translateY(-40px) scale(1.05)'; scene.style.opacity = '0'; }
-  }, 700);
-  setTimeout(() => {
-    if (pre) pre.style.display = 'none';
-    if (post) {
-      post.style.display = 'flex';
-      post.style.opacity = '0';
-      requestAnimationFrame(() => requestAnimationFrame(() => { post.style.transition = 'opacity 0.7s ease'; post.style.opacity = '1'; }));
-    }
-  }, 1100);
-}
-document.addEventListener('keydown', e => {
-  if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.id === 'heroEnvWrap') { e.preventDefault(); openEnvelope(); }
-});
 
 // TESTIMONIALS
 (async () => {
