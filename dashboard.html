@@ -640,6 +640,7 @@ select.form-input{cursor:pointer}
         <div class="theme-opt" data-val="2" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#4b1010,#f1cb14)"></div><div class="theme-opt-name">Udarata Sinhala</div><div class="theme-opt-sub">Sri Lankan</div></div>
         <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Kalyanam</div><div class="theme-opt-sub">Tamil</div></div>
         <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#F7F3EC,#D8B57A)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
+        <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Udarata Ariya</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Sri Lankan Kandyan</div></div>
       </div>
     </div>
 
@@ -724,7 +725,7 @@ select.form-input{cursor:pointer}
       <div class="form-grid" style="grid-template-columns:1fr">
         <div class="form-group"><label class="form-label">Couple Name *</label><input class="form-input" id="tCoupleName" type="text" placeholder="e.g. Ayasha & Rohan"></div>
         <div class="form-group"><label class="form-label">Caption / Review (optional)</label><input class="form-input" id="tCaption" type="text" placeholder="e.g. Beautiful invitation!"></div>
-        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option></select></div>
+        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option><option value="Udarata Ariya">Udarata Ariya</option></select></div>
       </div>
     </div>
     <div class="form-section">
@@ -889,8 +890,8 @@ function updateStats() {
   const now = new Date();
   document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
 }
-const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A' };
+const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Udarata Ariya' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
