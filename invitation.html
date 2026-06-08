@@ -44,7 +44,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="3"] .bg-overlay{background:rgba(0,0,0,0.55)}
 [data-theme="4"] .bg-overlay{background:rgba(247,243,236,0.50)}
 [data-theme="5"] .bg-overlay{background:rgba(0,0,0,0.55)}
-[data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
 [data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="4"] .family-card{border-top:2px solid var(--accent)}
@@ -100,13 +99,11 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* SWIPE ARENA */
 .arena{width:100%;max-width:480px;height:58dvh;max-height:400px;position:relative;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none}
 .arena:active{cursor:grabbing}
-.swipe-card{position:absolute;width:43%;height:100%;overflow:hidden;border-radius:14px;will-change:transform;box-shadow:0 24px 64px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.06)}
+.swipe-card{position:absolute;width:43%;height:100%;overflow:visible;border-radius:0;will-change:transform;box-shadow:none;border:none;background:transparent}
 .swipe-card.left{left:0;transform-origin:right center}
 .swipe-card.right{right:0;transform-origin:left center}
-.swipe-card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;-webkit-user-drag:none}
-[data-theme="2"] .swipe-card{border-color:rgba(241,203,20,0.2)}
-[data-theme="3"] .swipe-card{border-color:rgba(255,198,28,0.15)}
-[data-theme="5"] .swipe-card{border:1.5px solid rgba(212,175,55,0.3);box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 20px rgba(212,175,55,0.08)}
+.swipe-card img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block;pointer-events:none;-webkit-user-drag:none}
+[data-theme="2"] .swipe-card,[data-theme="3"] .swipe-card,[data-theme="5"] .swipe-card{border:none;box-shadow:none}
 .swipe-divider{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1px;height:72%;background:linear-gradient(180deg,transparent,var(--accent),transparent);opacity:0.4;pointer-events:none;z-index:5;transition:opacity 0.25s}
 .merge-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:100%;background:var(--merge-glow);pointer-events:none;z-index:4;opacity:0}
 .couple-reveal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;z-index:10;transition:opacity 0.7s var(--ease)}
