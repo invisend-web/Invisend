@@ -426,6 +426,16 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .photo-grid{gap:20px;padding:16px}
 [data-theme="6"] .preshoot-title{font-family:'Playfair Display',serif;font-style:italic;color:rgba(242,232,213,0.85)}
 [data-theme="6"] .preshoot-sub{color:rgba(242,232,213,0.35);font-family:'Josefin Sans',sans-serif;letter-spacing:0.35em}
+/* Envelope */
+.env-wrap{display:none;position:absolute;inset:0;z-index:1;pointer-events:none}
+[data-theme="6"] .env-wrap{display:block}
+.env-body{position:absolute;inset:0;background:linear-gradient(175deg,#EDE0C4 0%,#E2D0A0 50%,#D5C088 100%);border:1.5px solid rgba(201,168,76,0.55);box-shadow:0 12px 48px rgba(0,0,0,0.55),inset 0 0 40px rgba(0,0,0,0.06)}
+.env-body::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to bottom right,transparent calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% + 0.5px),transparent calc(50% + 0.5px)),linear-gradient(to bottom left,transparent calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% + 0.5px),transparent calc(50% + 0.5px))}
+.env-flap{position:absolute;top:0;left:0;right:0;height:60%;background:linear-gradient(175deg,#E8D8A8 0%,#D8C080 70%,rgba(216,192,128,0) 100%);clip-path:polygon(0 0,100% 0,50% 80%);border-top:1.5px solid rgba(201,168,76,0.4);box-shadow:0 4px 16px rgba(0,0,0,0.18);transform-origin:top center;z-index:2;backface-visibility:hidden}
+.env-flap::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,0.1) 0%,transparent 55%);clip-path:polygon(0 0,100% 0,50% 80%)}
+.env-flap.opening{animation:flapOpen 0.75s cubic-bezier(0.4,0,0.6,1) forwards}
+@keyframes flapOpen{0%{transform:perspective(600px) rotateX(0deg);opacity:1}100%{transform:perspective(600px) rotateX(-170deg);opacity:0}}
+[data-theme="6"] .swipe-card{z-index:2}
 /* Wax Seal */
 .wax-seal-wrap{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:15;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:14px;-webkit-tap-highlight-color:transparent}
 [data-theme="6"] .wax-seal-wrap{display:flex}
@@ -480,6 +490,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
     <div class="hero-tag">A Wedding Invitation</div>
     <div class="arena" id="arena">
+      <div class="env-wrap" id="envWrap"><div class="env-body"></div><div class="env-flap" id="envFlap"></div></div>
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
       <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt=""></div>
       <div class="swipe-divider" id="divider"></div>
@@ -790,6 +801,10 @@ function pressWaxSeal() {
   }, 150);
   setTimeout(() => { spawnVintageGoldDust(sealWrap); }, 300);
   setTimeout(() => {
+    const envFlap = document.getElementById('envFlap');
+    if (envFlap) envFlap.classList.add('opening');
+  }, 400);
+  setTimeout(() => {
     if (sealWrap) { sealWrap.style.transition = 'opacity 0.4s ease'; sealWrap.style.opacity = '0'; sealWrap.style.pointerEvents = 'none'; }
   }, 600);
   setTimeout(() => {
@@ -799,6 +814,8 @@ function pressWaxSeal() {
     if (g) { g.style.width = '80%'; g.style.opacity = '0.8'; }
     const divider = document.getElementById('divider');
     if (divider) divider.style.opacity = '0';
+    const envWrap = document.getElementById('envWrap');
+    if (envWrap) { envWrap.style.transition = 'opacity 0.6s ease'; envWrap.style.opacity = '0'; }
   }, 700);
   setTimeout(() => {
     const g = document.getElementById('mergeGlow');
