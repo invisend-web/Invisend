@@ -46,15 +46,24 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .vintage-bg-overlay{display:none;position:absolute;inset:0;background:rgba(20,12,6,0.70);pointer-events:none;z-index:1;will-change:opacity}
 [data-theme="6"] .vintage-bg-overlay{display:block}
 @media(max-width:768px){.vintage-bg-image{background-attachment:scroll}}
-.bg-image-layer{position:absolute;inset:0;z-index:0;display:none;pointer-events:none}
-.bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease}
-.bg-overlay{position:absolute;inset:0}
-[data-theme="1"] .bg-overlay{background:rgba(0,0,0,0.55)}
-[data-theme="2"] .bg-overlay{background:rgba(0,0,0,0.55)}
-[data-theme="3"] .bg-overlay{background:rgba(0,0,0,0.55)}
-[data-theme="4"] .bg-overlay{background:rgba(247,243,236,0.50)}
-[data-theme="5"] .bg-overlay{background:rgba(0,0,0,0.55)}
-[data-theme="6"] .bg-overlay{background:rgba(28,21,16,0.5)}
+/* ── CUSTOM BACKGROUND IMAGE SYSTEM ── */
+.custom-bg-wrap{position:fixed;inset:0;z-index:-1;pointer-events:none;will-change:opacity}
+.custom-bg-image{position:absolute;inset:0;background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed;transition:opacity 0.3s ease}
+@media(max-width:768px){.custom-bg-image{background-attachment:scroll}}
+.custom-bg-fade{position:absolute;left:0;right:0;bottom:0;height:45%;pointer-events:none}
+[data-theme="1"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
+[data-theme="2"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
+[data-theme="3"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(6,18,8,0.4) 40%,rgba(6,18,8,0.85) 70%,rgba(6,18,8,1) 100%)}
+[data-theme="4"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(247,243,236,0.4) 40%,rgba(247,243,236,0.85) 70%,rgba(247,243,236,1) 100%)}
+[data-theme="5"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(18,8,0,0.4) 40%,rgba(18,8,0,0.85) 70%,rgba(18,8,0,1) 100%)}
+[data-theme="6"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(28,21,16,0.4) 40%,rgba(28,21,16,0.85) 70%,rgba(28,21,16,1) 100%)}
+.custom-bg-overlay{position:absolute;inset:0;pointer-events:none}
+[data-theme="1"] .custom-bg-overlay{background:rgba(7,6,10,0.35)}
+[data-theme="2"] .custom-bg-overlay{background:rgba(22,4,4,0.35)}
+[data-theme="3"] .custom-bg-overlay{background:rgba(6,18,8,0.35)}
+[data-theme="4"] .custom-bg-overlay{background:rgba(247,243,236,0.25)}
+[data-theme="5"] .custom-bg-overlay{background:rgba(18,8,0,0.4)}
+[data-theme="6"] .custom-bg-overlay{background:rgba(28,21,16,0.45)}
 [data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="4"] .family-card{border-top:2px solid var(--accent)}
@@ -103,7 +112,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .sound-switch-track.muted{background:rgba(94,74,58,0.2)}
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0 48px;position:relative;overflow:hidden}
-.hero > *:not(.bg-image-layer){position:relative;z-index:1}
+.hero > *{position:relative;z-index:1}
 .hero-tag{font-family:var(--font-ui);font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:44px;animation:fadeUp 0.7s var(--ease) 0.2s both}
 [data-theme="2"] .hero-tag,[data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="5"] .hero-tag{padding:6px 20px;border:1px solid rgba(212,175,55,0.35);border-radius:20px;background:rgba(212,175,55,0.06);letter-spacing:0.4em}
@@ -466,6 +475,11 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="vintage-bg-overlay" id="vintageBgOverlay"></div>
   </div>
 </div>
+<div class="custom-bg-wrap" id="customBgWrap" style="display:none">
+  <div class="custom-bg-image" id="customBgImage"></div>
+  <div class="custom-bg-overlay" id="customBgOverlay"></div>
+  <div class="custom-bg-fade" id="customBgFade"></div>
+</div>
 <div class="loader" id="loader">
   <div class="loader-ring"></div>
   <div class="loader-text">Opening your invitation</div>
@@ -497,7 +511,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
   <section class="hero" id="heroSection">
-    <div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
     <div class="hero-tag">A Wedding Invitation</div>
     <div class="arena" id="arena">
       <div class="env-wrap" id="envWrap">
@@ -999,7 +1012,7 @@ function render(d) {
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
-  if (d.background_image_url) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && parseInt(document.documentElement.getAttribute('data-theme')) !== 6) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
     const cr = document.getElementById('coupleReveal');
@@ -1010,12 +1023,66 @@ function render(d) {
 function setImg(id, url) { if (url) document.getElementById(id).src = url; }
 
 function applyBackgroundImage(url) {
-  const layer = document.getElementById('bgImageLayer');
-  const img = document.getElementById('bgImage');
+  if (!url) return;
+  const wrap = document.getElementById('customBgWrap');
+  const image = document.getElementById('customBgImage');
+  const bgLayer = document.querySelector('.bg-layer');
+  if (!wrap || !image) return;
+  image.style.backgroundImage = `url('${url}')`;
+  image.style.opacity = '0';
+  wrap.style.display = 'block';
+  const img = new Image();
+  img.onload = function() {
+    if (bgLayer) { bgLayer.style.transition = 'opacity 0.8s ease'; bgLayer.style.opacity = '0'; }
+    image.style.transition = 'opacity 1.2s ease';
+    image.style.opacity = '1';
+    initCustomBgScrollFade();
+  };
+  img.onerror = function() {
+    wrap.style.display = 'none';
+    if (bgLayer) bgLayer.style.opacity = '1';
+  };
   img.src = url;
-  layer.style.display = 'block';
-  img.onload = () => { img.style.opacity = '1'; };
-  img.onerror = () => { layer.style.display = 'none'; };
+}
+function initCustomBgScrollFade() {
+  const wrap = document.getElementById('customBgWrap');
+  if (!wrap) return;
+  let currentOpacity = 1, targetOpacity = 1, rafId = null, lastScrollY = -1;
+  function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+  function getTargetOpacity() {
+    const heroEl = document.getElementById('heroSection');
+    const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+    const fadeStart = heroHeight * 0.20, fadeEnd = heroHeight * 0.88;
+    const scrollY = window.scrollY;
+    if (scrollY <= fadeStart) return 1;
+    if (scrollY >= fadeEnd) return 0;
+    return parseFloat((1 - easeInOutCubic((scrollY - fadeStart) / (fadeEnd - fadeStart))).toFixed(4));
+  }
+  function animate() {
+    const diff = targetOpacity - currentOpacity;
+    if (Math.abs(diff) < 0.001) { currentOpacity = targetOpacity; wrap.style.opacity = currentOpacity.toString(); rafId = null; return; }
+    currentOpacity += diff * 0.10;
+    wrap.style.opacity = currentOpacity.toFixed(4);
+    rafId = requestAnimationFrame(animate);
+  }
+  function onScroll() {
+    const scrollY = window.scrollY;
+    if (Math.abs(scrollY - lastScrollY) < 0.5) return;
+    lastScrollY = scrollY;
+    targetOpacity = getTargetOpacity();
+    if (!rafId) rafId = requestAnimationFrame(animate);
+  }
+  function onResize() {
+    targetOpacity = currentOpacity = getTargetOpacity();
+    wrap.style.opacity = currentOpacity.toString();
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+  wrap.style.opacity = '1';
+  currentOpacity = 1;
+  targetOpacity = getTargetOpacity();
+  if (window.scrollY > 0) { currentOpacity = targetOpacity; wrap.style.opacity = currentOpacity.toString(); }
 }
 
 // ─── PRESHOOT CAROUSEL ───
