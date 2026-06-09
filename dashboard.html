@@ -1005,7 +1005,8 @@ async function handlePreshootUpload(input, idx) {
     try {
       const oldUrl = preshootUrls[idx];
       if (oldUrl) markFileOrphaned(oldUrl);
-      const path = `preshoot/${Date.now()}_${idx}.jpg`;
+      const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
+      const path = `preshoot/${Date.now()}_${idx}.${ext}`;
       const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
       if (error) throw error;
       const { data: u } = sb.storage.from('images').getPublicUrl(path);
@@ -1640,17 +1641,19 @@ async function applyCrop() {
     const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 2000, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
     const cb = cropCallback;
     const origFile = cropFile;
+    const isPng = origFile.type === 'image/png' || origFile.name.toLowerCase().endsWith('.png');
+    const mime = isPng ? 'image/png' : 'image/jpeg';
     canvas.toBlob(async (blob) => {
       try {
         if (!blob) { showToast('Crop failed: could not generate image', 'error'); resetBtn(); return; }
-        const croppedFile = new File([blob], origFile.name, { type: 'image/jpeg' });
+        const croppedFile = new File([blob], origFile.name, { type: mime });
         closeCropModal();
         await cb(croppedFile);
       } catch(e) {
         showToast('Crop failed: ' + e.message, 'error');
         resetBtn();
       }
-    }, 'image/jpeg', 0.92);
+    }, mime, isPng ? undefined : 0.92);
   } catch(e) {
     showToast('Crop failed: ' + e.message, 'error');
     resetBtn();
@@ -1667,7 +1670,8 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
       const hiddenId = type === 'swipeA' ? 'fSwipeA' : type === 'swipeB' ? 'fSwipeB' : type === 'couple' ? 'fCouplePhoto' : type === 'background' ? 'fBgImage' : null;
       const oldUrl = hiddenId ? document.getElementById(hiddenId)?.value : null;
       if (oldUrl) markFileOrphaned(oldUrl);
-      const path = `${type}/${Date.now()}.jpg`;
+      const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
+      const path = `${type}/${Date.now()}.${ext}`;
       const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
       if (error) throw error;
       const { data: u } = sb.storage.from('images').getPublicUrl(path);
