@@ -99,10 +99,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* SWIPE ARENA */
 .arena{width:100%;max-width:480px;height:58dvh;max-height:400px;position:relative;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none}
 .arena:active{cursor:grabbing}
-.swipe-card{position:absolute;width:43%;height:100%;overflow:visible;border-radius:0;will-change:transform;box-shadow:none;border:none;background:transparent;display:flex;align-items:flex-end;justify-content:center}
+.swipe-card{position:absolute;width:43%;height:100%;overflow:visible;border-radius:0;box-shadow:none;border:none;background:transparent;display:flex;align-items:flex-end;justify-content:center}
 .swipe-card.left{left:0;transform-origin:right center}
 .swipe-card.right{right:0;transform-origin:left center}
-.swipe-card img{max-height:100%;max-width:100%;width:auto;height:auto;display:block;pointer-events:none;-webkit-user-drag:none;mix-blend-mode:screen}
+.swipe-card img{max-height:100%;max-width:100%;width:auto;height:auto;display:block;pointer-events:none;-webkit-user-drag:none;will-change:transform}
 [data-theme="2"] .swipe-card,[data-theme="3"] .swipe-card,[data-theme="5"] .swipe-card{border:none;box-shadow:none}
 .swipe-divider{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1px;height:72%;background:linear-gradient(180deg,transparent,var(--accent),transparent);opacity:0.4;pointer-events:none;z-index:5;transition:opacity 0.25s}
 .merge-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:100%;background:var(--merge-glow);pointer-events:none;z-index:4;opacity:0}
