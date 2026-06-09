@@ -429,10 +429,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* Envelope */
 .env-wrap{display:none;position:absolute;inset:0;z-index:1;pointer-events:none}
 [data-theme="6"] .env-wrap{display:block}
-.env-body{position:absolute;inset:0;background:linear-gradient(175deg,#EDE0C4 0%,#E2D0A0 50%,#D5C088 100%);border:1.5px solid rgba(201,168,76,0.55);box-shadow:0 12px 48px rgba(0,0,0,0.55),inset 0 0 40px rgba(0,0,0,0.06)}
-.env-body::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to bottom right,transparent calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% + 0.5px),transparent calc(50% + 0.5px)),linear-gradient(to bottom left,transparent calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% - 0.5px),rgba(139,26,26,0.18) calc(50% + 0.5px),transparent calc(50% + 0.5px))}
-.env-flap{position:absolute;top:0;left:0;right:0;height:60%;background:linear-gradient(175deg,#E8D8A8 0%,#D8C080 70%,rgba(216,192,128,0) 100%);clip-path:polygon(0 0,100% 0,50% 80%);border-top:1.5px solid rgba(201,168,76,0.4);box-shadow:0 4px 16px rgba(0,0,0,0.18);transform-origin:top center;z-index:2;backface-visibility:hidden}
-.env-flap::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,0.1) 0%,transparent 55%);clip-path:polygon(0 0,100% 0,50% 80%)}
+.env-body{position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 0% 0%,rgba(75,38,6,0.6) 0%,transparent 50%),radial-gradient(ellipse 55% 55% at 100% 0%,rgba(75,38,6,0.6) 0%,transparent 50%),radial-gradient(ellipse 55% 55% at 0% 100%,rgba(75,38,6,0.6) 0%,transparent 50%),radial-gradient(ellipse 55% 55% at 100% 100%,rgba(75,38,6,0.6) 0%,transparent 50%),radial-gradient(ellipse 55% 50% at 35% 30%,rgba(245,228,185,0.55) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 65% 65%,rgba(225,200,145,0.35) 0%,transparent 50%),linear-gradient(162deg,#B88A38 0%,#CCA050 15%,#DCBA78 30%,#EDD9A5 52%,#E0C480 68%,#C89840 85%,#A87428 100%);border:1.5px solid rgba(100,55,12,0.45);box-shadow:0 8px 28px rgba(0,0,0,0.55)}
+.env-body::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to bottom right,transparent calc(50% - 0.5px),rgba(90,45,8,0.16) calc(50% - 0.5px),rgba(90,45,8,0.16) calc(50% + 0.5px),transparent calc(50% + 0.5px)),linear-gradient(to bottom left,transparent calc(50% - 0.5px),rgba(90,45,8,0.16) calc(50% - 0.5px),rgba(90,45,8,0.16) calc(50% + 0.5px),transparent calc(50% + 0.5px))}
+.env-border-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.env-flap{position:absolute;top:0;left:0;right:0;height:60%;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(70,35,6,0.3) 0%,transparent 55%),linear-gradient(165deg,#9E7020 0%,#B88A40 20%,#CCAA60 42%,#DEC080 65%,rgba(222,192,128,0) 100%);clip-path:polygon(0 0,100% 0,50% 80%);border-top:1.5px solid rgba(100,55,12,0.5);box-shadow:0 2px 10px rgba(0,0,0,0.2);transform-origin:top center;z-index:4;backface-visibility:hidden}
 .env-flap.opening{animation:flapOpen 0.75s cubic-bezier(0.4,0,0.6,1) forwards}
 @keyframes flapOpen{0%{transform:perspective(600px) rotateX(0deg);opacity:1}100%{transform:perspective(600px) rotateX(-170deg);opacity:0}}
 [data-theme="6"] .swipe-card{z-index:2}
@@ -490,7 +490,62 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="bg-image-layer" id="bgImageLayer"><img class="bg-image" id="bgImage" src="" alt=""><div class="bg-overlay"></div></div>
     <div class="hero-tag">A Wedding Invitation</div>
     <div class="arena" id="arena">
-      <div class="env-wrap" id="envWrap"><div class="env-body"></div><div class="env-flap" id="envFlap"></div></div>
+      <div class="env-wrap" id="envWrap">
+        <div class="env-body"></div>
+        <svg class="env-border-svg" viewBox="0 0 200 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <g stroke-linecap="round" stroke-linejoin="round">
+            <rect x="7" y="7" width="186" height="286" fill="none" stroke="rgba(82,44,16,0.5)" stroke-width="1.2"/>
+            <rect x="10" y="10" width="180" height="280" fill="none" stroke="rgba(82,44,16,0.22)" stroke-width="0.5"/>
+            <path d="M7,7 C3,7 3,3 7,3 C11,3 11,7 7,11 C3,11 3,7 7,7" fill="none" stroke="rgba(82,44,16,0.5)" stroke-width="0.8"/>
+            <path d="M193,7 C197,7 197,3 193,3 C189,3 189,7 193,11 C197,11 197,7 193,7" fill="none" stroke="rgba(82,44,16,0.5)" stroke-width="0.8"/>
+            <path d="M7,293 C3,293 3,297 7,297 C11,297 11,293 7,289 C3,289 3,293 7,293" fill="none" stroke="rgba(82,44,16,0.5)" stroke-width="0.8"/>
+            <path d="M193,293 C197,293 197,297 193,297 C189,297 189,293 193,289 C197,289 197,293 193,293" fill="none" stroke="rgba(82,44,16,0.5)" stroke-width="0.8"/>
+            <path d="M18,7 C20,2 27,1 24,7" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M7,18 C2,20 1,27 7,24" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M182,7 C180,2 173,1 176,7" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M193,18 C198,20 199,27 193,24" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M18,293 C20,298 27,299 24,293" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M7,282 C2,280 1,273 7,276" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M182,293 C180,298 173,299 176,293" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M193,282 C198,280 199,273 193,276" fill="rgba(82,44,16,0.38)" stroke="none"/>
+            <path d="M28,7 Q55,5.5 85,7 Q115,8.5 145,7 Q165,6 172,7" fill="none" stroke="rgba(82,44,16,0.38)" stroke-width="0.7"/>
+            <path d="M55,7 C57,2 63,1 61,7" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M100,6.5 C102,1.5 108,0.5 106,6.5" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M145,7 C147,2 153,1 151,7" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <circle cx="78" cy="6.5" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <circle cx="122" cy="7.5" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <path d="M28,293 Q55,294.5 85,293 Q115,291.5 145,293 Q165,294 172,293" fill="none" stroke="rgba(82,44,16,0.38)" stroke-width="0.7"/>
+            <path d="M55,293 C57,298 63,299 61,293" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M100,293.5 C102,298.5 108,299.5 106,293.5" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M145,293 C147,298 153,299 151,293" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <circle cx="78" cy="293.5" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <circle cx="122" cy="292.5" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <path d="M7,32 Q5.5,65 7,90 Q8.5,115 7,140 Q5.5,165 7,190 Q8.5,215 7,240 Q5.5,265 7,268" fill="none" stroke="rgba(82,44,16,0.38)" stroke-width="0.7"/>
+            <path d="M7,65 C2,67 1,73 7,71" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M7,100 C2,98 1,92 7,94" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M7,165 C2,167 1,173 7,171" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M7,200 C2,198 1,192 7,194" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M7,235 C2,237 1,243 7,241" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <circle cx="7" cy="150" r="3" fill="rgba(82,44,16,0.38)"/>
+            <path d="M7,150 L1,143 Q-1,138 3,138 Q7,138 7,144" fill="rgba(82,44,16,0.25)" stroke="none"/>
+            <path d="M7,150 L13,143 Q15,138 11,138 Q7,138 7,144" fill="rgba(82,44,16,0.25)" stroke="none"/>
+            <circle cx="7" cy="65" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <circle cx="7" cy="235" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <path d="M193,32 Q194.5,65 193,90 Q191.5,115 193,140 Q194.5,165 193,190 Q191.5,215 193,240 Q194.5,265 193,268" fill="none" stroke="rgba(82,44,16,0.38)" stroke-width="0.7"/>
+            <path d="M193,65 C198,67 199,73 193,71" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M193,100 C198,98 199,92 193,94" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M193,165 C198,167 199,173 193,171" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M193,200 C198,198 199,192 193,194" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <path d="M193,235 C198,237 199,243 193,241" fill="rgba(82,44,16,0.32)" stroke="none"/>
+            <circle cx="193" cy="150" r="3" fill="rgba(82,44,16,0.38)"/>
+            <path d="M193,150 L187,143 Q185,138 189,138 Q193,138 193,144" fill="rgba(82,44,16,0.25)" stroke="none"/>
+            <path d="M193,150 L199,143 Q201,138 197,138 Q193,138 193,144" fill="rgba(82,44,16,0.25)" stroke="none"/>
+            <circle cx="193" cy="65" r="1.5" fill="rgba(82,44,16,0.3)"/>
+            <circle cx="193" cy="235" r="1.5" fill="rgba(82,44,16,0.3)"/>
+          </g>
+        </svg>
+        <div class="env-flap" id="envFlap"></div>
+      </div>
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
       <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt=""></div>
       <div class="swipe-divider" id="divider"></div>
