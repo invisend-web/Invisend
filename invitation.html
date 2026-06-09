@@ -39,11 +39,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(216,181,122,0.15) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(212,166,166,0.12) 0%,transparent 60%),#F7F3EC}
 [data-theme="5"] .bg-layer{background:radial-gradient(ellipse 70% 50% at 15% 10%,rgba(212,175,55,0.08) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 85% 85%,rgba(139,0,0,0.12) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 50% 50%,rgba(36,18,0,0.8) 0%,transparent 80%),#120800}
 [data-theme="5"] .bg-layer::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(212,175,55,0.04) 48px,rgba(212,175,55,0.04) 49px),repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(212,175,55,0.04) 48px,rgba(212,175,55,0.04) 49px);pointer-events:none}
-[data-theme="6"] .bg-layer{background-image:url('https://uodiuclpqnhwsiclrbsq.supabase.co/storage/v1/object/public/themes/vintage-bg.jpg');background-size:cover;background-position:center center;background-repeat:no-repeat;background-attachment:fixed;animation:vintageBgReveal 1.2s ease-out both;transition:opacity 0.6s ease;will-change:opacity}
-.vintage-overlay{display:none;position:absolute;inset:0;pointer-events:none;z-index:0;transition:opacity 0.6s ease;will-change:opacity}
-[data-theme="6"] .vintage-overlay{display:block;background:rgba(20,12,6,0.72)}
-@keyframes vintageBgReveal{from{opacity:0}to{opacity:1}}
-@media(max-width:768px){[data-theme="6"] .bg-layer{background-attachment:scroll}}
+[data-theme="6"] .bg-layer{background:none!important;will-change:opacity}
+.vintage-bg-wrap{position:absolute;inset:0;will-change:opacity}
+.vintage-bg-image{display:none;position:absolute;inset:0;background-image:url('https://uodiuclpqnhwsiclrbsq.supabase.co/storage/v1/object/public/themes/vintage-bg.jpg');background-size:cover;background-position:center center;background-repeat:no-repeat;background-attachment:fixed;z-index:0}
+[data-theme="6"] .vintage-bg-image{display:block}
+.vintage-bg-overlay{display:none;position:absolute;inset:0;background:rgba(20,12,6,0.70);pointer-events:none;z-index:1;will-change:opacity}
+[data-theme="6"] .vintage-bg-overlay{display:block}
+@media(max-width:768px){.vintage-bg-image{background-attachment:scroll}}
 .bg-image-layer{position:absolute;inset:0;z-index:0;display:none;pointer-events:none}
 .bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 1.2s ease}
 .bg-overlay{position:absolute;inset:0}
@@ -458,7 +460,12 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 </style>
 </head>
 <body>
-<div class="bg-layer"><div class="vintage-overlay" id="vintageOverlay"></div></div>
+<div class="bg-layer" id="bgLayer">
+  <div class="vintage-bg-wrap" id="vintageBgWrap">
+    <div class="vintage-bg-image" id="vintageBgImage"></div>
+    <div class="vintage-bg-overlay" id="vintageBgOverlay"></div>
+  </div>
+</div>
 <div class="loader" id="loader">
   <div class="loader-ring"></div>
   <div class="loader-text">Opening your invitation</div>
@@ -815,7 +822,7 @@ async function init() {
     invData = data;
     applyTheme(data.template_id);
     handleThemeSpecificUI(data.template_id);
-    initVintageBgScroll();
+    initVintageBgFade();
     addKandyanOrnaments();
     render(data);
     initSwipe();
@@ -833,31 +840,40 @@ async function init() {
 }
 
 function applyTheme(t) { document.documentElement.setAttribute('data-theme', t || 1); }
-function initVintageBgScroll() {
+function initVintageBgFade() {
   if (parseInt(document.documentElement.getAttribute('data-theme')) !== 6) return;
-  const bgLayer = document.querySelector('.bg-layer');
-  if (!bgLayer) return;
-  function updateBgOpacity() {
-    const heroHeight = document.getElementById('heroSection')?.offsetHeight || window.innerHeight;
+  const wrap = document.getElementById('vintageBgWrap');
+  if (!wrap) return;
+  let currentOpacity = 1, targetOpacity = 1, rafId = null, lastScrollY = window.scrollY;
+  function easeInOut(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+  function getTargetOpacity() {
+    const heroEl = document.getElementById('heroSection');
+    const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+    const fadeStart = heroHeight * 0.15, fadeEnd = heroHeight * 0.85;
     const scrollY = window.scrollY;
-    const fadeStart = heroHeight * 0.2;
-    const fadeEnd = heroHeight * 0.9;
-    let opacity = 1;
-    if (scrollY <= fadeStart) {
-      opacity = 1;
-    } else if (scrollY >= fadeEnd) {
-      opacity = 0;
-    } else {
-      const progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
-      opacity = 1 - (progress * progress);
-    }
-    bgLayer.style.opacity = opacity.toString();
-    const overlay = document.getElementById('vintageOverlay');
-    if (overlay) overlay.style.opacity = opacity.toString();
+    if (scrollY <= fadeStart) return 1;
+    if (scrollY >= fadeEnd) return 0;
+    return 1 - easeInOut((scrollY - fadeStart) / (fadeEnd - fadeStart));
   }
-  window.addEventListener('scroll', updateBgOpacity, { passive: true });
-  window.addEventListener('resize', updateBgOpacity, { passive: true });
-  updateBgOpacity();
+  function animate() {
+    const diff = targetOpacity - currentOpacity;
+    if (Math.abs(diff) < 0.002) { currentOpacity = targetOpacity; wrap.style.opacity = currentOpacity.toFixed(3); rafId = null; return; }
+    currentOpacity += diff * 0.12;
+    wrap.style.opacity = currentOpacity.toFixed(3);
+    rafId = requestAnimationFrame(animate);
+  }
+  function onScroll() {
+    const newScrollY = window.scrollY;
+    if (Math.abs(newScrollY - lastScrollY) < 1) return;
+    lastScrollY = newScrollY;
+    targetOpacity = getTargetOpacity();
+    if (!rafId) rafId = requestAnimationFrame(animate);
+  }
+  function onResize() { targetOpacity = currentOpacity = getTargetOpacity(); wrap.style.opacity = currentOpacity.toFixed(3); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+  wrap.style.opacity = '1';
+  targetOpacity = getTargetOpacity();
 }
 function handleThemeSpecificUI(themeId) {
   const waxSeal = document.getElementById('waxSealWrap');
