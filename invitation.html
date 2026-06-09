@@ -437,7 +437,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .env-flap{position:absolute;top:0;left:0;right:0;height:60%;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(70,35,6,0.3) 0%,transparent 55%),linear-gradient(165deg,#9E7020 0%,#B88A40 20%,#CCAA60 42%,#DEC080 65%,rgba(222,192,128,0) 100%);clip-path:polygon(0 0,100% 0,50% 80%);border-top:1.5px solid rgba(100,55,12,0.5);box-shadow:0 2px 10px rgba(0,0,0,0.2);transform-origin:top center;z-index:4;backface-visibility:hidden}
 .env-flap.opening{animation:flapOpen 0.75s cubic-bezier(0.4,0,0.6,1) forwards}
 @keyframes flapOpen{0%{transform:perspective(600px) rotateX(0deg);opacity:1}100%{transform:perspective(600px) rotateX(-170deg);opacity:0}}
-[data-theme="6"] .swipe-card{z-index:2}
+[data-theme="6"] .swipe-card{z-index:2;opacity:0;transition:opacity 0.3s ease}
 /* Wax Seal */
 .wax-seal-wrap{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:15;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:14px;-webkit-tap-highlight-color:transparent}
 [data-theme="6"] .wax-seal-wrap{display:flex}
@@ -860,6 +860,9 @@ function pressWaxSeal() {
   setTimeout(() => {
     const envFlap = document.getElementById('envFlap');
     if (envFlap) envFlap.classList.add('opening');
+    const L = document.getElementById('cardLeft'), R = document.getElementById('cardRight');
+    if (L) L.style.opacity = '1';
+    if (R) R.style.opacity = '1';
   }, 400);
   setTimeout(() => {
     if (sealWrap) { sealWrap.style.transition = 'opacity 0.4s ease'; sealWrap.style.opacity = '0'; sealWrap.style.pointerEvents = 'none'; }
@@ -877,8 +880,10 @@ function pressWaxSeal() {
   setTimeout(() => {
     const g = document.getElementById('mergeGlow');
     if (g) g.style.opacity = '0';
+    const coupleImg = document.getElementById('coupleImg');
+    const hasPhoto = coupleImg && coupleImg.src && coupleImg.src.startsWith('http');
     const coupleReveal = document.getElementById('coupleReveal');
-    if (coupleReveal) { coupleReveal.style.display = 'flex'; coupleReveal.classList.add('show'); }
+    if (coupleReveal && hasPhoto) { coupleReveal.style.display = 'flex'; coupleReveal.classList.add('show'); }
   }, 1300);
   setTimeout(() => {
     const nameBlock = document.getElementById('coupleNameBlock');
