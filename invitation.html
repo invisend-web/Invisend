@@ -120,13 +120,16 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* SWIPE ARENA */
 .arena{width:100%;max-width:480px;height:58dvh;max-height:400px;position:relative;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none}
 .arena:active{cursor:grabbing}
-.swipe-card{position:absolute;width:43%;height:100%;overflow:visible;border-radius:0;box-shadow:none;border:none;background:transparent;display:flex;align-items:flex-end;justify-content:center}
+.swipe-card{position:absolute;width:43%;height:100%;overflow:hidden;border-radius:14px;will-change:transform;box-shadow:0 24px 64px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.06);background:transparent}
 .swipe-card.left{left:0;transform-origin:right center}
 .swipe-card.right{right:0;transform-origin:left center}
-.swipe-card img{max-height:100%;max-width:100%;width:auto;height:auto;display:block;pointer-events:none;-webkit-user-drag:none;will-change:transform;opacity:0;transition:opacity 0.6s ease}
+.swipe-card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;-webkit-user-drag:none;will-change:transform;opacity:0;transition:opacity 0.6s ease}
 .swipe-card img.loaded{opacity:1}
-[data-theme="2"] .swipe-card,[data-theme="3"] .swipe-card,[data-theme="5"] .swipe-card{border:none;box-shadow:none}
-[data-theme="6"] .swipe-card{border:1px solid rgba(201,168,76,0.3);box-shadow:0 24px 64px rgba(0,0,0,0.7),inset 0 0 40px rgba(242,232,213,0.03)}
+[data-theme="2"] .swipe-card{border-color:rgba(241,203,20,0.2)}
+[data-theme="3"] .swipe-card{border-color:rgba(255,198,28,0.15)}
+[data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
+[data-theme="5"] .swipe-card{border:1.5px solid rgba(212,175,55,0.3);box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 20px rgba(212,175,55,0.08)}
+[data-theme="6"] .swipe-card{overflow:visible;border-radius:0;border:1px solid rgba(201,168,76,0.3);box-shadow:0 24px 64px rgba(0,0,0,0.7),inset 0 0 40px rgba(242,232,213,0.03)}
 [data-theme="6"] .swipe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 50%,rgba(28,21,16,0.4) 100%);z-index:2;pointer-events:none;border-radius:inherit}
 .swipe-divider{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1px;height:72%;background:linear-gradient(180deg,transparent,var(--accent),transparent);opacity:0.4;pointer-events:none;z-index:5;transition:opacity 0.25s}
 .merge-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:100%;background:var(--merge-glow);pointer-events:none;z-index:4;opacity:0}
