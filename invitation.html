@@ -128,8 +128,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="2"] .swipe-card{border-color:rgba(241,203,20,0.2)}
 [data-theme="3"] .swipe-card{border-color:rgba(255,198,28,0.15)}
 [data-theme="4"] .swipe-card{border-color:rgba(212,166,166,0.5)}
-[data-theme="5"] .swipe-card{overflow:visible;border-radius:0;border:none;box-shadow:none}
-[data-theme="5"] .swipe-card img{width:auto;height:auto;max-height:100%;max-width:100%;object-fit:unset}
+[data-theme="5"] .swipe-card{overflow:visible;border-radius:0;border:none;box-shadow:none;will-change:auto}
+[data-theme="5"] .swipe-card img{width:auto;height:auto;max-height:100%;max-width:100%;will-change:auto;opacity:1;transition:none}
 [data-theme="6"] .swipe-card{overflow:visible;border-radius:0;border:1px solid rgba(201,168,76,0.3);box-shadow:0 24px 64px rgba(0,0,0,0.7),inset 0 0 40px rgba(242,232,213,0.03)}
 [data-theme="6"] .swipe-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 50%,rgba(28,21,16,0.4) 100%);z-index:2;pointer-events:none;border-radius:inherit}
 .swipe-divider{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1px;height:72%;background:linear-gradient(180deg,transparent,var(--accent),transparent);opacity:0.4;pointer-events:none;z-index:5;transition:opacity 0.25s}
