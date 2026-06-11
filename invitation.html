@@ -1492,9 +1492,12 @@ function tgGetX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
 function tgGetMaxMove() {
   const dock   = document.getElementById('tgDock');
   const portEl = document.getElementById('tgLeft');
-  if (!dock || !portEl) return 140;
-  // Exactly where portraits meet in center
-  return (dock.offsetWidth / 2) - (portEl.offsetWidth / 2);
+  if (!dock || !portEl) return 120;
+  // Each portrait moves exactly half dock width minus half portrait width
+  // so they meet precisely in the center
+  const dockW = dock.offsetWidth;
+  const portW = portEl.offsetWidth;
+  return Math.floor((dockW - portW) / 2);
 }
 
 function tgStart(e, side) {
@@ -1512,51 +1515,57 @@ function tgStart(e, side) {
 function tgMove(e) {
   if (!tgActive || tgRevealed) return;
   if (e.cancelable) e.preventDefault();
+
   const currentX = tgGetX(e);
-  const diff = currentX - tgStartX;
-  const maxMove = tgGetMaxMove();
+  const diff     = currentX - tgStartX;
+  const maxMove  = tgGetMaxMove();
+
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
+
+  // Both portraits always move equal amounts toward center — symmetrically
+  let moveAmount = 0;
   if (tgActive === 'left') {
-    const newX = Math.max(0, Math.min(maxMove, diff));
-    tgLeftX = newX; tgRightX = -(newX * 0.6);
+    moveAmount = Math.max(0, Math.min(maxMove, diff));
   } else {
-    const newX = Math.min(0, Math.max(-maxMove, diff));
-    tgRightX = newX; tgLeftX = Math.abs(newX) * 0.6;
+    moveAmount = Math.max(0, Math.min(maxMove, -diff));
   }
+
+  tgLeftX  =  moveAmount;
+  tgRightX = -moveAmount;
+
   if (leftEl)  leftEl.style.transform  = `translateX(${tgLeftX}px)`;
   if (rightEl) rightEl.style.transform = `translateX(${tgRightX}px)`;
-  // Check if portraits have met in center
-  const portEl   = document.getElementById('tgLeft');
-  const portW    = portEl ? portEl.offsetWidth : 180;
-  const dockW    = document.getElementById('tgDock')?.offsetWidth || window.innerWidth;
-  const meetPoint = (dockW / 2) - (portW / 2);
-  if (tgLeftX >= meetPoint || Math.abs(tgRightX) >= meetPoint) {
-    const leftEl2  = document.getElementById('tgLeft');
-    const rightEl2 = document.getElementById('tgRight');
-    if (leftEl2)  { leftEl2.style.transition  = 'transform 0.25s ease-out'; leftEl2.style.transform  = `translateX(${meetPoint}px)`; }
-    if (rightEl2) { rightEl2.style.transition = 'transform 0.25s ease-out'; rightEl2.style.transform = `translateX(-${meetPoint}px)`; }
-    tgLeftX  = meetPoint;
-    tgRightX = -meetPoint;
+
+  // Check if portraits have met — moveAmount reaches maxMove
+  if (moveAmount >= maxMove) {
+    if (leftEl)  { leftEl.style.transition  = 'transform 0.2s ease-out'; leftEl.style.transform  = `translateX(${maxMove}px)`; }
+    if (rightEl) { rightEl.style.transition = 'transform 0.2s ease-out'; rightEl.style.transform = `translateX(-${maxMove}px)`; }
+    tgLeftX  =  maxMove;
+    tgRightX = -maxMove;
     tgActive = null;
-    setTimeout(() => tgFinish(), 260);
+    setTimeout(() => tgFinish(), 220);
   }
 }
 
 function tgEnd() {
   if (!tgActive || tgRevealed) return;
-  const maxMove = tgGetMaxMove();
-  const totalMove = tgLeftX + Math.abs(tgRightX);
-  if (totalMove < maxMove * 0.3) {
-    const leftEl = document.getElementById('tgLeft');
+
+  const maxMove    = tgGetMaxMove();
+  const moveAmount = Math.abs(tgLeftX);
+
+  if (moveAmount < maxMove * 0.3) {
+    const leftEl  = document.getElementById('tgLeft');
     const rightEl = document.getElementById('tgRight');
-    const ease = 'cubic-bezier(0.34,1.56,0.64,1)';
+    const ease    = 'cubic-bezier(0.34,1.56,0.64,1)';
     if (leftEl)  { leftEl.style.transition  = `transform 0.45s ${ease}`; leftEl.style.transform  = 'translateX(0)'; }
     if (rightEl) { rightEl.style.transition = `transform 0.45s ${ease}`; rightEl.style.transform = 'translateX(0)'; }
-    tgLeftX = 0; tgRightX = 0;
+    tgLeftX  = 0;
+    tgRightX = 0;
     const instr = document.getElementById('tgInstruction');
     if (instr) instr.style.opacity = '1';
   }
+
   tgActive = null;
 }
 
@@ -1582,8 +1591,26 @@ function tgFinish() {
   setTimeout(() => { const scrollHint = document.getElementById('ariyaScrollHint'); if (scrollHint) scrollHint.classList.add('show'); }, 2900);
   setTimeout(() => {
     const heroEl = document.getElementById('heroSection');
-    const next = heroEl ? heroEl.nextElementSibling : document.querySelector('.orn-div') || document.querySelector('.family-section');
+    const next   = heroEl
+      ? heroEl.nextElementSibling
+      : document.querySelector('.orn-div') || document.querySelector('.family-section');
     if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Hide name block and scroll hint after scroll so they don't float over content below
+    setTimeout(() => {
+      const nameBlock  = document.getElementById('coupleNameBlock');
+      const scrollHint = document.getElementById('ariyaScrollHint');
+      if (nameBlock) {
+        nameBlock.style.transition = 'opacity 0.5s ease';
+        nameBlock.style.opacity    = '0';
+        setTimeout(() => { nameBlock.style.display = 'none'; nameBlock.style.opacity = '1'; nameBlock.classList.remove('show'); }, 500);
+      }
+      if (scrollHint) {
+        scrollHint.style.transition = 'opacity 0.5s ease';
+        scrollHint.style.opacity    = '0';
+        setTimeout(() => { scrollHint.classList.remove('show'); scrollHint.style.opacity = '1'; }, 500);
+      }
+    }, 1200);
   }, 3900);
 }
 
