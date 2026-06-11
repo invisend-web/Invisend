@@ -1005,7 +1005,7 @@ async function handlePreshootUpload(input, idx) {
     showLoading();
     try {
       const oldUrl = preshootUrls[idx];
-      if (oldUrl) markFileOrphaned(oldUrl);
+      if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
       const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
       const path = `preshoot/${Date.now()}_${idx}.${ext}`;
       const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
@@ -1019,7 +1019,7 @@ async function handlePreshootUpload(input, idx) {
     hideLoading();
   });
 }
-function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); preshootUrls[idx] = ''; buildPreshootGrid(); }
+function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) deleteStorageFile(u); preshootUrls[idx] = ''; buildPreshootGrid(); }
 
 // ─── MODAL OPEN/CLOSE ───
 function openCreateModal() {
@@ -1110,6 +1110,27 @@ async function markFileOrphaned(oldUrl) {
   if (!oldUrl) return;
   try { await sb.from('storage_files').update({ is_orphaned: true }).eq('public_url', oldUrl); } catch(e) {}
 }
+async function deleteStorageFiles(urls) {
+  if (!urls || urls.length === 0) return;
+  const validUrls = urls.filter(u => u && u.includes('supabase'));
+  if (validUrls.length === 0) return;
+  try {
+    const response = await fetch('/api/delete-files', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls: validUrls })
+    });
+    if (!response.ok) { console.warn('Storage cleanup failed:', response.status); return; }
+    const result = await response.json();
+    console.log(`Storage cleanup: ${result.deleted} deleted, ${result.failed} failed`);
+  } catch(e) {
+    console.warn('Storage cleanup error:', e.message);
+  }
+}
+async function deleteStorageFile(url) {
+  if (!url) return;
+  deleteStorageFiles([url]);
+}
 
 // ─── UPLOAD ───
 async function handleUpload(input, type, areaId, previewId) {
@@ -1129,9 +1150,9 @@ async function handleUpload(input, type, areaId, previewId) {
     const ext = file.name.split('.').pop();
     const bucket = type === 'music' ? 'music' : 'images';
     const path = `${type}/${Date.now()}.${ext}`;
-    // Mark old file orphaned
+    // Mark old file orphaned and delete from storage
     const oldUrl = type === 'music' ? document.getElementById('fMusicUrl')?.value : null;
-    if (oldUrl) markFileOrphaned(oldUrl);
+    if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
     const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
     if (error) throw error;
     const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
@@ -1169,11 +1190,11 @@ function clearUploadArea(areaId, type) {
   area.querySelector('.upload-status-lbl')?.remove();
   area.querySelector('.music-wave-bars')?.remove();
   const prev = area.querySelector('.upload-preview'); if (prev) { prev.src=''; prev.style.display='none'; }
-  if (type === 'swipeA') document.getElementById('fSwipeA').value = '';
-  else if (type === 'swipeB') document.getElementById('fSwipeB').value = '';
-  else if (type === 'couple') document.getElementById('fCouplePhoto').value = '';
-  else if (type === 'music') { document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
-  else if (type === 'backgrounds') { document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
+  if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) deleteStorageFile(u); document.getElementById('fSwipeA').value = ''; }
+  else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) deleteStorageFile(u); document.getElementById('fSwipeB').value = ''; }
+  else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) deleteStorageFile(u); document.getElementById('fCouplePhoto').value = ''; }
+  else if (type === 'music') { const u = document.getElementById('fMusicUrl')?.value; if (u) deleteStorageFile(u); document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
+  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u) deleteStorageFile(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
   area.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el => el.style.removeProperty('display'));
 }
 
@@ -1234,20 +1255,35 @@ function deleteInvitation(id) {
   const coupleName = inv.couple_name || inv.slug;
   openDangerModal(
     'Move to Recycle Bin',
-    `"${coupleName}" will be moved to the Recycle Bin. All RSVPs, photos and media will be preserved for 3 days then permanently deleted. You can restore this invitation within 3 days.`,
+    `"${coupleName}" will be moved to the Recycle Bin. All RSVPs, photos and media will be permanently deleted after 30 days. You can restore this invitation within 30 days.`,
     coupleName,
     async () => {
       showLoading();
       try {
         const mediaUrls = [
-          inv.swipe_image_a_url, inv.swipe_image_b_url, inv.couple_photo_url,
-          inv.music_url, inv.background_image_url, inv.preshoot_video_url,
-          ...Array.from({length:10}, (_,i) => inv['preshoot_photo_'+(i+1)])
+          inv.swipe_image_a_url,
+          inv.swipe_image_b_url,
+          inv.couple_photo_url,
+          inv.music_url,
+          inv.background_image_url,
+          inv.preshoot_video_url,
+          inv.preshoot_photo_1,
+          inv.preshoot_photo_2,
+          inv.preshoot_photo_3,
+          inv.preshoot_photo_4,
+          inv.preshoot_photo_5,
+          inv.preshoot_photo_6,
+          inv.preshoot_photo_7,
+          inv.preshoot_photo_8,
+          inv.preshoot_photo_9,
+          inv.preshoot_photo_10,
         ].filter(Boolean);
         const { data: rsvps } = await sb.from('rsvp').select('*').eq('invitation_slug', inv.slug);
         const { error: binError } = await sb.from('bin').insert({
           item_type: 'invitation', item_id: inv.id, item_label: coupleName,
-          item_data: { invitation: inv, rsvps: rsvps || [] }, media_urls: mediaUrls
+          item_data: { invitation: inv, rsvps: rsvps || [] },
+          media_urls: mediaUrls,
+          purge_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         });
         if (binError) throw binError;
         await sb.from('rsvp').delete().eq('invitation_slug', inv.slug);
@@ -1255,7 +1291,7 @@ function deleteInvitation(id) {
         if (delError) throw delError;
         showToast(`"${coupleName}" moved to Recycle Bin`, 'info');
         await loadInvitations(); populateRSVPSelect(); loadBinBadge();
-      } catch(e) { showToast('Failed to move to bin: ' + (e.message || e), 'error'); }
+      } catch(e) { showToast('Failed to delete: ' + (e.message || e), 'error'); }
       hideLoading();
     }
   );
@@ -1670,7 +1706,7 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
     try {
       const hiddenId = type === 'swipeA' ? 'fSwipeA' : type === 'swipeB' ? 'fSwipeB' : type === 'couple' ? 'fCouplePhoto' : type === 'background' ? 'fBgImage' : null;
       const oldUrl = hiddenId ? document.getElementById(hiddenId)?.value : null;
-      if (oldUrl) markFileOrphaned(oldUrl);
+      if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
       const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
       const path = `${type}/${Date.now()}.${ext}`;
       const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
@@ -1814,21 +1850,21 @@ async function restoreFromBin(binId) {
 
 async function permanentDelete(binId, label) {
   openDangerModal(
-    'Permanent Delete',
-    `This will permanently delete "${label}" and all associated files right now. This cannot be undone.`,
+    'Permanently Delete',
+    `"${label}" will be permanently deleted right now including all photos and music files. This cannot be undone.`,
     label,
     async () => {
       showLoading();
       try {
-        const { data: binItem } = await sb.from('bin').select('*').eq('id', binId).single();
+        const { data: binItem, error } = await sb.from('bin').select('*').eq('id', binId).single();
+        if (error) throw error;
         if (binItem && binItem.media_urls && binItem.media_urls.length) {
-          for (const url of binItem.media_urls) {
-            try { const path = extractStoragePath(url); if (path) { const bucket = url.includes('/music/') ? 'music' : 'images'; await sb.storage.from(bucket).remove([path]); } } catch(e) {}
-          }
+          await deleteStorageFiles(binItem.media_urls);
         }
         await sb.from('bin').delete().eq('id', binId);
-        showToast('Permanently deleted', 'info'); loadBin(); loadBinBadge();
-      } catch(e) { showToast('Delete failed', 'error'); }
+        showToast('Permanently deleted', 'info');
+        loadBin(); loadBinBadge();
+      } catch(e) { showToast('Delete failed: ' + (e.message || e), 'error'); }
       hideLoading();
     }
   );
@@ -1837,22 +1873,28 @@ async function permanentDelete(binId, label) {
 async function emptyBinNow() {
   openDangerModal(
     'Empty Recycle Bin',
-    'This will permanently delete ALL items in the Recycle Bin right now including all photos, music and RSVPs. This cannot be undone.',
+    'This will permanently delete ALL items in the Recycle Bin including all photos and music files. This cannot be undone.',
     'empty bin',
     async () => {
       showLoading();
       try {
-        const { data: allBin } = await sb.from('bin').select('*');
+        const { data: allBin, error } = await sb.from('bin').select('*');
+        if (error) throw error;
+        const allUrls = [];
         for (const item of allBin || []) {
-          if (item.media_urls) {
-            for (const url of item.media_urls) {
-              try { const path = extractStoragePath(url); if (path) { const bucket = url.includes('/music/') ? 'music' : 'images'; await sb.storage.from(bucket).remove([path]); } } catch(e) {}
-            }
+          if (item.media_urls && item.media_urls.length) {
+            allUrls.push(...item.media_urls);
           }
         }
-        await sb.from('bin').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        showToast('Recycle Bin emptied', 'info'); loadBin(); loadBinBadge();
-      } catch(e) { showToast('Failed to empty bin', 'error'); }
+        if (allUrls.length > 0) {
+          await deleteStorageFiles(allUrls);
+        }
+        if (allBin && allBin.length > 0) {
+          await sb.from('bin').delete().in('id', allBin.map(i => i.id));
+        }
+        showToast('Recycle Bin emptied', 'info');
+        loadBin(); loadBinBadge();
+      } catch(e) { showToast('Failed to empty bin: ' + (e.message || e), 'error'); }
       hideLoading();
     }
   );
