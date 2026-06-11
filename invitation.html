@@ -575,7 +575,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="8"] .tg-left img,[data-theme="8"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(201,168,76,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
 [data-theme="9"] .tg-left img,[data-theme="9"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(255,198,28,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
 /* FIX 3 — Subtle dark overlay instead of brightness filter */
-[data-theme="7"] .bg-layer::after,[data-theme="8"] .bg-layer::after,[data-theme="9"] .bg-layer::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.38);pointer-events:none;z-index:1;}
+[data-theme="7"] .bg-layer::after,[data-theme="8"] .bg-layer::after,[data-theme="9"] .bg-layer::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.58);pointer-events:none;z-index:1;}
+[data-theme="7"] .custom-bg-wrap,[data-theme="8"] .custom-bg-wrap,[data-theme="9"] .custom-bg-wrap{filter:brightness(0.55);}
+[data-theme="7"] .couple-name-block.show,[data-theme="8"] .couple-name-block.show,[data-theme="9"] .couple-name-block.show{text-shadow:0 2px 20px rgba(0,0,0,0.9),0 0 40px rgba(0,0,0,0.8)!important;}
 /* FIX 5 — Instruction text */
 .tg-instruction{display:none;position:fixed;bottom:57dvh;left:50%;transform:translateX(-50%);z-index:21;font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;white-space:nowrap;pointer-events:none;animation:tgInstrPulse 2s ease-in-out infinite;}
 [data-theme="7"] .tg-instruction,[data-theme="8"] .tg-instruction,[data-theme="9"] .tg-instruction{display:block;}
@@ -1488,10 +1490,11 @@ function initTGSwipe(data) {
 function tgGetX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
 
 function tgGetMaxMove() {
-  const dock = document.getElementById('tgDock');
+  const dock   = document.getElementById('tgDock');
   const portEl = document.getElementById('tgLeft');
-  if (!dock || !portEl) return 120;
-  return (dock.offsetWidth / 2) - (portEl.offsetWidth / 2) + 20;
+  if (!dock || !portEl) return 140;
+  // Exactly where portraits meet in center
+  return (dock.offsetWidth / 2) - (portEl.offsetWidth / 2);
 }
 
 function tgStart(e, side) {
@@ -1523,15 +1526,28 @@ function tgMove(e) {
   }
   if (leftEl)  leftEl.style.transform  = `translateX(${tgLeftX}px)`;
   if (rightEl) rightEl.style.transform = `translateX(${tgRightX}px)`;
-  const totalMove = tgLeftX + Math.abs(tgRightX);
-  if (totalMove >= maxMove * 1.1) { tgActive = null; tgFinish(); }
+  // Check if portraits have met in center
+  const portEl   = document.getElementById('tgLeft');
+  const portW    = portEl ? portEl.offsetWidth : 180;
+  const dockW    = document.getElementById('tgDock')?.offsetWidth || window.innerWidth;
+  const meetPoint = (dockW / 2) - (portW / 2);
+  if (tgLeftX >= meetPoint || Math.abs(tgRightX) >= meetPoint) {
+    const leftEl2  = document.getElementById('tgLeft');
+    const rightEl2 = document.getElementById('tgRight');
+    if (leftEl2)  { leftEl2.style.transition  = 'transform 0.25s ease-out'; leftEl2.style.transform  = `translateX(${meetPoint}px)`; }
+    if (rightEl2) { rightEl2.style.transition = 'transform 0.25s ease-out'; rightEl2.style.transform = `translateX(-${meetPoint}px)`; }
+    tgLeftX  = meetPoint;
+    tgRightX = -meetPoint;
+    tgActive = null;
+    setTimeout(() => tgFinish(), 260);
+  }
 }
 
 function tgEnd() {
   if (!tgActive || tgRevealed) return;
   const maxMove = tgGetMaxMove();
   const totalMove = tgLeftX + Math.abs(tgRightX);
-  if (totalMove < maxMove * 0.35) {
+  if (totalMove < maxMove * 0.3) {
     const leftEl = document.getElementById('tgLeft');
     const rightEl = document.getElementById('tgRight');
     const ease = 'cubic-bezier(0.34,1.56,0.64,1)';
