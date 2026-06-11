@@ -552,6 +552,36 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes tgNameReveal{0%{opacity:0;transform:scale(0.7);filter:blur(12px);}60%{filter:blur(0px);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
 [data-theme="7"] .ariya-scroll-hint,[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
 [data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
+
+/* ── TG THEMES BOTTOM SLIDER LAYOUT ── */
+[data-theme="7"] .arena,[data-theme="8"] .arena,[data-theme="9"] .arena{position:relative;width:100%;height:100dvh;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;}
+[data-theme="7"] .swipe-cards,[data-theme="8"] .swipe-cards,[data-theme="9"] .swipe-cards{display:none!important;}
+[data-theme="7"] .swipe-card,[data-theme="8"] .swipe-card,[data-theme="9"] .swipe-card{display:none!important;}
+.tg-portrait-arena{display:none;position:absolute;inset:0;pointer-events:none;z-index:5;}
+[data-theme="7"] .tg-portrait-arena,[data-theme="8"] .tg-portrait-arena,[data-theme="9"] .tg-portrait-arena{display:block;}
+.tg-portrait{position:absolute;bottom:0;width:min(180px,38vw);height:min(320px,65vw);pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform;transition:filter 0.3s ease;}
+.tg-portrait:active{cursor:grabbing;}
+.tg-portrait-left{left:0;transform:translateX(0);}
+.tg-portrait-right{right:0;transform:translateX(0);}
+.tg-portrait img{width:100%;height:100%;object-fit:contain;object-position:top center;background:transparent;display:block;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 0 20px rgba(0,0,0,0.5));}
+[data-theme="7"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(241,203,20,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
+[data-theme="8"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(201,168,76,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
+[data-theme="9"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(255,198,28,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
+.tg-swipe-label{position:absolute;bottom:12px;font-family:var(--font-ui);font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);text-align:center;width:100%;pointer-events:none;animation:tgLabelPulse 2s ease-in-out infinite;}
+@keyframes tgLabelPulse{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
+.tg-portrait-left .tg-swipe-label{padding-left:8px;}
+.tg-portrait-right .tg-swipe-label{padding-right:8px;}
+.tg-arrow-hint{position:absolute;top:40%;font-size:18px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowHint 2s ease-in-out infinite 1s;}
+.tg-portrait-left .tg-arrow-hint{right:-8px;animation-delay:0s;}
+.tg-portrait-right .tg-arrow-hint{left:-8px;animation-delay:0.3s;}
+@keyframes tgArrowHint{0%{opacity:0;transform:translateX(0);}30%{opacity:0.8;}60%{opacity:0.8;transform:translateX(6px);}100%{opacity:0;transform:translateX(0);}}
+.tg-portrait-right .tg-arrow-hint{animation-name:tgArrowHintRight;}
+@keyframes tgArrowHintRight{0%{opacity:0;transform:translateX(0);}30%{opacity:0.8;}60%{opacity:0.8;transform:translateX(-6px);}100%{opacity:0;transform:translateX(0);}}
+[data-theme="7"] .bg-layer::before,[data-theme="8"] .bg-layer::before,[data-theme="9"] .bg-layer::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.45);pointer-events:none;z-index:1;}
+[data-theme="7"] #mergeGlow,[data-theme="8"] #mergeGlow,[data-theme="9"] #mergeGlow{top:35%!important;transform:translate(-50%,-50%)!important;}
+[data-theme="7"] .couple-name-block,[data-theme="8"] .couple-name-block,[data-theme="9"] .couple-name-block{top:35%!important;}
+[data-theme="7"] .swipe-hint-text,[data-theme="8"] .swipe-hint-text,[data-theme="9"] .swipe-hint-text{position:absolute;bottom:min(340px,68vw);left:50%;transform:translateX(-50%);font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);text-align:center;pointer-events:none;white-space:nowrap;animation:tgLabelPulse 2s ease-in-out infinite;z-index:6;}
+@media (max-width:480px){.tg-portrait{width:min(150px,42vw);height:min(280px,75vw);}}
 </style>
 </head>
 <body>
@@ -657,6 +687,20 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       </div>
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
       <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt=""></div>
+
+      <div class="tg-portrait-arena" id="tgPortraitArena">
+        <div class="tg-portrait tg-portrait-left" id="tgPortraitLeft">
+          <img id="tgImgLeft" src="" alt="Bride" draggable="false">
+          <div class="tg-swipe-label">Bride</div>
+          <span class="tg-arrow-hint">›</span>
+        </div>
+        <div class="tg-portrait tg-portrait-right" id="tgPortraitRight">
+          <img id="tgImgRight" src="" alt="Groom" draggable="false">
+          <div class="tg-swipe-label">Groom</div>
+          <span class="tg-arrow-hint">‹</span>
+        </div>
+        <div class="swipe-hint-text" id="tgSwipeHintText">Swipe portraits together</div>
+      </div>
       <div class="swipe-divider" id="divider"></div>
       <div class="merge-glow" id="mergeGlow"></div>
       <div class="wax-seal-wrap" id="waxSealWrap" onclick="pressWaxSeal()">
@@ -994,17 +1038,27 @@ function handleThemeSpecificUI(themeId) {
     if (swipeHint) swipeHint.style.display = '';
     window._disableSwipe = false;
   }
-  if (themeId === 5 || themeId === 7 || themeId === 8 || themeId === 9) {
+  if (themeId === 5) {
     const coupleRevealEl = document.getElementById('coupleReveal');
-    if (coupleRevealEl) coupleRevealEl.style.display = 'none';
     const coupleNameBlock = document.getElementById('coupleNameBlock');
-    if (coupleNameBlock) {
-      coupleNameBlock.style.display = 'none';
-      coupleNameBlock.classList.remove('show');
-    }
+    if (coupleRevealEl) coupleRevealEl.style.display = 'none';
+    if (coupleNameBlock) { coupleNameBlock.style.display = 'none'; coupleNameBlock.classList.remove('show'); }
     if (waxSeal) waxSeal.style.display = 'none';
     if (swipeHint) swipeHint.style.display = '';
     window._disableSwipe = false;
+  }
+  if (themeId === 7 || themeId === 8 || themeId === 9) {
+    const coupleRevealEl = document.getElementById('coupleReveal');
+    const coupleNameBlock = document.getElementById('coupleNameBlock');
+    const swipeCards = document.querySelector('.swipe-cards');
+    const tgArena = document.getElementById('tgPortraitArena');
+    if (coupleRevealEl) coupleRevealEl.style.display = 'none';
+    if (coupleNameBlock) { coupleNameBlock.style.display = 'none'; coupleNameBlock.classList.remove('show'); }
+    if (waxSeal) waxSeal.style.display = 'none';
+    if (swipeCards) swipeCards.style.display = 'none';
+    if (swipeHint) swipeHint.style.display = 'none';
+    if (tgArena) tgArena.style.display = 'block';
+    window._disableSwipe = true;
   }
 }
 function pressWaxSeal() {
@@ -1146,6 +1200,9 @@ function render(d) {
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
     const cr = document.getElementById('coupleReveal');
     if (cr) cr.style.display = 'none';
+  }
+  if ([7, 8, 9].includes(parseInt(d.template_id))) {
+    initTGSwipe(d);
   }
 }
 
@@ -1372,6 +1429,218 @@ function initSwipe() {
   window.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
+
+// ── TG BOTTOM PORTRAIT SWIPE SYSTEM ──
+let tgRevealed = false;
+let tgDragging = null;
+let tgStartX = 0;
+let tgStartTranslate = 0;
+let tgLeftTranslate = 0;
+let tgRightTranslate = 0;
+const TG_THEMES = [7, 8, 9];
+
+function isTGTheme() {
+  return TG_THEMES.includes(parseInt(document.documentElement.getAttribute('data-theme')));
+}
+
+function initTGSwipe(data) {
+  if (!isTGTheme()) return;
+
+  const imgLeft  = document.getElementById('tgImgLeft');
+  const imgRight = document.getElementById('tgImgRight');
+  if (imgLeft && data.swipe_image_a_url) imgLeft.src = data.swipe_image_a_url;
+  if (imgRight && data.swipe_image_b_url) imgRight.src = data.swipe_image_b_url;
+
+  const leftLabel  = document.querySelector('.tg-portrait-left .tg-swipe-label');
+  const rightLabel = document.querySelector('.tg-portrait-right .tg-swipe-label');
+  if (leftLabel && data.bride_father) leftLabel.textContent = 'Bride';
+  if (rightLabel && data.groom_father) rightLabel.textContent = 'Groom';
+
+  const leftEl  = document.getElementById('tgPortraitLeft');
+  const rightEl = document.getElementById('tgPortraitRight');
+  if (!leftEl || !rightEl) return;
+
+  tgLeftTranslate  = 0;
+  tgRightTranslate = 0;
+  tgRevealed = false;
+
+  leftEl.addEventListener('touchstart',  e => tgOnStart(e, 'left'),  { passive: true });
+  leftEl.addEventListener('touchmove',   e => tgOnMove(e),           { passive: false });
+  leftEl.addEventListener('touchend',    e => tgOnEnd(e),            { passive: true });
+  rightEl.addEventListener('touchstart', e => tgOnStart(e, 'right'), { passive: true });
+  rightEl.addEventListener('touchmove',  e => tgOnMove(e),           { passive: false });
+  rightEl.addEventListener('touchend',   e => tgOnEnd(e),            { passive: true });
+
+  leftEl.addEventListener('mousedown',  e => tgOnStart(e, 'left'));
+  rightEl.addEventListener('mousedown', e => tgOnStart(e, 'right'));
+  document.addEventListener('mousemove', tgOnMove);
+  document.addEventListener('mouseup',   tgOnEnd);
+
+  tgRunDemoHint();
+}
+
+function tgGetX(e) {
+  return e.touches ? e.touches[0].clientX : e.clientX;
+}
+
+function tgOnStart(e, side) {
+  if (tgRevealed) return;
+  tgDragging = side;
+  tgStartX = tgGetX(e);
+  tgStartTranslate = side === 'left' ? tgLeftTranslate : tgRightTranslate;
+  const el = document.getElementById(side === 'left' ? 'tgPortraitLeft' : 'tgPortraitRight');
+  if (el) el.style.transition = 'none';
+  const hint = document.getElementById('tgSwipeHintText');
+  if (hint) hint.style.opacity = '0';
+}
+
+function tgOnMove(e) {
+  if (!tgDragging || tgRevealed) return;
+  if (e.cancelable) e.preventDefault();
+
+  const currentX = tgGetX(e);
+  const diff = currentX - tgStartX;
+  const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
+  const portraitWidth = document.querySelector('.tg-portrait')?.offsetWidth || 160;
+  const maxMove = arenaWidth / 2 - portraitWidth / 2;
+
+  if (tgDragging === 'left') {
+    tgLeftTranslate = Math.max(0, Math.min(maxMove, tgStartTranslate + diff));
+    const leftEl = document.getElementById('tgPortraitLeft');
+    if (leftEl) leftEl.style.transform = `translateX(${tgLeftTranslate}px)`;
+    const mirrorAmount = tgLeftTranslate * 0.5;
+    tgRightTranslate = -mirrorAmount;
+    const rightEl = document.getElementById('tgPortraitRight');
+    if (rightEl) rightEl.style.transform = `translateX(${tgRightTranslate}px)`;
+  } else {
+    tgRightTranslate = Math.min(0, Math.max(-maxMove, tgStartTranslate + diff));
+    const rightEl = document.getElementById('tgPortraitRight');
+    if (rightEl) rightEl.style.transform = `translateX(${tgRightTranslate}px)`;
+    const mirrorAmount = Math.abs(tgRightTranslate) * 0.5;
+    tgLeftTranslate = mirrorAmount;
+    const leftEl = document.getElementById('tgPortraitLeft');
+    if (leftEl) leftEl.style.transform = `translateX(${tgLeftTranslate}px)`;
+  }
+
+  const totalMove = tgLeftTranslate + Math.abs(tgRightTranslate);
+  if (totalMove >= maxMove * 1.2) {
+    tgOnEnd(e);
+    tgCompleteReveal();
+  }
+}
+
+function tgOnEnd(e) {
+  if (!tgDragging) return;
+  const leftEl  = document.getElementById('tgPortraitLeft');
+  const rightEl = document.getElementById('tgPortraitRight');
+
+  if (!tgRevealed) {
+    const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
+    const portraitWidth = document.querySelector('.tg-portrait')?.offsetWidth || 160;
+    const maxMove = arenaWidth / 2 - portraitWidth / 2;
+    const totalMove = tgLeftTranslate + Math.abs(tgRightTranslate);
+
+    if (totalMove < maxMove * 0.4) {
+      if (leftEl) {
+        leftEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+        leftEl.style.transform = 'translateX(0)';
+      }
+      if (rightEl) {
+        rightEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+        rightEl.style.transform = 'translateX(0)';
+      }
+      tgLeftTranslate  = 0;
+      tgRightTranslate = 0;
+      const hint = document.getElementById('tgSwipeHintText');
+      if (hint) hint.style.opacity = '1';
+    }
+  }
+  tgDragging = null;
+}
+
+function tgCompleteReveal() {
+  if (tgRevealed) return;
+  tgRevealed = true;
+
+  const leftEl  = document.getElementById('tgPortraitLeft');
+  const rightEl = document.getElementById('tgPortraitRight');
+  const hint    = document.getElementById('tgSwipeHintText');
+  const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
+
+  if (hint) hint.style.display = 'none';
+
+  if (leftEl) {
+    leftEl.style.transition = 'transform 0.5s var(--ease), opacity 0.5s ease 0.3s';
+    leftEl.style.transform  = `translateX(${arenaWidth * 0.3}px)`;
+    leftEl.style.opacity    = '0';
+  }
+  if (rightEl) {
+    rightEl.style.transition = 'transform 0.5s var(--ease), opacity 0.5s ease 0.3s';
+    rightEl.style.transform  = `translateX(-${arenaWidth * 0.3}px)`;
+    rightEl.style.opacity    = '0';
+  }
+
+  setTimeout(() => {
+    const g = document.getElementById('mergeGlow');
+    if (g) { g.style.width = '80%'; g.style.opacity = '1'; }
+  }, 200);
+
+  setTimeout(() => {
+    const g = document.getElementById('mergeGlow');
+    if (g) g.style.opacity = '0';
+    triggerKandyanExplosion();
+  }, 500);
+
+  setTimeout(() => {
+    const nameBlock = document.getElementById('coupleNameBlock');
+    if (nameBlock) {
+      nameBlock.style.display = 'block';
+      requestAnimationFrame(() => requestAnimationFrame(() => nameBlock.classList.add('show')));
+    }
+  }, 1900);
+
+  setTimeout(() => {
+    const scrollHint = document.getElementById('ariyaScrollHint');
+    if (scrollHint) scrollHint.classList.add('show');
+  }, 2800);
+
+  setTimeout(() => {
+    const heroSection = document.getElementById('heroSection');
+    const nextSection = heroSection
+      ? heroSection.nextElementSibling
+      : document.querySelector('.family-section') || document.querySelector('.orn-div');
+    if (nextSection) nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 3800);
+}
+
+function tgRunDemoHint() {
+  if (tgRevealed) return;
+  const leftEl  = document.getElementById('tgPortraitLeft');
+  const rightEl = document.getElementById('tgPortraitRight');
+  if (!leftEl || !rightEl) return;
+
+  let runCount = 0;
+  const maxRuns = 2;
+
+  function runOnce() {
+    if (tgRevealed || runCount >= maxRuns) return;
+    runCount++;
+    leftEl.style.transition  = 'transform 0.5s ease-out';
+    rightEl.style.transition = 'transform 0.5s ease-out';
+    leftEl.style.transform   = 'translateX(28px)';
+    rightEl.style.transform  = 'translateX(-28px)';
+    setTimeout(() => {
+      if (tgRevealed) return;
+      leftEl.style.transition  = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+      rightEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+      leftEl.style.transform   = 'translateX(0)';
+      rightEl.style.transform  = 'translateX(0)';
+      if (runCount < maxRuns) setTimeout(runOnce, 2000);
+    }, 600);
+  }
+  setTimeout(runOnce, 1500);
+}
+
 function onStart(x) {
   if (window._disableSwipe) return;
   if (revealed) return;
