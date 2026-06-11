@@ -490,6 +490,68 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes photoRiseFromLetter{0%{opacity:0;transform:translate(-50%,40px) scale(0.85);filter:blur(4px)}60%{filter:blur(0px)}100%{opacity:1;transform:translate(-50%,-60px) scale(1);filter:blur(0px)}}
 @keyframes inkReveal{0%{clip-path:inset(0 100% 0 0);opacity:0.8}100%{clip-path:inset(0 0% 0 0);opacity:1}}
 @keyframes vintageBgIn{from{opacity:0}to{opacity:1}}
+
+/* ════════════════════════════════════
+   THEME 7: UDARATA SINHALA BY TG WEDDING FILMS
+════════════════════════════════════ */
+[data-theme="7"]{--bg:#160404;--bg2:#200808;--card:#2d0c0c;--accent:#f1cb14;--accent2:#ffe066;--glow:rgba(241,203,20,0.4);--text:#fff5e0;--text2:#c4903a;--text3:#7a4a20;--border:rgba(241,203,20,0.2);--section-bg:rgba(255,255,255,0.025);--merge-glow:radial-gradient(ellipse at center,rgba(241,203,20,0.8) 0%,rgba(228,74,10,0.3) 40%,transparent 70%);--particle-color:#f1cb14;}
+[data-theme="7"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404;}
+[data-theme="7"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
+[data-theme="7"] .swipe-card::before{display:none!important;}
+[data-theme="7"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
+[data-theme="7"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
+[data-theme="7"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
+[data-theme="7"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
+[data-theme="7"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow7 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#f1cb14;letter-spacing:0.06em;}
+[data-theme="7"] .couple-names em{color:#ffe066;font-style:italic;}
+[data-theme="7"] .name-diamond{background:linear-gradient(135deg,#f1cb14,#e8450a);}
+[data-theme="7"] .name-line.l{background:linear-gradient(90deg,transparent,#f1cb14);}
+[data-theme="7"] .name-line.r{background:linear-gradient(90deg,#f1cb14,transparent);}
+[data-theme="7"] .couple-tagline{color:rgba(241,203,20,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow7{0%,100%{text-shadow:0 0 20px rgba(241,203,20,0.5),0 0 40px rgba(241,203,20,0.2);}50%{text-shadow:0 0 40px rgba(241,203,20,0.9),0 0 80px rgba(241,203,20,0.5);}}
+
+/* ════════════════════════════════════
+   THEME 8: WESTERN LUXURY BY TG WEDDING FILMS
+════════════════════════════════════ */
+[data-theme="8"]{--bg:#07060a;--bg2:#0f0d14;--card:#161220;--accent:#c9a84c;--accent2:#e8cc7a;--glow:rgba(201,168,76,0.35);--text:#f5ead4;--text2:#9a8468;--text3:#52463a;--border:rgba(201,168,76,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(201,168,76,0.7) 0%,rgba(201,168,76,0.1) 50%,transparent 70%);--particle-color:#c9a84c;}
+[data-theme="8"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(201,168,76,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(201,168,76,0.05) 0%,transparent 60%),#07060a;}
+[data-theme="8"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
+[data-theme="8"] .swipe-card::before{display:none!important;}
+[data-theme="8"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
+[data-theme="8"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
+[data-theme="8"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
+[data-theme="8"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
+[data-theme="8"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow8 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#c9a84c;letter-spacing:0.06em;}
+[data-theme="8"] .couple-names em{color:#e8cc7a;font-style:italic;}
+[data-theme="8"] .name-diamond{background:linear-gradient(135deg,#c9a84c,#e8cc7a);}
+[data-theme="8"] .name-line.l{background:linear-gradient(90deg,transparent,#c9a84c);}
+[data-theme="8"] .name-line.r{background:linear-gradient(90deg,#c9a84c,transparent);}
+[data-theme="8"] .couple-tagline{color:rgba(201,168,76,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow8{0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.5),0 0 40px rgba(201,168,76,0.2);}50%{text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.5);}}
+
+/* ════════════════════════════════════
+   THEME 9: KALYANAM BY TG WEDDING FILMS
+════════════════════════════════════ */
+[data-theme="9"]{--bg:#061208;--bg2:#0c1e0e;--card:#132818;--accent:#ffc61c;--accent2:#ffe566;--glow:rgba(255,198,28,0.4);--text:#f0fff4;--text2:#7ab88a;--text3:#3d6644;--border:rgba(255,198,28,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(255,198,28,0.8) 0%,rgba(74,158,92,0.3) 40%,transparent 70%);--particle-color:#ffc61c;}
+[data-theme="9"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208;}
+[data-theme="9"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
+[data-theme="9"] .swipe-card::before{display:none!important;}
+[data-theme="9"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
+[data-theme="9"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
+[data-theme="9"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
+[data-theme="9"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
+[data-theme="9"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow9 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#ffc61c;letter-spacing:0.06em;}
+[data-theme="9"] .couple-names em{color:#ffe566;font-style:italic;}
+[data-theme="9"] .name-diamond{background:linear-gradient(135deg,#ffc61c,#4a9e5c);}
+[data-theme="9"] .name-line.l{background:linear-gradient(90deg,transparent,#ffc61c);}
+[data-theme="9"] .name-line.r{background:linear-gradient(90deg,#ffc61c,transparent);}
+[data-theme="9"] .couple-tagline{color:rgba(255,198,28,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow9{0%,100%{text-shadow:0 0 20px rgba(255,198,28,0.5),0 0 40px rgba(255,198,28,0.2);}50%{text-shadow:0 0 40px rgba(255,198,28,0.9),0 0 80px rgba(255,198,28,0.5);}}
+
+/* ── SHARED TG THEME ANIMATIONS ── */
+@keyframes tgNameReveal{0%{opacity:0;transform:scale(0.7);filter:blur(12px);}60%{filter:blur(0px);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
+[data-theme="7"] .ariya-scroll-hint,[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
+[data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
 </style>
 </head>
 <body>
@@ -932,7 +994,7 @@ function handleThemeSpecificUI(themeId) {
     if (swipeHint) swipeHint.style.display = '';
     window._disableSwipe = false;
   }
-  if (themeId === 5) {
+  if (themeId === 5 || themeId === 7 || themeId === 8 || themeId === 9) {
     const coupleRevealEl = document.getElementById('coupleReveal');
     if (coupleRevealEl) coupleRevealEl.style.display = 'none';
     const coupleNameBlock = document.getElementById('coupleNameBlock');
@@ -1382,7 +1444,7 @@ function completeReveal() {
     setTimeout(() => particleSystem.start(), 800);
   }
 
-  if (currentTheme === 5) {
+  if (currentTheme === 5 || currentTheme === 7 || currentTheme === 8 || currentTheme === 9) {
     setTimeout(() => {
       g.style.opacity = '0';
       document.body.style.overflow = '';
@@ -1420,6 +1482,17 @@ function completeReveal() {
 }
 
 function triggerKandyanExplosion() {
+  const currentTheme = parseInt(document.documentElement.getAttribute('data-theme'));
+
+  const themeParticleColors = {
+    5: ['#D4AF37', '#F0D060', '#FF6B00', '#FFD700', '#8B0000', '#FFFFFF'],
+    7: ['#f1cb14', '#ffe066', '#e8450a', '#FFD700', '#c4903a', '#FFFFFF'],
+    8: ['#c9a84c', '#e8cc7a', '#f5ead4', '#FFD700', '#9a8468', '#FFFFFF'],
+    9: ['#ffc61c', '#ffe566', '#4a9e5c', '#FFD700', '#7ab88a', '#FFFFFF'],
+  };
+
+  const colors = themeParticleColors[currentTheme] || themeParticleColors[5];
+
   const arena = document.getElementById('arena');
   const centerX = arena.offsetWidth / 2;
   const centerY = arena.offsetHeight / 2;
@@ -1429,12 +1502,12 @@ function triggerKandyanExplosion() {
   arena.appendChild(pContainer);
 
   const configs = [
-    { color: '#D4AF37', count: 35, maxSize: 6, minSize: 2, speed: 1.4 },
-    { color: '#F0D060', count: 20, maxSize: 4, minSize: 1.5, speed: 1.2 },
-    { color: '#FF6B00', count: 18, maxSize: 5, minSize: 2, speed: 1.0 },
-    { color: '#FFD700', count: 15, maxSize: 8, minSize: 3, speed: 0.9 },
-    { color: '#8B0000', count: 10, maxSize: 4, minSize: 2, speed: 0.8 },
-    { color: '#FFFFFF', count: 12, maxSize: 3, minSize: 1, speed: 1.6 },
+    { color: colors[0], count: 35, maxSize: 6, minSize: 2, speed: 1.4 },
+    { color: colors[1], count: 20, maxSize: 4, minSize: 1.5, speed: 1.2 },
+    { color: colors[2], count: 18, maxSize: 5, minSize: 2, speed: 1.0 },
+    { color: colors[3], count: 15, maxSize: 8, minSize: 3, speed: 0.9 },
+    { color: colors[4], count: 10, maxSize: 4, minSize: 2, speed: 0.8 },
+    { color: colors[5], count: 12, maxSize: 3, minSize: 1, speed: 1.6 },
   ];
 
   configs.forEach(cfg => {
