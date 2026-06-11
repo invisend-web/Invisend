@@ -1523,7 +1523,6 @@ function tgMove(e) {
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
 
-  // Both portraits always move equal amounts toward center — symmetrically
   let moveAmount = 0;
   if (tgActive === 'left') {
     moveAmount = Math.max(0, Math.min(maxMove, diff));
@@ -1534,13 +1533,18 @@ function tgMove(e) {
   tgLeftX  =  moveAmount;
   tgRightX = -moveAmount;
 
-  if (leftEl)  leftEl.style.transform  = `translateX(${tgLeftX}px)`;
+  if (leftEl)  leftEl.style.transform = `translateX(${tgLeftX}px)`;
   if (rightEl) rightEl.style.transform = `translateX(${tgRightX}px)`;
 
-  // Check if portraits have met — moveAmount reaches maxMove
   if (moveAmount >= maxMove) {
-    if (leftEl)  { leftEl.style.transition  = 'transform 0.2s ease-out'; leftEl.style.transform  = `translateX(${maxMove}px)`; }
-    if (rightEl) { rightEl.style.transition = 'transform 0.2s ease-out'; rightEl.style.transform = `translateX(-${maxMove}px)`; }
+    if (leftEl) {
+      leftEl.style.transition = 'transform 0.2s ease-out';
+      leftEl.style.transform  = `translateX(${maxMove}px)`;
+    }
+    if (rightEl) {
+      rightEl.style.transition = 'transform 0.2s ease-out';
+      rightEl.style.transform  = `translateX(-${maxMove}px)`;
+    }
     tgLeftX  =  maxMove;
     tgRightX = -maxMove;
     tgActive = null;
@@ -1572,45 +1576,89 @@ function tgEnd() {
 function tgFinish() {
   if (tgRevealed) return;
   tgRevealed = true;
+
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
   const dock    = document.getElementById('tgDock');
   const instr   = document.getElementById('tgInstruction');
   const arenaW  = window.innerWidth;
   const ease    = 'cubic-bezier(0.23,1,0.32,1)';
+
   if (instr) instr.style.display = 'none';
-  if (leftEl)  { leftEl.style.transition  = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`; leftEl.style.transform  = `translateX(${arenaW * 0.35}px)`;  leftEl.style.opacity  = '0'; }
-  if (rightEl) { rightEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`; rightEl.style.transform = `translateX(-${arenaW * 0.35}px)`; rightEl.style.opacity = '0'; }
+
+  if (leftEl) {
+    leftEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`;
+    leftEl.style.transform  = `translateX(${arenaW * 0.35}px)`;
+    leftEl.style.opacity    = '0';
+  }
+  if (rightEl) {
+    rightEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`;
+    rightEl.style.transform  = `translateX(-${arenaW * 0.35}px)`;
+    rightEl.style.opacity    = '0';
+  }
+
   setTimeout(() => { if (dock) dock.style.display = 'none'; }, 900);
-  setTimeout(() => { const g = document.getElementById('mergeGlow'); if (g) { g.style.width = '70%'; g.style.opacity = '1'; } }, 300);
-  setTimeout(() => { const g = document.getElementById('mergeGlow'); if (g) g.style.opacity = '0'; triggerKandyanExplosion(); }, 600);
+
+  setTimeout(() => {
+    const g = document.getElementById('mergeGlow');
+    if (g) { g.style.width = '70%'; g.style.opacity = '1'; }
+  }, 300);
+
+  setTimeout(() => {
+    const g = document.getElementById('mergeGlow');
+    if (g) g.style.opacity = '0';
+    triggerKandyanExplosion();
+  }, 600);
+
   setTimeout(() => {
     const nameBlock = document.getElementById('coupleNameBlock');
-    if (nameBlock) { nameBlock.style.display = 'block'; requestAnimationFrame(() => requestAnimationFrame(() => nameBlock.classList.add('show'))); }
+    if (nameBlock) {
+      nameBlock.style.display = 'block';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        nameBlock.classList.add('show');
+      }));
+    }
   }, 2000);
-  setTimeout(() => { const scrollHint = document.getElementById('ariyaScrollHint'); if (scrollHint) scrollHint.classList.add('show'); }, 2900);
+
+  setTimeout(() => {
+    const scrollHint = document.getElementById('ariyaScrollHint');
+    if (scrollHint) scrollHint.classList.add('show');
+  }, 2900);
+
   setTimeout(() => {
     const heroEl = document.getElementById('heroSection');
     const next   = heroEl
       ? heroEl.nextElementSibling
-      : document.querySelector('.orn-div') || document.querySelector('.family-section');
+      : document.querySelector('.orn-div') ||
+        document.querySelector('.family-section');
+
     if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Hide name block and scroll hint after scroll so they don't float over content below
+    // Hide name and scroll hint after auto scroll
     setTimeout(() => {
       const nameBlock  = document.getElementById('coupleNameBlock');
       const scrollHint = document.getElementById('ariyaScrollHint');
+
       if (nameBlock) {
         nameBlock.style.transition = 'opacity 0.5s ease';
         nameBlock.style.opacity    = '0';
-        setTimeout(() => { nameBlock.style.display = 'none'; nameBlock.style.opacity = '1'; nameBlock.classList.remove('show'); }, 500);
+        setTimeout(() => {
+          nameBlock.style.display = 'none';
+          nameBlock.style.opacity = '1';
+          nameBlock.classList.remove('show');
+        }, 500);
       }
+
       if (scrollHint) {
         scrollHint.style.transition = 'opacity 0.5s ease';
         scrollHint.style.opacity    = '0';
-        setTimeout(() => { scrollHint.classList.remove('show'); scrollHint.style.opacity = '1'; }, 500);
+        setTimeout(() => {
+          scrollHint.classList.remove('show');
+          scrollHint.style.opacity = '1';
+        }, 500);
       }
-    }, 1200);
+    }, 1500);
+
   }, 3900);
 }
 
