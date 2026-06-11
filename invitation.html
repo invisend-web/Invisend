@@ -1557,20 +1557,29 @@ function tgEnd() {
 
   const maxMove    = tgGetMaxMove();
   const moveAmount = Math.abs(tgLeftX);
+  const leftEl     = document.getElementById('tgLeft');
+  const rightEl    = document.getElementById('tgRight');
 
-  if (moveAmount < maxMove * 0.3) {
-    const leftEl  = document.getElementById('tgLeft');
-    const rightEl = document.getElementById('tgRight');
-    const ease    = 'cubic-bezier(0.34,1.56,0.64,1)';
+  if (moveAmount >= maxMove * 0.3) {
+    // Enough progress — snap both to center and trigger reveal
+    const ease = 'cubic-bezier(0.23,1,0.32,1)';
+    if (leftEl)  { leftEl.style.transition  = `transform 0.3s ${ease}`; leftEl.style.transform  = `translateX(${maxMove}px)`; }
+    if (rightEl) { rightEl.style.transition = `transform 0.3s ${ease}`; rightEl.style.transform = `translateX(-${maxMove}px)`; }
+    tgLeftX  =  maxMove;
+    tgRightX = -maxMove;
+    tgActive = null;
+    setTimeout(() => tgFinish(), 320);
+  } else {
+    // Not enough — snap back to edges
+    const ease = 'cubic-bezier(0.34,1.56,0.64,1)';
     if (leftEl)  { leftEl.style.transition  = `transform 0.45s ${ease}`; leftEl.style.transform  = 'translateX(0)'; }
     if (rightEl) { rightEl.style.transition = `transform 0.45s ${ease}`; rightEl.style.transform = 'translateX(0)'; }
     tgLeftX  = 0;
     tgRightX = 0;
     const instr = document.getElementById('tgInstruction');
     if (instr) instr.style.opacity = '1';
+    tgActive = null;
   }
-
-  tgActive = null;
 }
 
 function tgFinish() {
