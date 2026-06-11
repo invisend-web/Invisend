@@ -553,35 +553,36 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .ariya-scroll-hint,[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
 [data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
 
-/* ── TG THEMES BOTTOM SLIDER LAYOUT ── */
-[data-theme="7"] .arena,[data-theme="8"] .arena,[data-theme="9"] .arena{position:relative;width:100%;height:100dvh;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;}
+/* ══════════════════════════════════
+   TG THEMES — BOTTOM FIXED DOCK
+══════════════════════════════════ */
+[data-theme="7"] .hero,[data-theme="8"] .hero,[data-theme="9"] .hero{position:relative;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
 [data-theme="7"] .swipe-cards,[data-theme="8"] .swipe-cards,[data-theme="9"] .swipe-cards{display:none!important;}
-[data-theme="7"] .swipe-card,[data-theme="8"] .swipe-card,[data-theme="9"] .swipe-card{display:none!important;}
-.tg-portrait-arena{display:none;position:absolute;inset:0;pointer-events:none;z-index:5;}
-[data-theme="7"] .tg-portrait-arena,[data-theme="8"] .tg-portrait-arena,[data-theme="9"] .tg-portrait-arena{display:block;}
-.tg-portrait{position:absolute;bottom:0;width:min(180px,38vw);height:min(320px,65vw);pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform;transition:filter 0.3s ease;}
-.tg-portrait:active{cursor:grabbing;}
-.tg-portrait-left{left:0;transform:translateX(0);}
-.tg-portrait-right{right:0;transform:translateX(0);}
-.tg-portrait img{width:100%;height:100%;object-fit:contain;object-position:top center;background:transparent;display:block;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 0 20px rgba(0,0,0,0.5));}
-[data-theme="7"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(241,203,20,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
-[data-theme="8"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(201,168,76,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
-[data-theme="9"] .tg-portrait img{filter:drop-shadow(0 0 24px rgba(255,198,28,0.25)) drop-shadow(0 8px 16px rgba(0,0,0,0.6));}
-.tg-swipe-label{position:absolute;bottom:12px;font-family:var(--font-ui);font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3);text-align:center;width:100%;pointer-events:none;animation:tgLabelPulse 2s ease-in-out infinite;}
-@keyframes tgLabelPulse{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
-.tg-portrait-left .tg-swipe-label{padding-left:8px;}
-.tg-portrait-right .tg-swipe-label{padding-right:8px;}
-.tg-arrow-hint{position:absolute;top:40%;font-size:18px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowHint 2s ease-in-out infinite 1s;}
-.tg-portrait-left .tg-arrow-hint{right:-8px;animation-delay:0s;}
-.tg-portrait-right .tg-arrow-hint{left:-8px;animation-delay:0.3s;}
-@keyframes tgArrowHint{0%{opacity:0;transform:translateX(0);}30%{opacity:0.8;}60%{opacity:0.8;transform:translateX(6px);}100%{opacity:0;transform:translateX(0);}}
-.tg-portrait-right .tg-arrow-hint{animation-name:tgArrowHintRight;}
-@keyframes tgArrowHintRight{0%{opacity:0;transform:translateX(0);}30%{opacity:0.8;}60%{opacity:0.8;transform:translateX(-6px);}100%{opacity:0;transform:translateX(0);}}
-[data-theme="7"] .bg-layer::before,[data-theme="8"] .bg-layer::before,[data-theme="9"] .bg-layer::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.45);pointer-events:none;z-index:1;}
-[data-theme="7"] #mergeGlow,[data-theme="8"] #mergeGlow,[data-theme="9"] #mergeGlow{top:35%!important;transform:translate(-50%,-50%)!important;}
-[data-theme="7"] .couple-name-block,[data-theme="8"] .couple-name-block,[data-theme="9"] .couple-name-block{top:35%!important;}
-[data-theme="7"] .swipe-hint-text,[data-theme="8"] .swipe-hint-text,[data-theme="9"] .swipe-hint-text{position:absolute;bottom:min(340px,68vw);left:50%;transform:translateX(-50%);font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);text-align:center;pointer-events:none;white-space:nowrap;animation:tgLabelPulse 2s ease-in-out infinite;z-index:6;}
-@media (max-width:480px){.tg-portrait{width:min(150px,42vw);height:min(280px,75vw);}}
+[data-theme="7"] #swipeHint,[data-theme="8"] #swipeHint,[data-theme="9"] #swipeHint{display:none!important;}
+.tg-dock{display:none;position:fixed;bottom:0;left:0;right:0;height:min(260px,50vw);z-index:20;pointer-events:none;overflow:hidden;}
+[data-theme="7"] .tg-dock,[data-theme="8"] .tg-dock,[data-theme="9"] .tg-dock{display:block;}
+.tg-dock::before{content:'';position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,var(--bg) 0%,transparent 100%);z-index:2;pointer-events:none;}
+.tg-left{position:absolute;left:0;bottom:0;width:min(200px,42vw);height:100%;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y;will-change:transform;z-index:3;}
+.tg-left:active{cursor:grabbing;}
+.tg-right{position:absolute;right:0;bottom:0;width:min(200px,42vw);height:100%;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y;will-change:transform;z-index:3;}
+.tg-right:active{cursor:grabbing;}
+.tg-left img,.tg-right img{width:100%;height:100%;object-fit:contain;object-position:bottom center;background:transparent;display:block;pointer-events:none;-webkit-user-drag:none;user-select:none;}
+[data-theme="7"] .tg-left img,[data-theme="7"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(241,203,20,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+[data-theme="8"] .tg-left img,[data-theme="8"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(201,168,76,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+[data-theme="9"] .tg-left img,[data-theme="9"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(255,198,28,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+.tg-instruction{display:none;position:fixed;bottom:min(270px,52vw);left:50%;transform:translateX(-50%);z-index:21;font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);text-align:center;white-space:nowrap;pointer-events:none;animation:tgInstrPulse 2s ease-in-out infinite;}
+[data-theme="7"] .tg-instruction,[data-theme="8"] .tg-instruction,[data-theme="9"] .tg-instruction{display:block;}
+@keyframes tgInstrPulse{0%,100%{opacity:0.4;}50%{opacity:0.85;}}
+.tg-left-arrow{position:absolute;right:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowL 2s ease-in-out infinite 0.5s;}
+.tg-right-arrow{position:absolute;left:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowR 2s ease-in-out infinite 0.8s;}
+@keyframes tgArrowL{0%{opacity:0;transform:translateX(0);}40%{opacity:0.7;transform:translateX(6px);}100%{opacity:0;transform:translateX(0);}}
+@keyframes tgArrowR{0%{opacity:0;transform:translateX(0);}40%{opacity:0.7;transform:translateX(-6px);}100%{opacity:0;transform:translateX(0);}}
+[data-theme="7"] .bg-layer,[data-theme="8"] .bg-layer,[data-theme="9"] .bg-layer{filter:brightness(0.65);}
+[data-theme="7"] .couple-name-block,[data-theme="8"] .couple-name-block,[data-theme="9"] .couple-name-block{position:fixed!important;top:38%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:15;text-align:center;width:90%;pointer-events:none;display:none;margin-top:0;opacity:1;transition:none;}
+[data-theme="7"] .couple-name-block.show,[data-theme="8"] .couple-name-block.show,[data-theme="9"] .couple-name-block.show{display:block;transform:translate(-50%,-50%)!important;}
+[data-theme="7"] #mergeGlow,[data-theme="8"] #mergeGlow,[data-theme="9"] #mergeGlow{top:38%!important;}
+[data-theme="7"] #ariyaScrollHint,[data-theme="8"] #ariyaScrollHint,[data-theme="9"] #ariyaScrollHint{position:fixed;bottom:min(290px,55vw);left:50%;transform:translateX(-50%);z-index:16;}
+@media (max-width:480px){.tg-dock{height:min(220px,55vw);}.tg-left,.tg-right{width:min(160px,44vw);}}
 </style>
 </head>
 <body>
@@ -688,19 +689,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
       <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt=""></div>
 
-      <div class="tg-portrait-arena" id="tgPortraitArena">
-        <div class="tg-portrait tg-portrait-left" id="tgPortraitLeft">
-          <img id="tgImgLeft" src="" alt="Bride" draggable="false">
-          <div class="tg-swipe-label">Bride</div>
-          <span class="tg-arrow-hint">›</span>
-        </div>
-        <div class="tg-portrait tg-portrait-right" id="tgPortraitRight">
-          <img id="tgImgRight" src="" alt="Groom" draggable="false">
-          <div class="tg-swipe-label">Groom</div>
-          <span class="tg-arrow-hint">‹</span>
-        </div>
-        <div class="swipe-hint-text" id="tgSwipeHintText">Swipe portraits together</div>
-      </div>
       <div class="swipe-divider" id="divider"></div>
       <div class="merge-glow" id="mergeGlow"></div>
       <div class="wax-seal-wrap" id="waxSealWrap" onclick="pressWaxSeal()">
@@ -783,6 +771,19 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <span class="scroll-down-label">Scroll to explore</span>
     </div>
   </section>
+
+  <!-- TG WEDDING FILMS PORTRAIT DOCK -->
+  <div class="tg-dock" id="tgDock">
+    <div class="tg-left" id="tgLeft">
+      <img id="tgImgLeft" src="" alt="Bride" draggable="false">
+      <span class="tg-left-arrow">›</span>
+    </div>
+    <div class="tg-right" id="tgRight">
+      <img id="tgImgRight" src="" alt="Groom" draggable="false">
+      <span class="tg-right-arrow">‹</span>
+    </div>
+  </div>
+  <div class="tg-instruction" id="tgInstruction">Swipe portraits together</div>
 
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
@@ -1048,16 +1049,20 @@ function handleThemeSpecificUI(themeId) {
     window._disableSwipe = false;
   }
   if (themeId === 7 || themeId === 8 || themeId === 9) {
-    const coupleRevealEl = document.getElementById('coupleReveal');
+    const coupleRevealEl  = document.getElementById('coupleReveal');
     const coupleNameBlock = document.getElementById('coupleNameBlock');
-    const swipeCards = document.querySelector('.swipe-cards');
-    const tgArena = document.getElementById('tgPortraitArena');
-    if (coupleRevealEl) coupleRevealEl.style.display = 'none';
+    const swipeCards      = document.querySelector('.swipe-cards');
+    const divider         = document.getElementById('divider');
+    if (coupleRevealEl)  coupleRevealEl.style.display  = 'none';
+    if (waxSeal)         waxSeal.style.display          = 'none';
+    if (swipeCards)      swipeCards.style.display        = 'none';
+    if (swipeHint)       swipeHint.style.display         = 'none';
+    if (divider)         divider.style.display           = 'none';
     if (coupleNameBlock) { coupleNameBlock.style.display = 'none'; coupleNameBlock.classList.remove('show'); }
-    if (waxSeal) waxSeal.style.display = 'none';
-    if (swipeCards) swipeCards.style.display = 'none';
-    if (swipeHint) swipeHint.style.display = 'none';
-    if (tgArena) tgArena.style.display = 'block';
+    const dock  = document.getElementById('tgDock');
+    const instr = document.getElementById('tgInstruction');
+    if (dock)  dock.style.display  = 'block';
+    if (instr) instr.style.display = 'block';
     window._disableSwipe = true;
   }
 }
@@ -1430,215 +1435,157 @@ function initSwipe() {
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
 
-// ── TG BOTTOM PORTRAIT SWIPE SYSTEM ──
-let tgRevealed = false;
-let tgDragging = null;
-let tgStartX = 0;
-let tgStartTranslate = 0;
-let tgLeftTranslate = 0;
-let tgRightTranslate = 0;
+// ── TG BOTTOM DOCK SWIPE SYSTEM ──
 const TG_THEMES = [7, 8, 9];
 
 function isTGTheme() {
   return TG_THEMES.includes(parseInt(document.documentElement.getAttribute('data-theme')));
 }
 
+let tgRevealed     = false;
+let tgActive       = null;
+let tgStartX       = 0;
+let tgLeftX        = 0;
+let tgRightX       = 0;
+let tgRafId        = null;
+let tgTargetLeftX  = 0;
+let tgTargetRightX = 0;
+
 function initTGSwipe(data) {
   if (!isTGTheme()) return;
-
-  const imgLeft  = document.getElementById('tgImgLeft');
-  const imgRight = document.getElementById('tgImgRight');
-  if (imgLeft && data.swipe_image_a_url) imgLeft.src = data.swipe_image_a_url;
-  if (imgRight && data.swipe_image_b_url) imgRight.src = data.swipe_image_b_url;
-
-  const leftLabel  = document.querySelector('.tg-portrait-left .tg-swipe-label');
-  const rightLabel = document.querySelector('.tg-portrait-right .tg-swipe-label');
-  if (leftLabel && data.bride_father) leftLabel.textContent = 'Bride';
-  if (rightLabel && data.groom_father) rightLabel.textContent = 'Groom';
-
-  const leftEl  = document.getElementById('tgPortraitLeft');
-  const rightEl = document.getElementById('tgPortraitRight');
+  const imgL = document.getElementById('tgImgLeft');
+  const imgR = document.getElementById('tgImgRight');
+  if (imgL && data.swipe_image_a_url) imgL.src = data.swipe_image_a_url;
+  if (imgR && data.swipe_image_b_url) imgR.src = data.swipe_image_b_url;
+  const leftEl  = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
   if (!leftEl || !rightEl) return;
-
-  tgLeftTranslate  = 0;
-  tgRightTranslate = 0;
-  tgRevealed = false;
-
-  leftEl.addEventListener('touchstart',  e => tgOnStart(e, 'left'),  { passive: true });
-  leftEl.addEventListener('touchmove',   e => tgOnMove(e),           { passive: false });
-  leftEl.addEventListener('touchend',    e => tgOnEnd(e),            { passive: true });
-  rightEl.addEventListener('touchstart', e => tgOnStart(e, 'right'), { passive: true });
-  rightEl.addEventListener('touchmove',  e => tgOnMove(e),           { passive: false });
-  rightEl.addEventListener('touchend',   e => tgOnEnd(e),            { passive: true });
-
-  leftEl.addEventListener('mousedown',  e => tgOnStart(e, 'left'));
-  rightEl.addEventListener('mousedown', e => tgOnStart(e, 'right'));
-  document.addEventListener('mousemove', tgOnMove);
-  document.addEventListener('mouseup',   tgOnEnd);
-
-  tgRunDemoHint();
+  tgRevealed = false; tgLeftX = 0; tgRightX = 0; tgTargetLeftX = 0; tgTargetRightX = 0;
+  leftEl.style.transform = 'translateX(0)';
+  rightEl.style.transform = 'translateX(0)';
+  leftEl.addEventListener('touchstart',  e => tgStart(e, 'left'),  { passive: true });
+  leftEl.addEventListener('touchmove',   e => tgMove(e),           { passive: false });
+  leftEl.addEventListener('touchend',    () => tgEnd(),             { passive: true });
+  rightEl.addEventListener('touchstart', e => tgStart(e, 'right'), { passive: true });
+  rightEl.addEventListener('touchmove',  e => tgMove(e),           { passive: false });
+  rightEl.addEventListener('touchend',   () => tgEnd(),             { passive: true });
+  leftEl.addEventListener('mousedown',  e => tgStart(e, 'left'));
+  rightEl.addEventListener('mousedown', e => tgStart(e, 'right'));
+  document.addEventListener('mousemove', tgMove);
+  document.addEventListener('mouseup', tgEnd);
+  setTimeout(tgDemoHint, 1500);
 }
 
-function tgGetX(e) {
-  return e.touches ? e.touches[0].clientX : e.clientX;
+function tgGetX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+
+function tgGetMaxMove() {
+  const dock = document.getElementById('tgDock');
+  const portEl = document.getElementById('tgLeft');
+  if (!dock || !portEl) return 120;
+  return (dock.offsetWidth / 2) - (portEl.offsetWidth / 2) + 20;
 }
 
-function tgOnStart(e, side) {
+function tgStart(e, side) {
   if (tgRevealed) return;
-  tgDragging = side;
+  tgActive = side;
   tgStartX = tgGetX(e);
-  tgStartTranslate = side === 'left' ? tgLeftTranslate : tgRightTranslate;
-  const el = document.getElementById(side === 'left' ? 'tgPortraitLeft' : 'tgPortraitRight');
-  if (el) el.style.transition = 'none';
-  const hint = document.getElementById('tgSwipeHintText');
-  if (hint) hint.style.opacity = '0';
+  const instr = document.getElementById('tgInstruction');
+  if (instr) instr.style.opacity = '0';
+  const leftEl = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
+  if (leftEl)  leftEl.style.transition  = 'none';
+  if (rightEl) rightEl.style.transition = 'none';
 }
 
-function tgOnMove(e) {
-  if (!tgDragging || tgRevealed) return;
+function tgMove(e) {
+  if (!tgActive || tgRevealed) return;
   if (e.cancelable) e.preventDefault();
-
   const currentX = tgGetX(e);
   const diff = currentX - tgStartX;
-  const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
-  const portraitWidth = document.querySelector('.tg-portrait')?.offsetWidth || 160;
-  const maxMove = arenaWidth / 2 - portraitWidth / 2;
-
-  if (tgDragging === 'left') {
-    tgLeftTranslate = Math.max(0, Math.min(maxMove, tgStartTranslate + diff));
-    const leftEl = document.getElementById('tgPortraitLeft');
-    if (leftEl) leftEl.style.transform = `translateX(${tgLeftTranslate}px)`;
-    const mirrorAmount = tgLeftTranslate * 0.5;
-    tgRightTranslate = -mirrorAmount;
-    const rightEl = document.getElementById('tgPortraitRight');
-    if (rightEl) rightEl.style.transform = `translateX(${tgRightTranslate}px)`;
+  const maxMove = tgGetMaxMove();
+  const leftEl  = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
+  if (tgActive === 'left') {
+    const newX = Math.max(0, Math.min(maxMove, diff));
+    tgLeftX = newX; tgRightX = -(newX * 0.6);
   } else {
-    tgRightTranslate = Math.min(0, Math.max(-maxMove, tgStartTranslate + diff));
-    const rightEl = document.getElementById('tgPortraitRight');
-    if (rightEl) rightEl.style.transform = `translateX(${tgRightTranslate}px)`;
-    const mirrorAmount = Math.abs(tgRightTranslate) * 0.5;
-    tgLeftTranslate = mirrorAmount;
-    const leftEl = document.getElementById('tgPortraitLeft');
-    if (leftEl) leftEl.style.transform = `translateX(${tgLeftTranslate}px)`;
+    const newX = Math.min(0, Math.max(-maxMove, diff));
+    tgRightX = newX; tgLeftX = Math.abs(newX) * 0.6;
   }
-
-  const totalMove = tgLeftTranslate + Math.abs(tgRightTranslate);
-  if (totalMove >= maxMove * 1.2) {
-    tgOnEnd(e);
-    tgCompleteReveal();
-  }
+  if (leftEl)  leftEl.style.transform  = `translateX(${tgLeftX}px)`;
+  if (rightEl) rightEl.style.transform = `translateX(${tgRightX}px)`;
+  const totalMove = tgLeftX + Math.abs(tgRightX);
+  if (totalMove >= maxMove * 1.1) { tgActive = null; tgFinish(); }
 }
 
-function tgOnEnd(e) {
-  if (!tgDragging) return;
-  const leftEl  = document.getElementById('tgPortraitLeft');
-  const rightEl = document.getElementById('tgPortraitRight');
-
-  if (!tgRevealed) {
-    const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
-    const portraitWidth = document.querySelector('.tg-portrait')?.offsetWidth || 160;
-    const maxMove = arenaWidth / 2 - portraitWidth / 2;
-    const totalMove = tgLeftTranslate + Math.abs(tgRightTranslate);
-
-    if (totalMove < maxMove * 0.4) {
-      if (leftEl) {
-        leftEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-        leftEl.style.transform = 'translateX(0)';
-      }
-      if (rightEl) {
-        rightEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-        rightEl.style.transform = 'translateX(0)';
-      }
-      tgLeftTranslate  = 0;
-      tgRightTranslate = 0;
-      const hint = document.getElementById('tgSwipeHintText');
-      if (hint) hint.style.opacity = '1';
-    }
+function tgEnd() {
+  if (!tgActive || tgRevealed) return;
+  const maxMove = tgGetMaxMove();
+  const totalMove = tgLeftX + Math.abs(tgRightX);
+  if (totalMove < maxMove * 0.35) {
+    const leftEl = document.getElementById('tgLeft');
+    const rightEl = document.getElementById('tgRight');
+    const ease = 'cubic-bezier(0.34,1.56,0.64,1)';
+    if (leftEl)  { leftEl.style.transition  = `transform 0.45s ${ease}`; leftEl.style.transform  = 'translateX(0)'; }
+    if (rightEl) { rightEl.style.transition = `transform 0.45s ${ease}`; rightEl.style.transform = 'translateX(0)'; }
+    tgLeftX = 0; tgRightX = 0;
+    const instr = document.getElementById('tgInstruction');
+    if (instr) instr.style.opacity = '1';
   }
-  tgDragging = null;
+  tgActive = null;
 }
 
-function tgCompleteReveal() {
+function tgFinish() {
   if (tgRevealed) return;
   tgRevealed = true;
-
-  const leftEl  = document.getElementById('tgPortraitLeft');
-  const rightEl = document.getElementById('tgPortraitRight');
-  const hint    = document.getElementById('tgSwipeHintText');
-  const arenaWidth = document.getElementById('arena')?.offsetWidth || window.innerWidth;
-
-  if (hint) hint.style.display = 'none';
-
-  if (leftEl) {
-    leftEl.style.transition = 'transform 0.5s var(--ease), opacity 0.5s ease 0.3s';
-    leftEl.style.transform  = `translateX(${arenaWidth * 0.3}px)`;
-    leftEl.style.opacity    = '0';
-  }
-  if (rightEl) {
-    rightEl.style.transition = 'transform 0.5s var(--ease), opacity 0.5s ease 0.3s';
-    rightEl.style.transform  = `translateX(-${arenaWidth * 0.3}px)`;
-    rightEl.style.opacity    = '0';
-  }
-
-  setTimeout(() => {
-    const g = document.getElementById('mergeGlow');
-    if (g) { g.style.width = '80%'; g.style.opacity = '1'; }
-  }, 200);
-
-  setTimeout(() => {
-    const g = document.getElementById('mergeGlow');
-    if (g) g.style.opacity = '0';
-    triggerKandyanExplosion();
-  }, 500);
-
+  const leftEl  = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
+  const dock    = document.getElementById('tgDock');
+  const instr   = document.getElementById('tgInstruction');
+  const arenaW  = window.innerWidth;
+  const ease    = 'cubic-bezier(0.23,1,0.32,1)';
+  if (instr) instr.style.display = 'none';
+  if (leftEl)  { leftEl.style.transition  = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`; leftEl.style.transform  = `translateX(${arenaW * 0.35}px)`;  leftEl.style.opacity  = '0'; }
+  if (rightEl) { rightEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`; rightEl.style.transform = `translateX(-${arenaW * 0.35}px)`; rightEl.style.opacity = '0'; }
+  setTimeout(() => { if (dock) dock.style.display = 'none'; }, 900);
+  setTimeout(() => { const g = document.getElementById('mergeGlow'); if (g) { g.style.width = '70%'; g.style.opacity = '1'; } }, 300);
+  setTimeout(() => { const g = document.getElementById('mergeGlow'); if (g) g.style.opacity = '0'; triggerKandyanExplosion(); }, 600);
   setTimeout(() => {
     const nameBlock = document.getElementById('coupleNameBlock');
-    if (nameBlock) {
-      nameBlock.style.display = 'block';
-      requestAnimationFrame(() => requestAnimationFrame(() => nameBlock.classList.add('show')));
-    }
-  }, 1900);
-
+    if (nameBlock) { nameBlock.style.display = 'block'; requestAnimationFrame(() => requestAnimationFrame(() => nameBlock.classList.add('show'))); }
+  }, 2000);
+  setTimeout(() => { const scrollHint = document.getElementById('ariyaScrollHint'); if (scrollHint) scrollHint.classList.add('show'); }, 2900);
   setTimeout(() => {
-    const scrollHint = document.getElementById('ariyaScrollHint');
-    if (scrollHint) scrollHint.classList.add('show');
-  }, 2800);
-
-  setTimeout(() => {
-    const heroSection = document.getElementById('heroSection');
-    const nextSection = heroSection
-      ? heroSection.nextElementSibling
-      : document.querySelector('.family-section') || document.querySelector('.orn-div');
-    if (nextSection) nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 3800);
+    const heroEl = document.getElementById('heroSection');
+    const next = heroEl ? heroEl.nextElementSibling : document.querySelector('.orn-div') || document.querySelector('.family-section');
+    if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 3900);
 }
 
-function tgRunDemoHint() {
+function tgDemoHint() {
   if (tgRevealed) return;
-  const leftEl  = document.getElementById('tgPortraitLeft');
-  const rightEl = document.getElementById('tgPortraitRight');
+  const leftEl = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
   if (!leftEl || !rightEl) return;
-
-  let runCount = 0;
-  const maxRuns = 2;
-
-  function runOnce() {
-    if (tgRevealed || runCount >= maxRuns) return;
-    runCount++;
-    leftEl.style.transition  = 'transform 0.5s ease-out';
-    rightEl.style.transition = 'transform 0.5s ease-out';
-    leftEl.style.transform   = 'translateX(28px)';
-    rightEl.style.transform  = 'translateX(-28px)';
+  let count = 0;
+  const ease = 'cubic-bezier(0.23,1,0.32,1)';
+  function pulse() {
+    if (tgRevealed || count >= 2) return;
+    count++;
+    leftEl.style.transition  = `transform 0.5s ${ease}`;
+    rightEl.style.transition = `transform 0.5s ${ease}`;
+    leftEl.style.transform   = 'translateX(32px)';
+    rightEl.style.transform  = 'translateX(-32px)';
     setTimeout(() => {
       if (tgRevealed) return;
-      leftEl.style.transition  = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-      rightEl.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+      leftEl.style.transition  = `transform 0.5s ${ease}`;
+      rightEl.style.transition = `transform 0.5s ${ease}`;
       leftEl.style.transform   = 'translateX(0)';
       rightEl.style.transform  = 'translateX(0)';
-      if (runCount < maxRuns) setTimeout(runOnce, 2000);
-    }, 600);
+      if (count < 2) setTimeout(pulse, 2200);
+    }, 700);
   }
-  setTimeout(runOnce, 1500);
+  pulse();
 }
 
 function onStart(x) {
