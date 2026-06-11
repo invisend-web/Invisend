@@ -596,6 +596,14 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* FIX 8 — Scroll hint position */
 [data-theme="7"] #ariyaScrollHint,[data-theme="8"] #ariyaScrollHint,[data-theme="9"] #ariyaScrollHint{position:fixed!important;bottom:58dvh!important;left:50%!important;transform:translateX(-50%)!important;z-index:26!important;}
 @media (max-width:480px){.tg-dock{height:55dvh;}.tg-left,.tg-right{width:min(180px,46vw);}}
+/* FIX — Names permanently hidden after TG reveal */
+[data-theme="7"] .couple-name-block[style*="visibility: hidden"],
+[data-theme="8"] .couple-name-block[style*="visibility: hidden"],
+[data-theme="9"] .couple-name-block[style*="visibility: hidden"]{display:none!important;opacity:0!important;pointer-events:none!important;}
+/* FIX 3 — No parallax/zoom on TG theme backgrounds */
+[data-theme="7"] .custom-bg-wrap,[data-theme="7"] .custom-bg-img,[data-theme="7"] .bg-layer,
+[data-theme="8"] .custom-bg-wrap,[data-theme="8"] .custom-bg-img,[data-theme="8"] .bg-layer,
+[data-theme="9"] .custom-bg-wrap,[data-theme="9"] .custom-bg-img,[data-theme="9"] .bg-layer{transform:none!important;will-change:opacity!important;}
 </style>
 </head>
 <body>
@@ -1467,6 +1475,7 @@ function isTGTheme() {
 
 // ── State ──
 let tgDone         = false;
+let tgNamesShown   = false;
 let tgDragging     = false;
 let tgSide         = null;
 let tgDragStartX   = 0;
@@ -1676,18 +1685,22 @@ function tgReveal() {
 
   // Step 3 — portraits dissolve into particle explosion simultaneously
   setTimeout(() => {
+    // z-index below particle container so particles appear on top
     if (leftEl) {
-      leftEl.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
+      leftEl.style.zIndex     = '1';
+      leftEl.style.transition = 'opacity 0.25s ease, filter 0.25s ease';
       leftEl.style.opacity    = '0';
-      leftEl.style.filter     = 'blur(8px) brightness(3)';
+      leftEl.style.filter     = 'blur(10px) brightness(3) saturate(2)';
     }
     if (rightEl) {
-      rightEl.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
+      rightEl.style.zIndex     = '1';
+      rightEl.style.transition = 'opacity 0.25s ease, filter 0.25s ease';
       rightEl.style.opacity    = '0';
-      rightEl.style.filter     = 'blur(8px) brightness(3)';
+      rightEl.style.filter     = 'blur(10px) brightness(3) saturate(2)';
     }
     const g = document.getElementById('mergeGlow');
-    if (g) { g.style.transition = 'opacity 0.2s ease'; g.style.opacity = '0'; }
+    if (g) { g.style.transition = 'opacity 0.15s ease'; g.style.opacity = '0'; }
+    // Particles appear above portraits via higher z-index on container
     triggerKandyanExplosion();
   }, 460);
 
@@ -1698,8 +1711,10 @@ function tgReveal() {
     if (rightEl) { rightEl.style.filter = ''; rightEl.style.display = 'none'; }
   }, 850);
 
-  // Step 5 — couple names dramatic reveal
+  // Step 5 — couple names dramatic reveal — ONCE ONLY
   setTimeout(() => {
+    if (tgNamesShown) return;
+    tgNamesShown = true;
     const nameBlock = document.getElementById('coupleNameBlock');
     if (nameBlock) {
       nameBlock.style.display = 'block';
@@ -1735,7 +1750,12 @@ function tgReveal() {
       if (nameBlock) {
         nameBlock.style.transition = 'opacity 0.7s ease';
         nameBlock.style.opacity    = '0';
-        setTimeout(() => { nameBlock.style.display = 'none'; nameBlock.style.opacity = '1'; nameBlock.classList.remove('show'); }, 700);
+        setTimeout(() => {
+          nameBlock.style.display    = 'none';
+          nameBlock.style.opacity    = '1';
+          nameBlock.style.visibility = 'hidden';
+          nameBlock.classList.remove('show');
+        }, 700);
       }
       if (hint) {
         hint.style.transition = 'opacity 0.7s ease';
@@ -1904,7 +1924,7 @@ function triggerKandyanExplosion() {
   const centerY = arena.offsetHeight / 2;
 
   const pContainer = document.createElement('div');
-  pContainer.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:15;overflow:hidden;';
+  pContainer.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:50;overflow:hidden;';
   arena.appendChild(pContainer);
 
   const configs = [
