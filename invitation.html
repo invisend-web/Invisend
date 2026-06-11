@@ -579,8 +579,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .custom-bg-wrap,[data-theme="8"] .custom-bg-wrap,[data-theme="9"] .custom-bg-wrap{filter:brightness(0.55);}
 [data-theme="7"] .couple-name-block.show,[data-theme="8"] .couple-name-block.show,[data-theme="9"] .couple-name-block.show{text-shadow:0 2px 20px rgba(0,0,0,0.9),0 0 40px rgba(0,0,0,0.8)!important;}
 /* FIX 5 — Instruction text */
-.tg-instruction{display:none;position:fixed;bottom:57dvh;left:50%;transform:translateX(-50%);z-index:21;font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;white-space:nowrap;pointer-events:none;animation:tgInstrPulse 2s ease-in-out infinite;}
-[data-theme="7"] .tg-instruction,[data-theme="8"] .tg-instruction,[data-theme="9"] .tg-instruction{display:block;}
+.tg-instruction{display:none;position:fixed;bottom:57dvh;left:50%;transform:translateX(-50%);z-index:21;font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;white-space:nowrap;pointer-events:none;animation:tgInstrPulse 2s ease-in-out infinite;flex-direction:column;align-items:center;gap:8px;}
+[data-theme="7"] .tg-instruction,[data-theme="8"] .tg-instruction,[data-theme="9"] .tg-instruction{display:flex;}
+.tg-instruction-arrow{animation:tgArrowUp 1.4s ease-in-out infinite;opacity:0.6;}
+@keyframes tgArrowUp{0%,100%{transform:translateY(0);opacity:0.4;}50%{transform:translateY(-6px);opacity:0.9;}}
 @keyframes tgInstrPulse{0%,100%{opacity:0.4;}50%{opacity:0.85;}}
 .tg-left-arrow{position:absolute;right:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowL 2s ease-in-out infinite 0.5s;}
 .tg-right-arrow{position:absolute;left:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowR 2s ease-in-out infinite 0.8s;}
@@ -794,7 +796,12 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <span class="tg-right-arrow">‹</span>
     </div>
   </div>
-  <div class="tg-instruction" id="tgInstruction">Swipe portraits together</div>
+  <div class="tg-instruction" id="tgInstruction">
+    <svg class="tg-instruction-arrow" viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.5)">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+    <span>Swipe up to reveal</span>
+  </div>
 
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
@@ -1063,7 +1070,7 @@ function handleThemeSpecificUI(themeId) {
     const toHide = ['cardLeft', 'cardRight', 'divider', 'swipeHint', 'coupleReveal', 'waxSealWrap'];
     toHide.forEach(id => {
       const el = document.getElementById(id);
-      if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; el.style.opacity = '0'; }
+      if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; }
     });
     document.querySelectorAll('.swipe-cards, .swipe-card').forEach(el => {
       el.style.display = 'none'; el.style.visibility = 'hidden';
@@ -1072,8 +1079,8 @@ function handleThemeSpecificUI(themeId) {
     if (coupleNameBlock) { coupleNameBlock.style.display = 'none'; coupleNameBlock.classList.remove('show'); }
     const dock  = document.getElementById('tgDock');
     const instr = document.getElementById('tgInstruction');
-    if (dock)  { dock.style.display = 'block'; dock.style.visibility = 'visible'; dock.style.opacity = '1'; }
-    if (instr) { instr.style.display = 'block'; instr.style.opacity = '1'; }
+    if (dock)  dock.style.display  = 'block';
+    if (instr) instr.style.display = 'flex';
     window._disableSwipe = true;
   }
 }
@@ -1446,145 +1453,210 @@ function initSwipe() {
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
 
-// ── TG BOTTOM DOCK SWIPE SYSTEM ──
+// ══════════════════════════════════════
+// TG WEDDING FILMS — SCROLL REVEAL SYSTEM
+// ══════════════════════════════════════
+
 const TG_THEMES = [7, 8, 9];
 
 function isTGTheme() {
-  return TG_THEMES.includes(parseInt(document.documentElement.getAttribute('data-theme')));
+  return TG_THEMES.includes(
+    parseInt(document.documentElement.getAttribute('data-theme'))
+  );
 }
 
-let tgRevealed     = false;
-let tgActive       = null;
-let tgStartX       = 0;
-let tgLeftX        = 0;
-let tgRightX       = 0;
-let tgRafId        = null;
-let tgTargetLeftX  = 0;
-let tgTargetRightX = 0;
+// State
+let tgRevealed   = false;
+let tgProgress   = 0;
+let tgStartY     = null;
+let tgIsDragging = false;
+let tgAutoRaf    = null;
+let tgMaxSwipe   = 0;
 
 function initTGSwipe(data) {
   if (!isTGTheme()) return;
+
   const imgL = document.getElementById('tgImgLeft');
   const imgR = document.getElementById('tgImgRight');
   if (imgL && data.swipe_image_a_url) imgL.src = data.swipe_image_a_url;
   if (imgR && data.swipe_image_b_url) imgR.src = data.swipe_image_b_url;
-  const leftEl  = document.getElementById('tgLeft');
-  const rightEl = document.getElementById('tgRight');
-  if (!leftEl || !rightEl) return;
-  tgRevealed = false; tgLeftX = 0; tgRightX = 0; tgTargetLeftX = 0; tgTargetRightX = 0;
-  leftEl.style.transform = 'translateX(0)';
-  rightEl.style.transform = 'translateX(0)';
-  leftEl.addEventListener('touchstart',  e => tgStart(e, 'left'),  { passive: true });
-  leftEl.addEventListener('touchmove',   e => tgMove(e),           { passive: false });
-  leftEl.addEventListener('touchend',    () => tgEnd(),             { passive: true });
-  rightEl.addEventListener('touchstart', e => tgStart(e, 'right'), { passive: true });
-  rightEl.addEventListener('touchmove',  e => tgMove(e),           { passive: false });
-  rightEl.addEventListener('touchend',   () => tgEnd(),             { passive: true });
-  leftEl.addEventListener('mousedown',  e => tgStart(e, 'left'));
-  rightEl.addEventListener('mousedown', e => tgStart(e, 'right'));
-  document.addEventListener('mousemove', tgMove);
-  document.addEventListener('mouseup', tgEnd);
-  setTimeout(tgDemoHint, 1500);
+
+  tgRevealed   = false;
+  tgProgress   = 0;
+  tgStartY     = null;
+  tgIsDragging = false;
+
+  tgMaxSwipe = window.innerHeight * 0.4;
+
+  const hero = document.getElementById('heroSection');
+  if (!hero) return;
+
+  hero.addEventListener('touchstart', tgTouchStart, { passive: true });
+  hero.addEventListener('touchmove',  tgTouchMove,  { passive: false });
+  hero.addEventListener('touchend',   tgTouchEnd,   { passive: true });
+
+  hero.addEventListener('mousedown',  tgMouseDown);
+  document.addEventListener('mousemove', tgMouseMove);
+  document.addEventListener('mouseup',   tgMouseUp);
+
+  setTimeout(tgShowDemoHint, 1500);
 }
 
-function tgGetX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+function tgTouchStart(e) {
+  if (tgRevealed) return;
+  tgStartY     = e.touches[0].clientY;
+  tgIsDragging = true;
+  cancelTgAuto();
+}
+
+function tgTouchMove(e) {
+  if (!tgIsDragging || tgRevealed) return;
+  if (e.cancelable) e.preventDefault();
+
+  const deltaY = tgStartY - e.touches[0].clientY;
+  if (deltaY < 0) return;
+
+  const newProgress = Math.min(1, deltaY / tgMaxSwipe);
+  tgSetProgress(newProgress);
+
+  if (tgProgress >= 1) {
+    tgIsDragging = false;
+    tgComplete();
+  }
+}
+
+function tgTouchEnd() {
+  if (!tgIsDragging || tgRevealed) return;
+  tgIsDragging = false;
+
+  if (tgProgress >= 0.85) {
+    tgAutoComplete();
+  } else if (tgProgress > 0.05) {
+    setTimeout(() => { if (!tgRevealed) tgAutoComplete(); }, 400);
+  } else {
+    tgSnapBack();
+  }
+}
+
+function tgMouseDown(e) {
+  if (tgRevealed) return;
+  tgStartY     = e.clientY;
+  tgIsDragging = true;
+  cancelTgAuto();
+}
+
+function tgMouseMove(e) {
+  if (!tgIsDragging || tgRevealed) return;
+  const deltaY = tgStartY - e.clientY;
+  if (deltaY < 0) return;
+  const newProgress = Math.min(1, deltaY / tgMaxSwipe);
+  tgSetProgress(newProgress);
+  if (tgProgress >= 1) {
+    tgIsDragging = false;
+    tgComplete();
+  }
+}
+
+function tgMouseUp() {
+  if (!tgIsDragging || tgRevealed) return;
+  tgIsDragging = false;
+  if (tgProgress >= 0.85) {
+    tgAutoComplete();
+  } else if (tgProgress > 0.05) {
+    setTimeout(() => { if (!tgRevealed) tgAutoComplete(); }, 400);
+  } else {
+    tgSnapBack();
+  }
+}
+
+function tgSetProgress(p) {
+  tgProgress = p;
+
+  const leftEl  = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
+
+  if (!leftEl || !rightEl) return;
+
+  const maxMove = tgGetMaxMove();
+  const move    = maxMove * p;
+
+  leftEl.style.transition  = 'none';
+  rightEl.style.transition = 'none';
+  leftEl.style.transform   = `translateX(${move}px)`;
+  rightEl.style.transform  = `translateX(-${move}px)`;
+
+  if (p > 0.02) {
+    const instr = document.getElementById('tgInstruction');
+    if (instr) instr.style.opacity = '0';
+  }
+}
 
 function tgGetMaxMove() {
   const dock   = document.getElementById('tgDock');
   const portEl = document.getElementById('tgLeft');
-  if (!dock || !portEl) return 120;
-  // Each portrait moves exactly half dock width minus half portrait width
-  // so they meet precisely in the center
-  const dockW = dock.offsetWidth;
-  const portW = portEl.offsetWidth;
-  return Math.floor((dockW - portW) / 2);
+  if (!dock || !portEl) return 140;
+  return Math.floor((dock.offsetWidth - portEl.offsetWidth) / 2);
 }
 
-function tgStart(e, side) {
+function tgAutoComplete() {
   if (tgRevealed) return;
-  tgActive = side;
-  tgStartX = tgGetX(e);
-  const instr = document.getElementById('tgInstruction');
-  if (instr) instr.style.opacity = '0';
-  const leftEl = document.getElementById('tgLeft');
-  const rightEl = document.getElementById('tgRight');
-  if (leftEl)  leftEl.style.transition  = 'none';
-  if (rightEl) rightEl.style.transition = 'none';
-}
+  cancelTgAuto();
 
-function tgMove(e) {
-  if (!tgActive || tgRevealed) return;
-  if (e.cancelable) e.preventDefault();
+  const startP   = tgProgress;
+  const startTs  = performance.now();
+  const duration = 400;
 
-  const currentX = tgGetX(e);
-  const diff     = currentX - tgStartX;
-  const maxMove  = tgGetMaxMove();
+  function step(now) {
+    const elapsed  = now - startTs;
+    const fraction = Math.min(1, elapsed / duration);
+    const eased    = 1 - Math.pow(1 - fraction, 3);
+    tgSetProgress(startP + (1 - startP) * eased);
 
-  const leftEl  = document.getElementById('tgLeft');
-  const rightEl = document.getElementById('tgRight');
-
-  let moveAmount = 0;
-  if (tgActive === 'left') {
-    moveAmount = Math.max(0, Math.min(maxMove, diff));
-  } else {
-    moveAmount = Math.max(0, Math.min(maxMove, -diff));
-  }
-
-  tgLeftX  =  moveAmount;
-  tgRightX = -moveAmount;
-
-  if (leftEl)  leftEl.style.transform = `translateX(${tgLeftX}px)`;
-  if (rightEl) rightEl.style.transform = `translateX(${tgRightX}px)`;
-
-  if (moveAmount >= maxMove) {
-    if (leftEl) {
-      leftEl.style.transition = 'transform 0.2s ease-out';
-      leftEl.style.transform  = `translateX(${maxMove}px)`;
+    if (fraction < 1) {
+      tgAutoRaf = requestAnimationFrame(step);
+    } else {
+      tgSetProgress(1);
+      tgComplete();
     }
-    if (rightEl) {
-      rightEl.style.transition = 'transform 0.2s ease-out';
-      rightEl.style.transform  = `translateX(-${maxMove}px)`;
+  }
+
+  tgAutoRaf = requestAnimationFrame(step);
+}
+
+function tgSnapBack() {
+  if (tgRevealed) return;
+  cancelTgAuto();
+
+  const startP   = tgProgress;
+  const startTs  = performance.now();
+  const duration = 450;
+
+  function step(now) {
+    const elapsed  = now - startTs;
+    const fraction = Math.min(1, elapsed / duration);
+    const eased    = 1 - Math.pow(1 - fraction, 3);
+    tgSetProgress(startP * (1 - eased));
+
+    if (fraction < 1) {
+      tgAutoRaf = requestAnimationFrame(step);
+    } else {
+      tgSetProgress(0);
+      const instr = document.getElementById('tgInstruction');
+      if (instr) { instr.style.transition = 'opacity 0.3s ease'; instr.style.opacity = '1'; }
     }
-    tgLeftX  =  maxMove;
-    tgRightX = -maxMove;
-    tgActive = null;
-    setTimeout(() => tgFinish(), 220);
   }
+
+  tgAutoRaf = requestAnimationFrame(step);
 }
 
-function tgEnd() {
-  if (!tgActive || tgRevealed) return;
-
-  const maxMove    = tgGetMaxMove();
-  const moveAmount = Math.abs(tgLeftX);
-  const leftEl     = document.getElementById('tgLeft');
-  const rightEl    = document.getElementById('tgRight');
-
-  if (moveAmount >= maxMove * 0.3) {
-    // Enough progress — snap both to center and trigger reveal
-    const ease = 'cubic-bezier(0.23,1,0.32,1)';
-    if (leftEl)  { leftEl.style.transition  = `transform 0.3s ${ease}`; leftEl.style.transform  = `translateX(${maxMove}px)`; }
-    if (rightEl) { rightEl.style.transition = `transform 0.3s ${ease}`; rightEl.style.transform = `translateX(-${maxMove}px)`; }
-    tgLeftX  =  maxMove;
-    tgRightX = -maxMove;
-    tgActive = null;
-    setTimeout(() => tgFinish(), 320);
-  } else {
-    // Not enough — snap back to edges
-    const ease = 'cubic-bezier(0.34,1.56,0.64,1)';
-    if (leftEl)  { leftEl.style.transition  = `transform 0.45s ${ease}`; leftEl.style.transform  = 'translateX(0)'; }
-    if (rightEl) { rightEl.style.transition = `transform 0.45s ${ease}`; rightEl.style.transform = 'translateX(0)'; }
-    tgLeftX  = 0;
-    tgRightX = 0;
-    const instr = document.getElementById('tgInstruction');
-    if (instr) instr.style.opacity = '1';
-    tgActive = null;
-  }
+function cancelTgAuto() {
+  if (tgAutoRaf) { cancelAnimationFrame(tgAutoRaf); tgAutoRaf = null; }
 }
 
-function tgFinish() {
+function tgComplete() {
   if (tgRevealed) return;
   tgRevealed = true;
+  cancelTgAuto();
 
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
@@ -1596,13 +1668,13 @@ function tgFinish() {
   if (instr) instr.style.display = 'none';
 
   if (leftEl) {
-    leftEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`;
-    leftEl.style.transform  = `translateX(${arenaW * 0.35}px)`;
+    leftEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.2s`;
+    leftEl.style.transform  = `translateX(${arenaW * 0.4}px)`;
     leftEl.style.opacity    = '0';
   }
   if (rightEl) {
-    rightEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.25s`;
-    rightEl.style.transform  = `translateX(-${arenaW * 0.35}px)`;
+    rightEl.style.transition = `transform 0.5s ${ease}, opacity 0.4s ease 0.2s`;
+    rightEl.style.transform  = `translateX(-${arenaW * 0.4}px)`;
     rightEl.style.opacity    = '0';
   }
 
@@ -1611,13 +1683,13 @@ function tgFinish() {
   setTimeout(() => {
     const g = document.getElementById('mergeGlow');
     if (g) { g.style.width = '70%'; g.style.opacity = '1'; }
-  }, 300);
+  }, 250);
 
   setTimeout(() => {
     const g = document.getElementById('mergeGlow');
     if (g) g.style.opacity = '0';
     triggerKandyanExplosion();
-  }, 600);
+  }, 550);
 
   setTimeout(() => {
     const nameBlock = document.getElementById('coupleNameBlock');
@@ -1627,12 +1699,12 @@ function tgFinish() {
         nameBlock.classList.add('show');
       }));
     }
-  }, 2000);
+  }, 1900);
 
   setTimeout(() => {
-    const scrollHint = document.getElementById('ariyaScrollHint');
-    if (scrollHint) scrollHint.classList.add('show');
-  }, 2900);
+    const hint = document.getElementById('ariyaScrollHint');
+    if (hint) hint.classList.add('show');
+  }, 2800);
 
   setTimeout(() => {
     const heroEl = document.getElementById('heroSection');
@@ -1643,57 +1715,47 @@ function tgFinish() {
 
     if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Hide name and scroll hint after auto scroll
     setTimeout(() => {
-      const nameBlock  = document.getElementById('coupleNameBlock');
-      const scrollHint = document.getElementById('ariyaScrollHint');
+      const nameBlock = document.getElementById('coupleNameBlock');
+      const hint      = document.getElementById('ariyaScrollHint');
 
       if (nameBlock) {
-        nameBlock.style.transition = 'opacity 0.5s ease';
+        nameBlock.style.transition = 'opacity 0.6s ease';
         nameBlock.style.opacity    = '0';
-        setTimeout(() => {
-          nameBlock.style.display = 'none';
-          nameBlock.style.opacity = '1';
-          nameBlock.classList.remove('show');
-        }, 500);
+        setTimeout(() => { nameBlock.style.display = 'none'; nameBlock.style.opacity = '1'; nameBlock.classList.remove('show'); }, 600);
       }
 
-      if (scrollHint) {
-        scrollHint.style.transition = 'opacity 0.5s ease';
-        scrollHint.style.opacity    = '0';
-        setTimeout(() => {
-          scrollHint.classList.remove('show');
-          scrollHint.style.opacity = '1';
-        }, 500);
+      if (hint) {
+        hint.style.transition = 'opacity 0.6s ease';
+        hint.style.opacity    = '0';
+        setTimeout(() => { hint.classList.remove('show'); hint.style.opacity = '1'; }, 600);
       }
-    }, 1500);
+    }, 1400);
 
-  }, 3900);
+  }, 3800);
 }
 
-function tgDemoHint() {
+function tgShowDemoHint() {
   if (tgRevealed) return;
-  const leftEl = document.getElementById('tgLeft');
+
+  const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
   if (!leftEl || !rightEl) return;
+
   let count = 0;
-  const ease = 'cubic-bezier(0.23,1,0.32,1)';
+
   function pulse() {
     if (tgRevealed || count >= 2) return;
     count++;
-    leftEl.style.transition  = `transform 0.5s ${ease}`;
-    rightEl.style.transition = `transform 0.5s ${ease}`;
-    leftEl.style.transform   = 'translateX(32px)';
-    rightEl.style.transform  = 'translateX(-32px)';
+    tgSetProgress(0.12);
     setTimeout(() => {
-      if (tgRevealed) return;
-      leftEl.style.transition  = `transform 0.5s ${ease}`;
-      rightEl.style.transition = `transform 0.5s ${ease}`;
-      leftEl.style.transform   = 'translateX(0)';
-      rightEl.style.transform  = 'translateX(0)';
-      if (count < 2) setTimeout(pulse, 2200);
-    }, 700);
+      if (!tgRevealed) {
+        tgSnapBack();
+        if (count < 2) setTimeout(pulse, 2400);
+      }
+    }, 600);
   }
+
   pulse();
 }
 
