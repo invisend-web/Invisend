@@ -563,6 +563,79 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .ariya-scroll-hint,[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
 [data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
 
+/* ════════════════════════════════════
+   THEME 10: TG PREMIUM — CINEMA NOIR
+════════════════════════════════════ */
+
+[data-theme="10"]{--bg:#000000;--bg2:#0a0a0a;--card:#111111;--accent:#C9A84C;--accent2:#E8CC7A;--accent3:#F5EAD4;--glow:rgba(201,168,76,0.5);--text:#F5EAD4;--text2:#9A8468;--text3:#52463A;--border:rgba(201,168,76,0.15);--section-bg:rgba(255,255,255,0.018);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(201,168,76,0.6) 30%,transparent 65%);--particle-color:#C9A84C;}
+[data-theme="10"] .bg-layer{background:#000000;}
+
+/* Film grain overlay */
+[data-theme="10"] .hero::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");background-size:256px 256px;animation:filmGrain 0.08s steps(1) infinite;}
+@keyframes filmGrain{0%{background-position:0 0;}10%{background-position:-5% -10%;}20%{background-position:-15% 5%;}30%{background-position:7% -25%;}40%{background-position:-5% 25%;}50%{background-position:-15% 10%;}60%{background-position:15% 0;}70%{background-position:0 15%;}80%{background-position:3% 35%;}90%{background-position:-10% 10%;}100%{background-position:0 0;}}
+
+/* Hide standard swipe for theme 10 */
+[data-theme="10"] .swipe-cards,[data-theme="10"] #cardLeft,[data-theme="10"] #cardRight,[data-theme="10"] #divider,[data-theme="10"] #swipeHint,[data-theme="10"] #coupleReveal,[data-theme="10"] #waxSealWrap{display:none!important;visibility:hidden!important;}
+
+/* Cinema stage */
+.cinema-stage{display:none;position:fixed;inset:0;z-index:5;align-items:center;justify-content:center;flex-direction:column;}
+[data-theme="10"] .cinema-stage{display:flex;}
+
+/* Gold sweep line */
+.cinema-sweep{position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--accent,#C9A84C) 40%,rgba(255,255,255,0.9) 50%,var(--accent,#C9A84C) 60%,transparent 100%);z-index:6;opacity:0;}
+.cinema-sweep.animate{animation:sweepAcross 1.2s cubic-bezier(0.23,1,0.32,1) forwards;}
+@keyframes sweepAcross{0%{left:-100%;opacity:0;top:45%;}10%{opacity:1;}90%{opacity:1;}100%{left:100%;opacity:0;top:45%;}}
+
+/* Portrait frames */
+.cinema-portraits{position:absolute;bottom:0;left:0;right:0;height:58dvh;display:flex;align-items:flex-end;justify-content:space-between;z-index:7;pointer-events:none;}
+.cinema-portrait{width:min(44vw,200px);height:100%;position:relative;overflow:hidden;pointer-events:auto;will-change:transform,opacity;}
+.cinema-portrait img{width:100%;height:100%;object-fit:contain;object-position:bottom center;display:block;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 0 30px rgba(201,168,76,0.15)) drop-shadow(0 -8px 24px rgba(0,0,0,0.8));}
+.cinema-portrait::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 85% 100% at 50% 100%,transparent 30%,rgba(0,0,0,0.5) 70%,rgba(0,0,0,0.85) 100%);pointer-events:none;z-index:1;}
+.cinema-portrait.breathe{animation:portraitBreathe 4s ease-in-out infinite;}
+.cinema-portrait-right.breathe{animation-delay:0.5s;}
+@keyframes portraitBreathe{0%,100%{transform:scale(1) translateY(0);}50%{transform:scale(1.015) translateY(-3px);}}
+
+/* CTA button */
+.cinema-cta{position:absolute;bottom:min(62dvh,280px);left:50%;transform:translateX(-50%);z-index:8;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;pointer-events:auto;}
+.cinema-cta-ring{width:64px;height:64px;border-radius:50%;border:1px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;position:relative;animation:ctaRingPulse 2.5s ease-in-out infinite;}
+.cinema-cta-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(201,168,76,0.15);animation:ctaRingPulse 2.5s ease-in-out infinite 0.3s;}
+.cinema-cta-ring::after{content:'';position:absolute;inset:-12px;border-radius:50%;border:1px solid rgba(201,168,76,0.07);animation:ctaRingPulse 2.5s ease-in-out infinite 0.6s;}
+@keyframes ctaRingPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.08);opacity:1;}}
+.cinema-cta-dot{width:8px;height:8px;border-radius:50%;background:var(--accent,#C9A84C);box-shadow:0 0 12px var(--accent,#C9A84C),0 0 24px var(--accent,#C9A84C);}
+.cinema-cta-text{font-family:var(--font-ui);font-size:8px;letter-spacing:0.45em;text-transform:uppercase;color:rgba(201,168,76,0.55);white-space:nowrap;animation:ctaTextFade 2.5s ease-in-out infinite;}
+@keyframes ctaTextFade{0%,100%{opacity:0.5;}50%{opacity:1;}}
+
+/* Top bar */
+.cinema-topbar{position:absolute;top:28px;left:0;right:0;z-index:8;display:flex;align-items:center;justify-content:center;gap:16px;opacity:0;animation:fadeIn 1s ease 0.8s forwards;}
+.cinema-topbar-line{flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.35));}
+.cinema-topbar-line.r{background:linear-gradient(90deg,rgba(201,168,76,0.35),transparent);}
+.cinema-topbar-text{font-family:var(--font-ui);font-size:7.5px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(201,168,76,0.4);white-space:nowrap;}
+
+/* Name reveal */
+[data-theme="10"] .couple-name-block{position:fixed!important;top:32%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:20!important;text-align:center;width:90%;pointer-events:none;display:none;opacity:0;}
+[data-theme="10"] .couple-name-block.show{display:block;}
+[data-theme="10"] .couple-name-block .couple-names{font-family:var(--font-display)!important;font-size:clamp(28px,7.5vw,58px)!important;font-style:italic!important;color:var(--accent)!important;letter-spacing:0.04em!important;text-shadow:0 0 40px rgba(201,168,76,0.8),0 0 80px rgba(201,168,76,0.4),0 0 120px rgba(201,168,76,0.2)!important;animation:cinemaNameReveal 1.4s cubic-bezier(0.23,1,0.32,1) both,cinemaNameGlow 3s ease-in-out infinite 1.5s!important;}
+@keyframes cinemaNameReveal{0%{opacity:0;transform:scale(0.85);filter:blur(16px) brightness(2);letter-spacing:0.15em;}60%{filter:blur(0px) brightness(1);}100%{opacity:1;transform:scale(1);filter:blur(0px) brightness(1);letter-spacing:0.04em;}}
+@keyframes cinemaNameGlow{0%,100%{text-shadow:0 0 30px rgba(201,168,76,0.6),0 0 60px rgba(201,168,76,0.3);}50%{text-shadow:0 0 50px rgba(201,168,76,1),0 0 100px rgba(201,168,76,0.6),0 0 150px rgba(201,168,76,0.3);}}
+[data-theme="10"] .name-line{background:linear-gradient(90deg,transparent,rgba(201,168,76,0.7),transparent)!important;animation:nameLineReveal 1s ease 0.8s both!important;}
+@keyframes nameLineReveal{from{width:0;opacity:0;}to{width:40px;opacity:1;}}
+[data-theme="10"] .name-diamond{background:radial-gradient(circle,var(--accent2),var(--accent))!important;box-shadow:0 0 12px var(--accent)!important;}
+[data-theme="10"] .couple-tagline{color:rgba(201,168,76,0.45)!important;letter-spacing:0.45em!important;font-size:8px!important;animation:fadeIn 0.8s ease 1.2s both!important;}
+
+/* Flash overlay */
+.cinema-flash{display:none;position:fixed;inset:0;background:white;z-index:30;pointer-events:none;opacity:0;}
+[data-theme="10"] .cinema-flash{display:block;}
+
+/* Scroll hint */
+[data-theme="10"] #ariyaScrollHint{position:fixed!important;bottom:60px!important;left:50%!important;transform:translateX(-50%)!important;z-index:16!important;opacity:0;transition:opacity 0.5s ease;}
+[data-theme="10"] #ariyaScrollHint.show{opacity:1;}
+
+/* Merge glow + bg */
+[data-theme="10"] #mergeGlow{top:42%!important;z-index:25!important;}
+[data-theme="10"] .custom-bg-wrap{filter:brightness(0.3)!important;}
+[data-theme="10"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.5) 40%,rgba(0,0,0,0.9) 70%,#000000 100%);}
+[data-theme="10"] .custom-bg-overlay{background:rgba(0,0,0,0.55);}
+
 /* ══════════════════════════════════
    TG THEMES — FINAL DOCK SYSTEM
 ══════════════════════════════════ */
@@ -594,7 +667,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   bottom: 0;
   left: 0;
   right: 0;
-  height: 52dvh;
+  height: min(55dvh, 420px);
   z-index: 10;
   pointer-events: none;
   overflow: hidden;
@@ -610,7 +683,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 52%;
+  width: min(48%, 220px);
   height: 100%;
   pointer-events: auto;
   cursor: grab;
@@ -625,7 +698,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 52%;
+  width: min(48%, 220px);
   height: 100%;
   pointer-events: auto;
   cursor: grab;
@@ -1015,6 +1088,31 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <span>Swipe to reveal</span>
   </div>
 
+  <!-- THEME 10 — CINEMA STAGE -->
+  <div class="cinema-stage" id="cinemaStage">
+    <div class="cinema-sweep" id="cinemaSweep"></div>
+    <div class="cinema-topbar">
+      <div class="cinema-topbar-line"></div>
+      <span class="cinema-topbar-text">An InviSend Presentation</span>
+      <div class="cinema-topbar-line r"></div>
+    </div>
+    <div class="cinema-portraits" id="cinemaPortraits">
+      <div class="cinema-portrait cinema-portrait-left breathe" id="cinemaPortraitLeft">
+        <img id="cinemaImgLeft" src="" alt="" draggable="false">
+      </div>
+      <div class="cinema-portrait cinema-portrait-right breathe" id="cinemaPortraitRight">
+        <img id="cinemaImgRight" src="" alt="" draggable="false">
+      </div>
+    </div>
+    <div class="cinema-cta" id="cinemaCta" onclick="cinemaReveal()">
+      <div class="cinema-cta-ring">
+        <div class="cinema-cta-dot"></div>
+      </div>
+      <span class="cinema-cta-text">Tap to reveal</span>
+    </div>
+  </div>
+  <div class="cinema-flash" id="cinemaFlash"></div>
+
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
   <!-- FAMILY -->
@@ -1299,6 +1397,25 @@ function handleThemeSpecificUI(themeId) {
     if (instr) { instr.style.display = 'flex'; instr.style.opacity = '1'; }
     window._disableSwipe = true;
   }
+
+  if (themeId === 10) {
+    ['cardLeft','cardRight','divider','swipeHint','coupleReveal','waxSealWrap'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; }
+    });
+    document.querySelectorAll('.swipe-cards,.swipe-card').forEach(el => {
+      el.style.display = 'none'; el.style.visibility = 'hidden';
+    });
+    const nb = document.getElementById('coupleNameBlock');
+    if (nb) { nb.style.display = 'none'; nb.style.opacity = '0'; nb.classList.remove('show'); }
+    const dock  = document.getElementById('tgDock');
+    const instr = document.getElementById('tgInstruction');
+    if (dock)  { dock.style.display  = 'none'; }
+    if (instr) { instr.style.display = 'none'; }
+    const stage = document.getElementById('cinemaStage');
+    if (stage) stage.style.display = 'flex';
+    window._disableSwipe = true;
+  }
 }
 function pressWaxSeal() {
   const currentTheme = parseInt(document.documentElement.getAttribute('data-theme'));
@@ -1442,6 +1559,9 @@ function render(d) {
   }
   if ([7, 8, 9].includes(parseInt(d.template_id))) {
     initTGSwipe(d);
+  }
+  if (parseInt(d.template_id) === 10) {
+    initCinema(d);
   }
 }
 
@@ -1870,17 +1990,23 @@ function tgDragMove(e) {
 
   tgSetProgress(p);
 
-  if (p >= 1) { tgDragging = false; tgFinish(); }
+  // Snap to finish at 95% — feels natural, no need to drag all the way
+  if (p >= 0.95) {
+    tgDragging = false;
+    tgAnimateTo(1, 150, tgFinish);
+  }
 }
 
 function tgDragEnd() {
   if (!tgDragging || tgDone) return;
   tgDragging = false;
 
-  if (tgProgress >= 0.5) {
-    tgAnimateTo(1, 350, tgFinish);
+  if (tgProgress >= 0.45) {
+    // More than 45% — complete the reveal
+    tgAnimateTo(1, 300, tgFinish);
   } else {
-    tgAnimateTo(0, 400, tgShowInstr);
+    // Not far enough — snap back with bounce
+    tgAnimateTo(0, 500, tgShowInstr);
   }
 }
 
@@ -2052,7 +2178,7 @@ function tgDemoHint() {
   function pulse() {
     if (tgDone || count >= 3) return;
     count++;
-    const demoMove = tgMaxMove * 0.22;
+    const demoMove = tgMaxMove * 0.35;
     leftEl.style.transition  = `transform 0.5s ${ease}`;
     rightEl.style.transition = `transform 0.5s ${ease}`;
     leftEl.style.transform   = `translateX(${demoMove}px)`;
@@ -2064,11 +2190,142 @@ function tgDemoHint() {
       rightEl.style.transition = `transform 0.5s ${ease}`;
       leftEl.style.transform   = 'translateX(0)';
       rightEl.style.transform  = 'translateX(0)';
-      if (count < 3) setTimeout(pulse, 2200);
-    }, 700);
+      if (count < 3) setTimeout(pulse, 2800);
+    }, 800);
   }
 
   pulse();
+}
+
+/* ── THEME 10: CINEMA NOIR REVEAL ── */
+let cinemaDone = false;
+
+function initCinema(data) {
+  cinemaDone = false;
+  const stage = document.getElementById('cinemaStage');
+  if (!stage) return;
+
+  const imgLeft  = document.getElementById('cinemaImgLeft');
+  const imgRight = document.getElementById('cinemaImgRight');
+  if (imgLeft  && data.groom_image_url) imgLeft.src  = data.groom_image_url;
+  if (imgRight && data.bride_image_url)  imgRight.src = data.bride_image_url;
+
+  document.body.style.overflow = 'hidden';
+  window._disableSwipe = true;
+
+  // Gold sweep line entrance
+  const sweep = document.getElementById('cinemaSweep');
+  if (sweep) {
+    setTimeout(() => { sweep.classList.add('animate'); }, 400);
+  }
+
+  // Subtle portrait entrance
+  const portraits = document.getElementById('cinemaPortraits');
+  if (portraits) {
+    portraits.style.opacity = '0';
+    portraits.style.transition = 'opacity 1.2s ease';
+    setTimeout(() => { portraits.style.opacity = '1'; }, 200);
+  }
+
+  // Bind tap outside CTA as fallback
+  stage.addEventListener('click', function stageTap(e) {
+    if (cinemaDone) return;
+    cinemaReveal();
+    stage.removeEventListener('click', stageTap);
+  });
+}
+
+function cinemaReveal() {
+  if (cinemaDone) return;
+  cinemaDone = true;
+
+  const stage   = document.getElementById('cinemaStage');
+  const flash   = document.getElementById('cinemaFlash');
+  const cta     = document.getElementById('cinemaCta');
+  const merge   = document.getElementById('mergeGlow');
+  const nb      = document.getElementById('coupleNameBlock');
+  const hint    = document.getElementById('ariyaScrollHint');
+
+  // Step 1: hide CTA
+  if (cta) { cta.style.transition = 'opacity 0.3s ease'; cta.style.opacity = '0'; setTimeout(() => { cta.style.display = 'none'; }, 300); }
+
+  // Step 2: portraits converge centre
+  const pLeft  = document.getElementById('cinemaPortraitLeft');
+  const pRight = document.getElementById('cinemaPortraitRight');
+  if (pLeft)  { pLeft.style.transition  = 'transform 0.6s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease 0.5s'; pLeft.style.transform  = 'translateX(38vw)'; }
+  if (pRight) { pRight.style.transition = 'transform 0.6s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease 0.5s'; pRight.style.transform = 'translateX(-38vw)'; }
+
+  // Step 3: flash white
+  setTimeout(() => {
+    if (flash) { flash.style.transition = 'opacity 0.15s ease'; flash.style.opacity = '1'; }
+  }, 560);
+
+  // Step 4: fade flash, fade portraits, trigger particles
+  setTimeout(() => {
+    if (flash) { flash.style.transition = 'opacity 0.5s ease'; flash.style.opacity = '0'; }
+    if (pLeft)  pLeft.style.opacity  = '0';
+    if (pRight) pRight.style.opacity = '0';
+
+    // Merge glow
+    if (merge) {
+      merge.style.transition = 'opacity 0.4s ease';
+      merge.style.opacity = '1';
+      setTimeout(() => { merge.style.transition = 'opacity 0.8s ease'; merge.style.opacity = '0'; }, 500);
+    }
+
+    // Particle blast
+    if (typeof triggerKandyanExplosion === 'function') triggerKandyanExplosion();
+  }, 720);
+
+  // Step 5: hide stage
+  setTimeout(() => {
+    if (stage) { stage.style.transition = 'opacity 0.4s ease'; stage.style.opacity = '0'; setTimeout(() => { stage.style.display = 'none'; }, 400); }
+  }, 1000);
+
+  // Step 6: show names
+  setTimeout(() => {
+    if (nb) {
+      nb.classList.add('show');
+      nb.style.transition = 'opacity 0.5s ease';
+      nb.style.opacity = '1';
+    }
+  }, 1600);
+
+  // Step 7: show scroll hint
+  setTimeout(() => {
+    if (hint) hint.classList.add('show');
+  }, 2600);
+
+  // Step 8: unlock scroll + setup bg fade + auto-scroll
+  setTimeout(() => {
+    document.body.style.overflow = '';
+    cinemaNamesSetup();
+  }, 2400);
+}
+
+function cinemaNamesSetup() {
+  const heroEl = document.getElementById('heroSection');
+  if (!heroEl) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const nb   = document.getElementById('coupleNameBlock');
+      const hint = document.getElementById('ariyaScrollHint');
+      if (entry.isIntersecting) {
+        if (nb)   { nb.style.transition   = 'opacity 0.25s ease'; nb.style.opacity   = '1'; }
+        if (hint) { hint.style.transition = 'opacity 0.25s ease'; hint.style.opacity = '1'; }
+      } else {
+        if (nb)   { nb.style.transition   = 'opacity 0.25s ease'; nb.style.opacity   = '0'; }
+        if (hint) { hint.style.transition = 'opacity 0.25s ease'; hint.style.opacity = '0'; }
+      }
+    });
+  }, { threshold: 0.55 });
+
+  observer.observe(heroEl);
+
+  const next = heroEl.nextElementSibling || document.querySelector('.orn-div') || document.querySelector('.family-section');
+  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
+  setTimeout(() => { initCustomBgScrollFade(); }, 300);
 }
 
 function onStart(x) {
@@ -2187,7 +2444,8 @@ function triggerKandyanExplosion() {
     5: ['#D4AF37', '#F0D060', '#FF6B00', '#FFD700', '#8B0000', '#FFFFFF'],
     7: ['#f1cb14', '#ffe066', '#e8450a', '#FFD700', '#c4903a', '#FFFFFF'],
     8: ['#c9a84c', '#e8cc7a', '#f5ead4', '#FFD700', '#9a8468', '#FFFFFF'],
-    9: ['#ffc61c', '#ffe566', '#4a9e5c', '#FFD700', '#7ab88a', '#FFFFFF'],
+    9:  ['#ffc61c', '#ffe566', '#4a9e5c', '#FFD700', '#7ab88a', '#FFFFFF'],
+    10: ['#C9A84C', '#E8CC7A', '#F5EAD4', '#FFFFFF', '#FFD700', '#B8923A'],
   };
 
   const colors = themeParticleColors[currentTheme] || themeParticleColors[5];
@@ -2526,20 +2784,8 @@ function initCountdown(weddingDateStr) {
 // ─── VIEW COUNT ───
 async function incrementViewCount(slug) {
   try {
-    // Atomic increment via RPC — no race condition, single call
-    const { error } = await sb.rpc(
-      'increment_view_count',
-      { invitation_slug: slug }
-    );
-    if (error) {
-      // Fallback to direct update if RPC fails
-      await sb
-        .from('invitations')
-        .update({ view_count: sb.raw('COALESCE(view_count,0)+1') })
-        .eq('slug', slug);
-    }
-  } catch (e) {
-    // Silent fail — never block invitation load
+    await sb.rpc('increment_view_count', { invitation_slug: slug });
+  } catch(e) {
     console.warn('View count error:', e.message);
   }
 }

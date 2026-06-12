@@ -183,13 +183,18 @@ select.form-input{cursor:pointer}
 .preshoot-slot .slot-remove{position:absolute;top:4px;right:4px;width:18px;height:18px;background:rgba(255,69,58,0.85);border-radius:50%;border:none;color:#fff;font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;line-height:1}
 .preshoot-slot:hover .slot-remove{display:flex}
 /* THEME SELECTOR */
-.theme-selector{display:flex;gap:10px;flex-wrap:wrap}
-.theme-opt{flex:1;min-width:100px;border:1.5px solid var(--gb);border-radius:10px;padding:12px 10px;cursor:pointer;text-align:center;transition:all 0.2s}
-.theme-opt:hover{border-color:rgba(255,255,255,0.2)}
-.theme-opt.active{border-color:var(--blue);background:rgba(10,132,255,0.06)}
-.theme-opt-dot{width:28px;height:28px;border-radius:50%;margin:0 auto 8px;border:2px solid rgba(255,255,255,0.1)}
-.theme-opt-name{font-size:11px;font-weight:500;color:var(--text2)}
-.theme-opt-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.theme-selector{display:flex;flex-direction:column;gap:18px;}
+.theme-group-label{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.theme-opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;}
+.theme-opt{border:1.5px solid var(--gb);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.2s;position:relative;}
+.theme-opt:hover{border-color:rgba(255,255,255,0.22);}
+.theme-opt.active{border-color:var(--blue);background:rgba(10,132,255,0.07);}
+.theme-opt-swatch{width:32px;height:32px;border-radius:50%;margin:0 auto 7px;border:2px solid rgba(255,255,255,0.1);}
+.theme-opt-name{font-size:10.5px;font-weight:500;color:var(--text2);line-height:1.3;}
+.theme-opt-sub{font-size:9.5px;color:var(--text3);margin-top:2px;}
+.tg-label{display:inline-block;font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 5px;border-radius:4px;background:rgba(255,215,0,0.12);color:rgba(255,215,0,0.75);margin-top:3px;}
+.theme-opt.active .tg-label{background:rgba(10,132,255,0.18);color:rgba(120,180,255,0.9);}
+.tg-premium-badge{font-size:7.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(232,204,122,0.12));color:#C9A84C;border:1px solid rgba(201,168,76,0.25);margin-top:4px;display:inline-block;}
 .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
 /* RSVP */
 .rsvp-panel{background:var(--glass);border:1px solid var(--gb);border-radius:16px;margin-top:0;overflow:hidden}
@@ -637,15 +642,28 @@ select.form-input{cursor:pointer}
     <div class="form-section">
       <div class="form-section-title">Theme</div>
       <div class="theme-selector">
-        <div class="theme-opt active" data-val="1" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#0a0804,#c9a84c)"></div><div class="theme-opt-name">Western Luxury</div><div class="theme-opt-sub">Black & Gold</div></div>
-        <div class="theme-opt" data-val="2" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#4b1010,#f1cb14)"></div><div class="theme-opt-name">Udarata Sinhala</div><div class="theme-opt-sub">Sri Lankan</div></div>
-        <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Kalyanam</div><div class="theme-opt-sub">Tamil</div></div>
-        <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#F7F3EC,#D8B57A)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
-        <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Ariya Sinhala</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Sri Lankan Kandyan</div></div>
-        <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#1C1510,#8B1A1A,#C9A84C)"></div><div class="theme-opt-name" style="color:#C9A84C">Vintage Mood</div><div class="theme-opt-sub" style="color:#C9A84C;opacity:0.6">Aged Letter & Wax Seal</div></div>
-        <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#160404,#f1cb14)"></div><div class="theme-opt-name" style="color:#f1cb14">Udarata Sinhala</div><div class="theme-opt-sub" style="color:#f1cb14;opacity:0.6">TG Wedding Films · PNG</div></div>
-        <div class="theme-opt" data-val="8" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#07060a,#c9a84c)"></div><div class="theme-opt-name" style="color:#c9a84c">Western Luxury</div><div class="theme-opt-sub" style="color:#c9a84c;opacity:0.6">TG Wedding Films · PNG</div></div>
-        <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-dot" style="background:linear-gradient(135deg,#061208,#ffc61c)"></div><div class="theme-opt-name" style="color:#ffc61c">Kalyanam</div><div class="theme-opt-sub" style="color:#ffc61c;opacity:0.6">TG Wedding Films · PNG</div></div>
+        <!-- InviSend Themes -->
+        <div>
+          <div class="theme-group-label">InviSend Themes</div>
+          <div class="theme-opts-grid">
+            <div class="theme-opt active" data-val="1" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#0a0804,#c9a84c)"></div><div class="theme-opt-name">Western Luxury</div><div class="theme-opt-sub">Black &amp; Gold</div></div>
+            <div class="theme-opt" data-val="2" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#4b1010,#f1cb14)"></div><div class="theme-opt-name">Udarata Sinhala</div><div class="theme-opt-sub">Sri Lankan</div></div>
+            <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Kalyanam</div><div class="theme-opt-sub">Tamil</div></div>
+            <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3EC,#D8B57A)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
+            <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Ariya Sinhala</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Kandyan</div></div>
+            <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1C1510,#8B1A1A,#C9A84C)"></div><div class="theme-opt-name" style="color:#C9A84C">Vintage Mood</div><div class="theme-opt-sub" style="color:#C9A84C;opacity:0.6">Wax Seal</div></div>
+          </div>
+        </div>
+        <!-- TG Exclusive -->
+        <div>
+          <div class="theme-group-label">TG Exclusive <span style="font-size:8px;letter-spacing:0.05em;font-weight:400;opacity:0.7;">— Requires PNG portraits</span></div>
+          <div class="theme-opts-grid">
+            <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#160404,#f1cb14)"></div><div class="theme-opt-name" style="color:#f1cb14">Udarata Sinhala</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="8" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#07060a,#c9a84c)"></div><div class="theme-opt-name" style="color:#c9a84c">Western Luxury</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#061208,#ffc61c)"></div><div class="theme-opt-name" style="color:#ffc61c">Kalyanam</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="10" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#000000,#C9A84C,#E8CC7A)"></div><div class="theme-opt-name" style="color:#C9A84C">TG Premium</div><div class="tg-premium-badge">Cinema Noir</div></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -730,7 +748,7 @@ select.form-input{cursor:pointer}
       <div class="form-grid" style="grid-template-columns:1fr">
         <div class="form-group"><label class="form-label">Couple Name *</label><input class="form-input" id="tCoupleName" type="text" placeholder="e.g. Ayasha & Rohan"></div>
         <div class="form-group"><label class="form-label">Caption / Review (optional)</label><input class="form-input" id="tCaption" type="text" placeholder="e.g. Beautiful invitation!"></div>
-        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option><option value="Ariya Sinhala">Ariya Sinhala</option><option value="Vintage Mood">Vintage Mood</option><option value="Udarata Sinhala TG">Udarata Sinhala · TG Wedding Films</option><option value="Western Luxury TG">Western Luxury · TG Wedding Films</option><option value="Kalyanam TG">Kalyanam · TG Wedding Films</option></select></div>
+        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option><option value="Ariya Sinhala">Ariya Sinhala</option><option value="Vintage Mood">Vintage Mood</option><option value="Udarata Sinhala TG">Udarata Sinhala · TG Wedding Films</option><option value="Western Luxury TG">Western Luxury · TG Wedding Films</option><option value="Kalyanam TG">Kalyanam · TG Wedding Films</option><option value="TG Premium">TG Premium · Cinema Noir</option></select></div>
       </div>
     </div>
     <div class="form-section">
@@ -897,8 +915,8 @@ function updateStats() {
   const totalViews = allInvitations.reduce((sum, inv) => sum + (inv.view_count || 0), 0);
   document.getElementById('statTotalViews').textContent = totalViews.toLocaleString();
 }
-const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Vintage Mood', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#C9A84C', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c' };
+const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Vintage Mood', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'TG Premium' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#C9A84C', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C9A84C' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
