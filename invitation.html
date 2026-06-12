@@ -594,7 +594,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   bottom: 0;
   left: 0;
   right: 0;
-  height: 52dvh;
+  height: min(55dvh, 420px);
   z-index: 10;
   pointer-events: none;
   overflow: hidden;
@@ -610,7 +610,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 52%;
+  width: min(48%, 220px);
   height: 100%;
   pointer-events: auto;
   cursor: grab;
@@ -625,7 +625,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 52%;
+  width: min(48%, 220px);
   height: 100%;
   pointer-events: auto;
   cursor: grab;
@@ -1870,17 +1870,23 @@ function tgDragMove(e) {
 
   tgSetProgress(p);
 
-  if (p >= 1) { tgDragging = false; tgFinish(); }
+  // Snap to finish at 95% — feels natural, no need to drag all the way
+  if (p >= 0.95) {
+    tgDragging = false;
+    tgAnimateTo(1, 150, tgFinish);
+  }
 }
 
 function tgDragEnd() {
   if (!tgDragging || tgDone) return;
   tgDragging = false;
 
-  if (tgProgress >= 0.5) {
-    tgAnimateTo(1, 350, tgFinish);
+  if (tgProgress >= 0.45) {
+    // More than 45% — complete the reveal
+    tgAnimateTo(1, 300, tgFinish);
   } else {
-    tgAnimateTo(0, 400, tgShowInstr);
+    // Not far enough — snap back with bounce
+    tgAnimateTo(0, 500, tgShowInstr);
   }
 }
 
@@ -2052,7 +2058,7 @@ function tgDemoHint() {
   function pulse() {
     if (tgDone || count >= 3) return;
     count++;
-    const demoMove = tgMaxMove * 0.22;
+    const demoMove = tgMaxMove * 0.35;
     leftEl.style.transition  = `transform 0.5s ${ease}`;
     rightEl.style.transition = `transform 0.5s ${ease}`;
     leftEl.style.transform   = `translateX(${demoMove}px)`;
@@ -2064,8 +2070,8 @@ function tgDemoHint() {
       rightEl.style.transition = `transform 0.5s ${ease}`;
       leftEl.style.transform   = 'translateX(0)';
       rightEl.style.transform  = 'translateX(0)';
-      if (count < 3) setTimeout(pulse, 2200);
-    }, 700);
+      if (count < 3) setTimeout(pulse, 2800);
+    }, 800);
   }
 
   pulse();
@@ -2526,20 +2532,8 @@ function initCountdown(weddingDateStr) {
 // ─── VIEW COUNT ───
 async function incrementViewCount(slug) {
   try {
-    // Atomic increment via RPC — no race condition, single call
-    const { error } = await sb.rpc(
-      'increment_view_count',
-      { invitation_slug: slug }
-    );
-    if (error) {
-      // Fallback to direct update if RPC fails
-      await sb
-        .from('invitations')
-        .update({ view_count: sb.raw('COALESCE(view_count,0)+1') })
-        .eq('slug', slug);
-    }
-  } catch (e) {
-    // Silent fail — never block invitation load
+    await sb.rpc('increment_view_count', { invitation_slug: slug });
+  } catch(e) {
     console.warn('View count error:', e.message);
   }
 }
