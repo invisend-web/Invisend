@@ -745,7 +745,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   pointer-events: none;
   display: none;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.25s ease;
 }
 
 [data-theme="7"] .couple-name-block.tg-visible,
@@ -1494,8 +1494,8 @@ function initCustomBgScrollFade() {
   }
   function animate() {
     const diff = targetOpacity - currentOpacity;
-    if (Math.abs(diff) < 0.001) { currentOpacity = targetOpacity; wrap.style.opacity = currentOpacity.toString(); rafId = null; return; }
-    currentOpacity += diff * 0.10;
+    if (Math.abs(diff) < 0.003) { currentOpacity = targetOpacity; wrap.style.opacity = currentOpacity.toString(); rafId = null; return; }
+    currentOpacity += diff * 0.28;
     wrap.style.opacity = currentOpacity.toFixed(4);
     rafId = requestAnimationFrame(animate);
   }
@@ -1957,7 +1957,7 @@ function tgFinish() {
     if (nb) {
       nb.style.display    = 'block';
       nb.style.opacity    = '0';
-      nb.style.transition = 'opacity 0.8s ease';
+      nb.style.transition = 'opacity 0.3s ease';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           nb.classList.add('show');
@@ -2003,11 +2003,11 @@ function tgSetupNameScroll() {
       const hint = document.getElementById('ariyaScrollHint');
 
       if (entry.isIntersecting) {
-        if (nb)   { nb.style.transition   = 'opacity 0.5s ease'; nb.style.opacity   = '1'; }
-        if (hint) { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '1'; }
+        if (nb)   { nb.style.transition   = 'opacity 0.25s ease'; nb.style.opacity   = '1'; }
+        if (hint) { hint.style.transition = 'opacity 0.25s ease'; hint.style.opacity = '1'; }
       } else {
-        if (nb)   { nb.style.transition   = 'opacity 0.5s ease'; nb.style.opacity   = '0'; }
-        if (hint) { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '0'; }
+        if (nb)   { nb.style.transition   = 'opacity 0.25s ease'; nb.style.opacity   = '0'; }
+        if (hint) { hint.style.transition = 'opacity 0.25s ease'; hint.style.opacity = '0'; }
       }
     });
   }, { threshold: 0.25 });
