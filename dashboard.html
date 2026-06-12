@@ -463,6 +463,7 @@ select.form-input{cursor:pointer}
           <div class="stat-card"><div class="stat-label">Total Invitations</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">All time</div></div>
           <div class="stat-card"><div class="stat-label">Live</div><div class="stat-value" style="color:var(--green)" id="statLive">—</div><div class="stat-sub">Active now</div></div>
           <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" style="color:var(--purple)" id="statMonth">—</div><div class="stat-sub">New invitations</div></div>
+          <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value" style="color:var(--blue)" id="statTotalViews">—</div><div class="stat-sub">All invitations</div></div>
         </div>
         <div class="table-card">
           <div class="table-header">
@@ -893,6 +894,8 @@ function updateStats() {
   document.getElementById('statLive').textContent = allInvitations.filter(i => i.status === 'live').length;
   const now = new Date();
   document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
+  const totalViews = allInvitations.reduce((sum, inv) => sum + (inv.view_count || 0), 0);
+  document.getElementById('statTotalViews').textContent = totalViews.toLocaleString();
 }
 const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Vintage Mood', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG' };
 const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#C9A84C', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c' };
@@ -913,6 +916,7 @@ function renderTable(invs) {
       <td><span class="sbadge ${inv.status || 'live'}">${inv.status || 'live'}</span></td>
       <td>${hasPreshoot ? `<span style="color:var(--green);font-size:12px">&#x2713; Yes</span>` : `<span style="color:var(--text3);font-size:12px">—</span>`}</td>
       <td id="rsvpCount_${esc(inv.slug)}">—</td>
+      <td><span style="display:flex;align-items:center;gap:4px;color:var(--text2)"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="opacity:0.5"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>${inv.view_count || 0}</span></td>
       <td><div class="action-btns">
         <div class="action-btn" onclick="copyLink('${esc(inv.slug)}')" title="Copy link"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></div>
         <div class="action-btn preview" onclick="previewInvitation('${esc(inv.slug)}')" title="Preview Invitation"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
@@ -944,6 +948,7 @@ function renderMobileCards(invs) {
       <div class="inv-card-row"><span class="theme-dot" style="background:${themeColors[inv.template_id]||'#666'}"></span>${themeNames[inv.template_id]||'—'}</div>
       <div class="inv-card-row"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>${dateStr}</div>
       ${hasPre ? `<div class="inv-card-row" style="color:var(--green)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>Pre-shoot included</div>` : ''}
+      <div class="inv-card-row" style="color:var(--text2)"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="opacity:0.5"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>${inv.view_count || 0} views</div>
       <div class="inv-card-actions">
         <div class="inv-card-act" onclick="copyLink('${esc(inv.slug)}')">Copy Link</div>
         <div class="inv-card-act" onclick="previewInvitation('${esc(inv.slug)}')">Preview</div>
