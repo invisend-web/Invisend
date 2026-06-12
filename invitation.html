@@ -118,6 +118,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .sound-switch-track.muted{background:rgba(94,74,58,0.2)}
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0 48px;position:relative;overflow:hidden}
+/* Prevent Chrome Android URL bar layout jump */
+.hero,#heroSection,[class*="hero"]{min-height:100dvh;height:100dvh;}
+.tg-dock{position:fixed;bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);}
+.tg-instruction{position:fixed;}
 .hero > *{position:relative;z-index:1}
 .hero-tag{font-family:var(--font-ui);font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:44px;animation:fadeUp 0.7s var(--ease) 0.2s both}
 [data-theme="2"] .hero-tag,[data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
@@ -1718,6 +1722,16 @@ function initTGSwipe(data) {
     });
   });
 
+  // Recalculate on resize — handles Chrome Android URL bar show/hide
+  window.addEventListener('resize', () => {
+    if (tgDone) return;
+    const newMax = tgCalcMax();
+    if (Math.abs(newMax - tgMaxMove) > 5) {
+      tgMaxMove = newMax;
+      tgApply(tgProgress);
+    }
+  }, { passive: true });
+
   document.body.style.overflow    = 'hidden';
   document.body.style.touchAction = 'none';
 
@@ -2010,7 +2024,7 @@ function tgSetupNameScroll() {
         if (hint) { hint.style.transition = 'opacity 0.25s ease'; hint.style.opacity = '0'; }
       }
     });
-  }, { threshold: 0.25 });
+  }, { threshold: 0.55 });
 
   observer.observe(heroEl);
 
@@ -2018,7 +2032,7 @@ function tgSetupNameScroll() {
   const next = heroEl.nextElementSibling
     || document.querySelector('.orn-div')
     || document.querySelector('.family-section');
-  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1300);
+  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
 
   // Re-init bg fade — scroll was locked during reveal so scrollY was 0
   // Re-calling now picks up the correct scroll position after unlock
