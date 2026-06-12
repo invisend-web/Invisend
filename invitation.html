@@ -2526,10 +2526,22 @@ function initCountdown(weddingDateStr) {
 // ─── VIEW COUNT ───
 async function incrementViewCount(slug) {
   try {
-    const { data: inv } = await sb.from('invitations').select('view_count').eq('slug', slug).single();
-    const current = (inv && inv.view_count) || 0;
-    await sb.from('invitations').update({ view_count: current + 1 }).eq('slug', slug);
-  } catch (e) {}
+    // Atomic increment via RPC — no race condition, single call
+    const { error } = await sb.rpc(
+      'increment_view_count',
+      { invitation_slug: slug }
+    );
+    if (error) {
+      // Fallback to direct update if RPC fails
+      await sb
+        .from('invitations')
+        .update({ view_count: sb.raw('COALESCE(view_count,0)+1') })
+        .eq('slug', slug);
+    }
+  } catch (e) {
+    // Silent fail — never block invitation load
+    console.warn('View count error:', e.message);
+  }
 }
 
 
