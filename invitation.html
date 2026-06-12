@@ -554,258 +554,57 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
 
 /* ══════════════════════════════════
-   TG THEMES — FINAL DOCK SYSTEM
+   TG THEMES — BOTTOM FIXED DOCK
 ══════════════════════════════════ */
-
-/* Hide standard swipe for TG themes */
-[data-theme="7"] .swipe-cards,
-[data-theme="8"] .swipe-cards,
-[data-theme="9"] .swipe-cards,
-[data-theme="7"] #cardLeft,
-[data-theme="7"] #cardRight,
-[data-theme="8"] #cardLeft,
-[data-theme="8"] #cardRight,
-[data-theme="9"] #cardLeft,
-[data-theme="9"] #cardRight,
-[data-theme="7"] #divider,
-[data-theme="8"] #divider,
-[data-theme="9"] #divider,
-[data-theme="7"] #swipeHint,
-[data-theme="8"] #swipeHint,
-[data-theme="9"] #swipeHint {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* TG Dock — fixed at bottom of screen */
-.tg-dock {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 52dvh;
-  z-index: 10;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-[data-theme="7"] .tg-dock,
-[data-theme="8"] .tg-dock,
-[data-theme="9"] .tg-dock {
-  display: block;
-}
-
-/* Left portrait — shows only right half via clip-path */
-.tg-left {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 52%;
-  height: 100%;
-  pointer-events: auto;
-  cursor: grab;
-  touch-action: none;
-  will-change: transform;
-  z-index: 11;
-  clip-path: inset(0 0 0 50%);
-  transition: clip-path 0s;
-}
-
-.tg-left:active { cursor: grabbing; }
-
-/* Right portrait — shows only left half via clip-path */
-.tg-right {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 52%;
-  height: 100%;
-  pointer-events: auto;
-  cursor: grab;
-  touch-action: none;
-  will-change: transform;
-  z-index: 11;
-  clip-path: inset(0 50% 0 0);
-  transition: clip-path 0s;
-}
-
-.tg-right:active { cursor: grabbing; }
-
-/* Portrait images */
-.tg-left img,
-.tg-right img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: bottom center;
-  background: transparent;
-  display: block;
-  pointer-events: none;
-  -webkit-user-drag: none;
-  user-select: none;
-}
-
-/* Theme glows */
-[data-theme="7"] .tg-left img,
-[data-theme="7"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(241,203,20,0.2))
-          drop-shadow(0 8px 16px rgba(0,0,0,0.7));
-}
-
-[data-theme="8"] .tg-left img,
-[data-theme="8"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(201,168,76,0.2))
-          drop-shadow(0 8px 16px rgba(0,0,0,0.7));
-}
-
-[data-theme="9"] .tg-left img,
-[data-theme="9"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(255,198,28,0.2))
-          drop-shadow(0 8px 16px rgba(0,0,0,0.7));
-}
-
-/* Overlay for TG theme backgrounds */
-[data-theme="7"] .bg-layer::after,
-[data-theme="8"] .bg-layer::after,
-[data-theme="9"] .bg-layer::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.58);
-  pointer-events: none;
-  z-index: 1;
-}
-
-[data-theme="7"] .custom-bg-wrap,
-[data-theme="8"] .custom-bg-wrap,
-[data-theme="9"] .custom-bg-wrap { filter: brightness(0.55); }
-
-/* Swipe instruction */
-.tg-instruction {
-  display: none;
-  position: fixed;
-  bottom: 54dvh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 12;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  pointer-events: none;
-  animation: tgInstrPulse 2s ease-in-out infinite;
-  white-space: nowrap;
-}
-
-[data-theme="7"] .tg-instruction,
-[data-theme="8"] .tg-instruction,
-[data-theme="9"] .tg-instruction {
-  display: flex;
-}
-
-.tg-instruction span {
-  font-family: var(--font-ui);
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-}
-
-.tg-instr-arrows {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  color: var(--accent);
-  font-size: 18px;
-  opacity: 0.6;
-  animation: tgArrowPulse 1.6s ease-in-out infinite;
-}
-
-@keyframes tgInstrPulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1; }
-}
-
-@keyframes tgArrowPulse {
-  0%, 100% { gap: 32px; opacity: 0.5; }
-  50%       { gap: 22px; opacity: 0.9; }
-}
-
-/* Couple name block for TG themes */
-[data-theme="7"] .couple-name-block,
-[data-theme="8"] .couple-name-block,
-[data-theme="9"] .couple-name-block {
-  position: fixed !important;
-  top: 32% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 15 !important;
-  text-align: center;
-  width: 90%;
-  pointer-events: none;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-[data-theme="7"] .couple-name-block.tg-visible,
-[data-theme="8"] .couple-name-block.tg-visible,
-[data-theme="9"] .couple-name-block.tg-visible {
-  display: block;
-  opacity: 1;
-}
-
-/* Text shadow on show for TG */
-[data-theme="7"] .couple-name-block.show,
-[data-theme="8"] .couple-name-block.show,
-[data-theme="9"] .couple-name-block.show {
-  text-shadow: 0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8) !important;
-}
-
-/* Scroll hint for TG */
-[data-theme="7"] #ariyaScrollHint,
-[data-theme="8"] #ariyaScrollHint,
-[data-theme="9"] #ariyaScrollHint {
-  position: fixed !important;
-  bottom: 56dvh !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  z-index: 16 !important;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-[data-theme="7"] #ariyaScrollHint.tg-visible,
-[data-theme="8"] #ariyaScrollHint.tg-visible,
-[data-theme="9"] #ariyaScrollHint.tg-visible {
-  opacity: 1;
-}
-
-/* Merge glow position */
-[data-theme="7"] #mergeGlow,
-[data-theme="8"] #mergeGlow,
-[data-theme="9"] #mergeGlow {
-  top: 32% !important;
-  z-index: 20 !important;
-}
-
-/* Background completely static for TG */
-[data-theme="7"] .custom-bg-wrap,
-[data-theme="8"] .custom-bg-wrap,
-[data-theme="9"] .custom-bg-wrap,
-[data-theme="7"] .custom-bg-image,
-[data-theme="8"] .custom-bg-image,
-[data-theme="9"] .custom-bg-image {
-  transform: none !important;
-  background-attachment: scroll !important;
-  will-change: opacity !important;
-}
-
-/* Mobile adjustments */
-@media (max-width: 480px) {
-  .tg-dock { height: 48dvh; }
-  .tg-instruction { bottom: 50dvh; }
-}
+[data-theme="7"] .hero,[data-theme="8"] .hero,[data-theme="9"] .hero{position:relative;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+/* FIX 1 — Hide standard swipe elements */
+[data-theme="7"] .swipe-cards,[data-theme="8"] .swipe-cards,[data-theme="9"] .swipe-cards{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
+[data-theme="7"] #cardLeft,[data-theme="7"] #cardRight,[data-theme="8"] #cardLeft,[data-theme="8"] #cardRight,[data-theme="9"] #cardLeft,[data-theme="9"] #cardRight{display:none!important;visibility:hidden!important;}
+[data-theme="7"] #divider,[data-theme="8"] #divider,[data-theme="9"] #divider{display:none!important;}
+[data-theme="7"] #swipeHint,[data-theme="8"] #swipeHint,[data-theme="9"] #swipeHint{display:none!important;}
+[data-theme="7"] .hero-tag,[data-theme="8"] .hero-tag,[data-theme="9"] .hero-tag{z-index:25;position:relative;}
+/* FIX 2 — Bigger dock */
+.tg-dock{display:none;position:fixed;bottom:0;left:0;right:0;height:55dvh;z-index:20;pointer-events:none;overflow:hidden;background:transparent;}
+[data-theme="7"] .tg-dock,[data-theme="8"] .tg-dock,[data-theme="9"] .tg-dock{display:block;}
+.tg-left{position:absolute;left:0;bottom:0;width:min(240px,46vw);height:100%;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y;will-change:transform;z-index:3;}
+.tg-left:active{cursor:grabbing;}
+.tg-right{position:absolute;right:0;bottom:0;width:min(240px,46vw);height:100%;pointer-events:auto;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y;will-change:transform;z-index:3;}
+.tg-right:active{cursor:grabbing;}
+.tg-left img,.tg-right img{width:100%;height:100%;object-fit:contain;object-position:bottom center;background:transparent;display:block;pointer-events:none;-webkit-user-drag:none;user-select:none;}
+[data-theme="7"] .tg-left img,[data-theme="7"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(241,203,20,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+[data-theme="8"] .tg-left img,[data-theme="8"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(201,168,76,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+[data-theme="9"] .tg-left img,[data-theme="9"] .tg-right img{filter:drop-shadow(0 -4px 20px rgba(255,198,28,0.2)) drop-shadow(0 4px 12px rgba(0,0,0,0.8));}
+/* FIX 3 — Subtle dark overlay instead of brightness filter */
+[data-theme="7"] .bg-layer::after,[data-theme="8"] .bg-layer::after,[data-theme="9"] .bg-layer::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.58);pointer-events:none;z-index:1;}
+[data-theme="7"] .custom-bg-wrap,[data-theme="8"] .custom-bg-wrap,[data-theme="9"] .custom-bg-wrap{filter:brightness(0.55);}
+[data-theme="7"] .couple-name-block.show,[data-theme="8"] .couple-name-block.show,[data-theme="9"] .couple-name-block.show{text-shadow:0 2px 20px rgba(0,0,0,0.9),0 0 40px rgba(0,0,0,0.8)!important;}
+/* FIX 5 — Instruction text */
+.tg-instruction{display:none;position:fixed;bottom:57dvh;left:50%;transform:translateX(-50%);z-index:21;font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;white-space:nowrap;pointer-events:none;animation:tgInstrPulse 2s ease-in-out infinite;flex-direction:column;align-items:center;gap:8px;}
+[data-theme="7"] .tg-instruction,[data-theme="8"] .tg-instruction,[data-theme="9"] .tg-instruction{display:flex;}
+.tg-instruction-arrow{animation:tgArrowUp 1.4s ease-in-out infinite;opacity:0.6;}
+@keyframes tgArrowUp{0%,100%{transform:translateY(0);opacity:0.4;}50%{transform:translateY(-6px);opacity:0.9;}}
+@keyframes tgInstrPulse{0%,100%{opacity:0.4;}50%{opacity:0.85;}}
+.tg-left-arrow{position:absolute;right:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowL 2s ease-in-out infinite 0.5s;}
+.tg-right-arrow{position:absolute;left:8px;top:30%;font-size:20px;color:var(--accent);opacity:0;pointer-events:none;animation:tgArrowR 2s ease-in-out infinite 0.8s;}
+@keyframes tgArrowL{0%{opacity:0;transform:translateX(0);}40%{opacity:0.7;transform:translateX(6px);}100%{opacity:0;transform:translateX(0);}}
+@keyframes tgArrowR{0%{opacity:0;transform:translateX(0);}40%{opacity:0.7;transform:translateX(-6px);}100%{opacity:0;transform:translateX(0);}}
+/* FIX 6 — Couple names position */
+[data-theme="7"] .couple-name-block,[data-theme="8"] .couple-name-block,[data-theme="9"] .couple-name-block{position:fixed!important;top:28%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:25;text-align:center;width:90%;pointer-events:none;display:none;margin-top:0;opacity:1;transition:none;}
+[data-theme="7"] .couple-name-block.show,[data-theme="8"] .couple-name-block.show,[data-theme="9"] .couple-name-block.show{display:block;transform:translate(-50%,-50%)!important;}
+/* FIX 7 — Merge glow position */
+[data-theme="7"] #mergeGlow,[data-theme="8"] #mergeGlow,[data-theme="9"] #mergeGlow{top:28%!important;z-index:24!important;}
+/* FIX 8 — Scroll hint position */
+[data-theme="7"] #ariyaScrollHint,[data-theme="8"] #ariyaScrollHint,[data-theme="9"] #ariyaScrollHint{position:fixed!important;bottom:58dvh!important;left:50%!important;transform:translateX(-50%)!important;z-index:26!important;}
+@media (max-width:480px){.tg-dock{height:55dvh;}.tg-left,.tg-right{width:min(180px,46vw);}}
+/* Center mask — hides portraits as they meet */
+.tg-center-mask{display:none;position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:100%;z-index:4;pointer-events:none;background:transparent;}
+[data-theme="7"] .tg-center-mask,[data-theme="8"] .tg-center-mask,[data-theme="9"] .tg-center-mask{display:block;}
+/* Portraits always behind mask */
+.tg-left,.tg-right{z-index:3!important;}
+/* No parallax/zoom on TG theme backgrounds — completely static */
+[data-theme="7"] .custom-bg-wrap,[data-theme="7"] .custom-bg-img,[data-theme="7"] .bg-layer,[data-theme="7"] .hero-bg,[data-theme="7"] [class*="bg"],
+[data-theme="8"] .custom-bg-wrap,[data-theme="8"] .custom-bg-img,[data-theme="8"] .bg-layer,[data-theme="8"] .hero-bg,[data-theme="8"] [class*="bg"],
+[data-theme="9"] .custom-bg-wrap,[data-theme="9"] .custom-bg-img,[data-theme="9"] .bg-layer,[data-theme="9"] .hero-bg,[data-theme="9"] [class*="bg"]{transform:none!important;transition:opacity 0.8s ease!important;will-change:opacity!important;background-attachment:scroll!important;}
 </style>
 </head>
 <body>
@@ -995,20 +794,23 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
   </section>
 
-  <!-- TG WEDDING FILMS DOCK -->
+  <!-- TG WEDDING FILMS PORTRAIT DOCK -->
   <div class="tg-dock" id="tgDock">
     <div class="tg-left" id="tgLeft">
-      <img id="tgImgLeft" src="" alt="" draggable="false">
+      <img id="tgImgLeft" src="" alt="Bride" draggable="false">
+      <span class="tg-left-arrow">›</span>
     </div>
     <div class="tg-right" id="tgRight">
-      <img id="tgImgRight" src="" alt="" draggable="false">
+      <img id="tgImgRight" src="" alt="Groom" draggable="false">
+      <span class="tg-right-arrow">‹</span>
     </div>
+    <div class="tg-center-mask" id="tgCenterMask"></div>
   </div>
-
-  <!-- TG instruction -->
   <div class="tg-instruction" id="tgInstruction">
-    <div class="tg-instr-arrows">&#8249; &nbsp; &#8250;</div>
-    <span>Swipe to reveal</span>
+    <svg class="tg-instruction-arrow" viewBox="0 0 24 24" width="16" height="16" fill="rgba(255,255,255,0.5)">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+    <span>Swipe up to reveal</span>
   </div>
 
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
@@ -1283,12 +1085,7 @@ function handleThemeSpecificUI(themeId) {
       el.style.display = 'none'; el.style.visibility = 'hidden';
     });
     const nb = document.getElementById('coupleNameBlock');
-    if (nb) {
-      nb.style.display = 'none';
-      nb.style.opacity = '0';
-      nb.classList.remove('show');
-      nb.classList.remove('tg-visible');
-    }
+    if (nb) { nb.style.display = 'none'; nb.classList.remove('show'); }
     const dock  = document.getElementById('tgDock');
     const instr = document.getElementById('tgInstruction');
     if (dock)  dock.style.display  = 'block';
@@ -1665,9 +1462,10 @@ function initSwipe() {
   window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
 }
 
-// ══════════════════════════════════════
-// TG WEDDING FILMS — FINAL SWIPE SYSTEM
-// ══════════════════════════════════════
+// ══════════════════════════════════════════
+// TG WEDDING FILMS — PORTRAIT SWIPE SYSTEM
+// Final version — drag to meet, particles, reveal
+// ══════════════════════════════════════════
 
 const TG_THEMES = [7, 8, 9];
 
@@ -1679,15 +1477,14 @@ function isTGTheme() {
 
 // ── State ──
 let tgDone         = false;
-let tgProgress     = 0;
+let tgNamesShown   = false;
 let tgDragging     = false;
-let tgDragSide     = null;
+let tgSide         = null;
 let tgDragStartX   = 0;
-let tgScrolling    = false;
-let tgScrollStartY = 0;
+let tgCurrentMove  = 0;
 let tgMaxMove      = 0;
 let tgRafId        = null;
-let tgNamesVisible = false;
+let tgScrollLocked = true;
 
 // ── Init ──
 function initTGSwipe(data) {
@@ -1699,114 +1496,115 @@ function initTGSwipe(data) {
   if (imgR && data.swipe_image_b_url) imgR.src = data.swipe_image_b_url;
 
   tgDone         = false;
-  tgProgress     = 0;
   tgDragging     = false;
-  tgScrolling    = false;
-  tgNamesVisible = false;
+  tgSide         = null;
+  tgCurrentMove  = 0;
+  tgScrollLocked = true;
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      tgMaxMove = tgCalcMax();
-      tgApply(0);
+      tgMaxMove = calcTGMaxMove();
+      resetPortraitPositions();
     });
   });
 
-  document.body.style.overflow    = 'hidden';
-  document.body.style.touchAction = 'none';
-
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
-  const hero    = document.getElementById('heroSection');
 
   if (leftEl) {
-    leftEl.addEventListener('touchstart',  e => tgDragStart(e, 'left'),  { passive: true });
-    leftEl.addEventListener('mousedown',   e => tgDragStart(e, 'left'));
+    leftEl.addEventListener('touchstart',  e => tgOnStart(e, 'left'),  { passive: true });
+    leftEl.addEventListener('mousedown',   e => tgOnStart(e, 'left'));
   }
   if (rightEl) {
-    rightEl.addEventListener('touchstart', e => tgDragStart(e, 'right'), { passive: true });
-    rightEl.addEventListener('mousedown',  e => tgDragStart(e, 'right'));
+    rightEl.addEventListener('touchstart', e => tgOnStart(e, 'right'), { passive: true });
+    rightEl.addEventListener('mousedown',  e => tgOnStart(e, 'right'));
   }
 
-  document.addEventListener('touchmove', tgDragMove, { passive: false });
-  document.addEventListener('touchend',  tgDragEnd,  { passive: true });
-  document.addEventListener('mousemove', tgDragMove);
-  document.addEventListener('mouseup',   tgDragEnd);
+  document.addEventListener('touchmove', tgOnMove, { passive: false });
+  document.addEventListener('touchend',  tgOnEnd,  { passive: true });
+  document.addEventListener('mousemove', tgOnMove);
+  document.addEventListener('mouseup',   tgOnEnd);
 
-  if (hero) {
-    hero.addEventListener('touchstart', e => {
-      if (tgDone || tgDragging) return;
-      const t = e.target;
-      if (t.closest('#tgLeft') || t.closest('#tgRight')) return;
-      tgScrolling    = true;
-      tgScrollStartY = e.touches[0].clientY;
-    }, { passive: true });
+  lockTGScroll();
+  setTimeout(tgDemoHint, 1200);
 
-    hero.addEventListener('touchmove', e => {
-      if (tgDone || !tgScrolling) return;
-      if (e.cancelable) e.preventDefault();
-      const dy = tgScrollStartY - e.touches[0].clientY;
-      if (dy < 0) return;
-      const p = Math.min(1, dy / (window.innerHeight * 0.35));
-      tgSetProgress(p);
-      if (p >= 1) { tgScrolling = false; tgFinish(); }
-    }, { passive: false });
-
-    hero.addEventListener('touchend', () => {
-      if (!tgScrolling || tgDone) return;
-      tgScrolling = false;
-      if (tgProgress >= 0.5) {
-        tgAnimateTo(1, 400, tgFinish);
-      } else {
-        tgAnimateTo(0, 400, tgShowInstr);
-      }
-    }, { passive: true });
-
-    hero.addEventListener('wheel', e => {
-      if (tgDone) return;
-      if (e.deltaY > 20) { tgAnimateTo(1, 500, tgFinish); }
-    }, { passive: true });
+  // nameObserver — shows/hides names+hint when user scrolls hero in/out of view
+  const heroEl = document.getElementById('heroSection');
+  if (heroEl) {
+    const nameObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!tgDone) return;
+        const nameBlock = document.getElementById('coupleNameBlock');
+        const hint      = document.getElementById('ariyaScrollHint');
+        if (entry.isIntersecting) {
+          if (nameBlock) {
+            nameBlock.style.visibility = 'visible';
+            nameBlock.style.display    = 'block';
+            nameBlock.style.transition = 'opacity 0.4s ease';
+            requestAnimationFrame(() => { nameBlock.style.opacity = '1'; });
+          }
+          if (hint) {
+            hint.style.display    = 'flex';
+            hint.style.transition = 'opacity 0.4s ease';
+            requestAnimationFrame(() => { hint.style.opacity = '1'; });
+          }
+        } else {
+          if (nameBlock) {
+            nameBlock.style.transition = 'opacity 0.4s ease';
+            nameBlock.style.opacity    = '0';
+            setTimeout(() => {
+              if (nameBlock.style.opacity === '0') nameBlock.style.display = 'none';
+            }, 420);
+          }
+          if (hint) {
+            hint.style.transition = 'opacity 0.4s ease';
+            hint.style.opacity    = '0';
+            setTimeout(() => {
+              if (hint.style.opacity === '0') hint.style.display = 'none';
+            }, 420);
+          }
+        }
+      });
+    }, { threshold: 0.3 });
+    nameObserver.observe(heroEl);
   }
-
-  setTimeout(tgDemoHint, 1400);
 }
 
-// ── Max move calculation ──
-function tgCalcMax() {
-  const dock = document.getElementById('tgDock');
-  if (!dock) return 130;
-  return Math.floor(dock.offsetWidth * 0.26);
+function calcTGMaxMove() {
+  const dock   = document.getElementById('tgDock');
+  const portEl = document.getElementById('tgLeft');
+  if (!dock || !portEl) return 130;
+  return Math.floor((dock.offsetWidth - portEl.offsetWidth) / 2);
 }
 
-// ── Apply progress to portraits ──
-function tgApply(p) {
-  tgProgress = p;
-  const move    = tgMaxMove * p;
+function resetPortraitPositions() {
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
-  if (leftEl)  leftEl.style.transform  = `translateX(${move}px)`;
-  if (rightEl) rightEl.style.transform = `translateX(-${move}px)`;
+  if (leftEl)  leftEl.style.transform  = 'translateX(0)';
+  if (rightEl) rightEl.style.transform = 'translateX(0)';
 }
 
-// ── Set progress with instruction hide ──
-function tgSetProgress(p) {
-  tgApply(p);
-  if (p > 0.05) {
-    const instr = document.getElementById('tgInstruction');
-    if (instr) instr.style.opacity = '0';
-  }
+// ── Scroll Lock ──
+function lockTGScroll() {
+  document.body.style.overflow    = 'hidden';
+  document.body.style.touchAction = 'none';
 }
 
-// ── Drag handlers ──
-function tgGetCX(e) {
+function unlockTGScroll() {
+  document.body.style.overflow    = '';
+  document.body.style.touchAction = '';
+}
+
+// ── Drag Handlers ──
+function tgGetClientX(e) {
   return e.touches ? e.touches[0].clientX : e.clientX;
 }
 
-function tgDragStart(e, side) {
+function tgOnStart(e, side) {
   if (tgDone) return;
   tgDragging   = true;
-  tgDragSide   = side;
-  tgDragStartX = tgGetCX(e);
-  cancelAnimationFrame(tgRafId);
+  tgSide       = side;
+  tgDragStartX = tgGetClientX(e);
 
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
@@ -1814,74 +1612,88 @@ function tgDragStart(e, side) {
   if (rightEl) rightEl.style.transition = 'none';
 
   const instr = document.getElementById('tgInstruction');
-  if (instr) instr.style.opacity = '0';
+  if (instr) { instr.style.transition = 'opacity 0.3s ease'; instr.style.opacity = '0'; }
+
+  cancelAnimationFrame(tgRafId);
 }
 
-function tgDragMove(e) {
+function tgOnMove(e) {
   if (!tgDragging || tgDone) return;
   if (e.cancelable) e.preventDefault();
 
-  const cx   = tgGetCX(e);
-  const diff = cx - tgDragStartX;
-  let p      = 0;
-
-  if (tgDragSide === 'left') {
-    p = Math.max(0, Math.min(1, diff / tgMaxMove));
+  const diff = tgGetClientX(e) - tgDragStartX;
+  let move = 0;
+  if (tgSide === 'left') {
+    move = Math.max(0, Math.min(tgMaxMove, diff));
   } else {
-    p = Math.max(0, Math.min(1, -diff / tgMaxMove));
+    move = Math.max(0, Math.min(tgMaxMove, -diff));
   }
 
-  tgSetProgress(p);
+  tgCurrentMove = move;
+  applyTGPositions(move);
 
-  if (p >= 1) { tgDragging = false; tgFinish(); }
+  if (move >= tgMaxMove) {
+    tgDragging = false;
+    applyTGPositions(tgMaxMove);
+    tgReveal();
+  }
 }
 
-function tgDragEnd() {
+function tgOnEnd() {
   if (!tgDragging || tgDone) return;
   tgDragging = false;
 
-  if (tgProgress >= 0.5) {
-    tgAnimateTo(1, 350, tgFinish);
+  const progress = tgCurrentMove / tgMaxMove;
+
+  if (progress >= 0.75) {
+    tgAnimateTo(tgMaxMove, 300, () => tgReveal());
+  } else if (progress >= 0.2) {
+    tgAnimateTo(tgMaxMove, 500, () => tgReveal());
   } else {
-    tgAnimateTo(0, 400, tgShowInstr);
+    tgAnimateTo(0, 400, () => {
+      const instr = document.getElementById('tgInstruction');
+      if (instr) { instr.style.transition = 'opacity 0.3s ease'; instr.style.opacity = '1'; }
+    });
   }
 }
 
-// ── Smooth animation ──
-function tgAnimateTo(target, dur, cb) {
-  cancelAnimationFrame(tgRafId);
-  const startP  = tgProgress;
-  const startTs = performance.now();
+function applyTGPositions(move) {
+  const leftEl  = document.getElementById('tgLeft');
+  const rightEl = document.getElementById('tgRight');
+  if (leftEl)  leftEl.style.transform  = `translateX(${move}px)`;
+  if (rightEl) rightEl.style.transform = `translateX(-${move}px)`;
+}
+
+// ── Smooth Animation ──
+function tgAnimateTo(target, duration, onComplete) {
+  const start     = tgCurrentMove;
+  const startTime = performance.now();
 
   function step(now) {
-    const t = Math.min(1, (now - startTs) / dur);
-    const e = 1 - Math.pow(1 - t, 3);
-    tgApply(startP + (target - startP) * e);
-    if (t < 1) {
+    const elapsed  = now - startTime;
+    const fraction = Math.min(1, elapsed / duration);
+    const eased    = 1 - Math.pow(1 - fraction, 3);
+    const current  = start + (target - start) * eased;
+
+    tgCurrentMove = current;
+    applyTGPositions(current);
+
+    if (fraction < 1) {
       tgRafId = requestAnimationFrame(step);
     } else {
-      tgApply(target);
-      if (cb) cb();
+      tgCurrentMove = target;
+      applyTGPositions(target);
+      if (onComplete) onComplete();
     }
   }
+
   tgRafId = requestAnimationFrame(step);
 }
 
-function tgShowInstr() {
-  const instr = document.getElementById('tgInstruction');
-  if (instr) {
-    instr.style.transition = 'opacity 0.4s ease';
-    instr.style.opacity    = '1';
-  }
-}
-
-// ── REVEAL SEQUENCE ──
-function tgFinish() {
+// ── Reveal Sequence ──
+function tgReveal() {
   if (tgDone) return;
   tgDone = true;
-  cancelAnimationFrame(tgRafId);
-
-  tgApply(1);
 
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
@@ -1890,57 +1702,56 @@ function tgFinish() {
 
   if (instr) instr.style.display = 'none';
 
-  // Step 1 — gold merge glow
+  // Step 1 — snap portraits to exact center (mask already hides overlap)
+  setTimeout(() => {
+    if (leftEl) {
+      leftEl.style.transition = 'transform 0.2s ease-out';
+      leftEl.style.transform  = `translateX(${tgMaxMove}px)`;
+    }
+    if (rightEl) {
+      rightEl.style.transition = 'transform 0.2s ease-out';
+      rightEl.style.transform  = `translateX(-${tgMaxMove}px)`;
+    }
+  }, 0);
+
+  // Step 2 — merge glow
   setTimeout(() => {
     const g = document.getElementById('mergeGlow');
     if (g) {
-      g.style.transition = 'opacity 0.2s ease, width 0.2s ease';
+      g.style.transition = 'opacity 0.25s ease, width 0.25s ease';
       g.style.width      = '80%';
       g.style.opacity    = '1';
     }
-  }, 100);
+  }, 180);
 
-  // Step 2 — portraits flash white
+  // Step 3 — portraits instantly hidden, particles fire
   setTimeout(() => {
-    if (leftEl) {
-      leftEl.style.transition = 'filter 0.1s ease, opacity 0.3s ease';
-      leftEl.style.filter     = 'brightness(4) blur(4px)';
-      leftEl.style.opacity    = '0.8';
-    }
-    if (rightEl) {
-      rightEl.style.transition = 'filter 0.1s ease, opacity 0.3s ease';
-      rightEl.style.filter     = 'brightness(4) blur(4px)';
-      rightEl.style.opacity    = '0.8';
-    }
-  }, 280);
-
-  // Step 3 — portraits gone + particle blast
-  setTimeout(() => {
-    if (leftEl)  { leftEl.style.transition  = 'opacity 0.2s ease'; leftEl.style.opacity  = '0'; }
-    if (rightEl) { rightEl.style.transition = 'opacity 0.2s ease'; rightEl.style.opacity = '0'; }
+    if (leftEl)  { leftEl.style.display  = 'none'; }
+    if (rightEl) { rightEl.style.display = 'none'; }
     const g = document.getElementById('mergeGlow');
     if (g) { g.style.transition = 'opacity 0.15s ease'; g.style.opacity = '0'; }
     triggerKandyanExplosion();
-  }, 420);
+  }, 380);
 
   // Step 4 — hide dock
   setTimeout(() => {
     if (dock) dock.style.display = 'none';
-  }, 750);
+  }, 700);
 
-  // Step 5 — couple names appear
+  // Step 5 — couple names reveal — ONCE, stays visible for IntersectionObserver to manage
   setTimeout(() => {
-    const nb = document.getElementById('coupleNameBlock');
-    if (nb) {
-      nb.style.display    = 'block';
-      nb.style.opacity    = '0';
-      nb.style.transition = 'opacity 0.8s ease';
+    if (tgNamesShown) return;
+    tgNamesShown = true;
+    const nameBlock = document.getElementById('coupleNameBlock');
+    if (nameBlock) {
+      nameBlock.style.visibility = 'visible';
+      nameBlock.style.display    = 'block';
+      nameBlock.style.opacity    = '0';
+      nameBlock.style.transition = 'opacity 0.6s ease';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          nb.classList.add('show');
-          nb.classList.add('tg-visible');
-          nb.style.opacity = '1';
-          tgNamesVisible   = true;
+          nameBlock.style.opacity = '1';
+          nameBlock.classList.add('show');
         });
       });
     }
@@ -1949,50 +1760,26 @@ function tgFinish() {
   // Step 6 — scroll hint
   setTimeout(() => {
     const hint = document.getElementById('ariyaScrollHint');
-    if (hint) hint.classList.add('tg-visible');
+    if (hint) {
+      hint.style.display  = 'flex';
+      hint.style.opacity  = '0';
+      hint.style.transition = 'opacity 0.5s ease';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { hint.style.opacity = '1'; hint.classList.add('show'); });
+      });
+    }
   }, 2800);
 
-  // Step 7 — unlock scroll + name scroll observer
+  // Step 7 — unlock scroll (no auto-scroll — user drives)
   setTimeout(() => {
-    document.body.style.overflow    = '';
-    document.body.style.touchAction = '';
-    tgSetupNameScroll();
-  }, 2500);
+    unlockTGScroll();
+  }, 2400);
 }
 
-// ── Names fade with scroll ──
-function tgSetupNameScroll() {
-  const heroEl = document.getElementById('heroSection');
-  if (!heroEl) return;
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!tgNamesVisible) return;
-      const nb   = document.getElementById('coupleNameBlock');
-      const hint = document.getElementById('ariyaScrollHint');
-
-      if (entry.isIntersecting) {
-        if (nb)   { nb.style.transition   = 'opacity 0.5s ease'; nb.style.opacity   = '1'; }
-        if (hint) { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '1'; }
-      } else {
-        if (nb)   { nb.style.transition   = 'opacity 0.5s ease'; nb.style.opacity   = '0'; }
-        if (hint) { hint.style.transition = 'opacity 0.5s ease'; hint.style.opacity = '0'; }
-      }
-    });
-  }, { threshold: 0.25 });
-
-  observer.observe(heroEl);
-
-  // Auto scroll to next section
-  const next = heroEl.nextElementSibling
-    || document.querySelector('.orn-div')
-    || document.querySelector('.family-section');
-  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1300);
-}
-
-// ── Demo hint ──
+// ── Demo Hint ──
 function tgDemoHint() {
   if (tgDone) return;
+
   const leftEl  = document.getElementById('tgLeft');
   const rightEl = document.getElementById('tgRight');
   if (!leftEl || !rightEl) return;
@@ -2003,20 +1790,18 @@ function tgDemoHint() {
   function pulse() {
     if (tgDone || count >= 3) return;
     count++;
-    const demoMove = tgMaxMove * 0.22;
     leftEl.style.transition  = `transform 0.5s ${ease}`;
     rightEl.style.transition = `transform 0.5s ${ease}`;
-    leftEl.style.transform   = `translateX(${demoMove}px)`;
-    rightEl.style.transform  = `translateX(-${demoMove}px)`;
-
+    leftEl.style.transform   = 'translateX(36px)';
+    rightEl.style.transform  = 'translateX(-36px)';
     setTimeout(() => {
       if (tgDone) return;
       leftEl.style.transition  = `transform 0.5s ${ease}`;
       rightEl.style.transition = `transform 0.5s ${ease}`;
       leftEl.style.transform   = 'translateX(0)';
       rightEl.style.transform  = 'translateX(0)';
-      if (count < 3) setTimeout(pulse, 2200);
-    }, 700);
+      if (count < 3) setTimeout(pulse, 2000);
+    }, 650);
   }
 
   pulse();
