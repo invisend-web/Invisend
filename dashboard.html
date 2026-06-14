@@ -889,6 +889,7 @@ try {
 let allInvitations = [], editingId = null, selectedTheme = 1;
 let editingTestId = null;
 let preshootUrls = new Array(10).fill('');
+let preshootCacheBust = new Array(10).fill(0);
 let currentRsvpData = [];
 
 // ─── SESSION CHECK ───
@@ -1040,7 +1041,7 @@ function buildPreshootGrid() {
   grid.innerHTML = preshootUrls.map((url, i) => `
     <div class="preshoot-slot" id="preshootSlot${i}">
       <input type="file" accept="image/*" onchange="handlePreshootUpload(this,${i})">
-      ${url ? `<img src="${url}" alt="">` : ''}
+      ${url ? `<img src="${url}${url.includes('?') ? '&' : '?'}cb=${preshootCacheBust[i] || 0}" alt="">` : ''}
       ${url ? `<button class="slot-recrop" onclick="openRecropPreshoot(${i},event)" title="Adjust crop"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/></svg></button>` : ''}
       ${url ? `<button class="slot-remove" onclick="removePreshootPhoto(${i},event)">&#x2715;</button>` : ''}
       ${!url ? `<div class="slot-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><div class="slot-num">${i + 1}</div>` : ''}
@@ -1072,7 +1073,7 @@ function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); 
 
 // ─── MODAL OPEN/CLOSE ───
 function openCreateModal() {
-  editingId = null; selectedTheme = 1; preshootUrls = new Array(10).fill('');
+  editingId = null; selectedTheme = 1; preshootUrls = new Array(10).fill(''); preshootCacheBust = new Array(10).fill(0);
   document.getElementById('modalTitle').textContent = 'New Invitation';
   clearForm(); document.getElementById('invModal').classList.add('open');
 }
@@ -1135,6 +1136,7 @@ function editInvitation(id) {
   document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', parseInt(el.dataset.val) === selectedTheme));
   // Preshoot
   preshootUrls = new Array(10).fill('');
+  preshootCacheBust = new Array(10).fill(Date.now());
   for (let i = 1; i <= 10; i++) { if (inv['preshoot_photo_' + i]) preshootUrls[i - 1] = inv['preshoot_photo_' + i]; }
   const hasPre = hasPreshootContent(inv);
   document.getElementById('preshootEnabled').checked = hasPre;
@@ -1814,6 +1816,7 @@ async function openRecropPreshoot(idx, e) {
         const baseUrl = currentUrl.split('?')[0];
         const freshUrl = baseUrl + '?v=' + Date.now();
         preshootUrls[idx] = baseUrl;
+        preshootCacheBust[idx] = Date.now();
         buildPreshootGrid();
 
         // Force the newly built img to bypass cache
