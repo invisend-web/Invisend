@@ -1762,11 +1762,13 @@ async function openRecropModal(type, areaId, previewId) {
         const { error } = await sb.storage.from('images').upload(storagePath, croppedFile, { upsert: true });
         if (error) throw error;
 
-        // Cache-bust the URL so the new crop shows immediately
+        // Persist cache-busting param in the saved URL
+        // so invitation.html shows updated crop on all devices
         const baseUrl = currentUrl.split('?')[0];
-        const freshUrl = baseUrl + '?v=' + Date.now();
+        const cacheBustTs = Date.now();
+        const freshUrl = baseUrl + '?v=' + cacheBustTs;
 
-        document.getElementById(hiddenId).value = baseUrl;
+        document.getElementById(hiddenId).value = freshUrl;
         if (previewId) {
           const p = document.getElementById(previewId);
           if (p) { p.src = freshUrl; p.style.display = 'block'; }
@@ -1814,9 +1816,13 @@ async function openRecropPreshoot(idx, e) {
         if (error) throw error;
 
         const baseUrl = currentUrl.split('?')[0];
-        const freshUrl = baseUrl + '?v=' + Date.now();
-        preshootUrls[idx] = baseUrl;
-        preshootCacheBust[idx] = Date.now();
+        const cacheBustTs = Date.now();
+        const freshUrl = baseUrl + '?v=' + cacheBustTs;
+        // Persist the cache-busting param in the URL
+        // saved to the database, so invitation.html
+        // fetches the updated image on all devices
+        preshootUrls[idx] = freshUrl;
+        preshootCacheBust[idx] = cacheBustTs;
         buildPreshootGrid();
 
         // Force the newly built img to bypass cache
