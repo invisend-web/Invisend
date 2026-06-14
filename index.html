@@ -109,21 +109,28 @@ nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4p
 .tc-i .tc-name,.tc-i .tc-sub{color:#D8B57A}
 .tc-i .tc-desc{color:#5E4A3A}
 
+/* WHATSAPP BANNER */
+.wa-banner{background:linear-gradient(135deg,var(--cream2),var(--blush));padding:56px 60px;margin:0 auto}
+.wa-banner-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.wa-banner-title{font-family:var(--fs);font-size:clamp(22px,3vw,32px);font-weight:300;font-style:italic;color:var(--dark);line-height:1.3;margin-bottom:8px}
+.wa-banner-title em{color:var(--gold2)}
+.wa-banner-sub{font-family:var(--fs);font-size:15px;font-style:italic;color:var(--muted)}
+.wa-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--fu);font-size:9.5px;letter-spacing:0.25em;text-transform:uppercase;color:#fff;background:#25d366;border:none;border-radius:50px;padding:13px 28px;cursor:pointer;text-decoration:none;transition:all 0.3s;flex-shrink:0}
+.wa-btn:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 10px 32px rgba(37,211,102,0.35)}
+.wa-btn svg{width:16px;height:16px;fill:#fff;flex-shrink:0}
+.wa-banner .wa-btn{padding:14px 32px;font-size:10px}
+
 /* FEATURES */
 .feat-wrap{background:var(--cream2);padding:80px 40px}
 .feat-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.feat-vis{display:flex;align-items:center;justify-content:center}
-.feat-env{width:min(320px,40vw);position:relative}
-.env-outer{width:100%;padding-bottom:68%;background:linear-gradient(135deg,#f2d5c8,#e8b4a0);border-radius:14px;box-shadow:0 20px 60px rgba(196,133,106,0.3),0 4px 20px rgba(196,133,106,0.15);position:relative;overflow:hidden}
-.env-flap{position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(135deg,#edcbc0,#dba08c);clip-path:polygon(0 0,100% 0,50% 70%);border-radius:14px 14px 0 0;transform-origin:top center;animation:flapA 3s ease-in-out 0.5s infinite alternate}
-@keyframes flapA{0%{transform:rotateX(0deg)}40%{transform:rotateX(-140deg)}60%{transform:rotateX(-140deg)}100%{transform:rotateX(0deg)}}
-.env-seal{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:linear-gradient(135deg,#d4a940,#b8832a);border-radius:50%;box-shadow:0 4px 12px rgba(184,131,42,0.5);display:flex;align-items:center;justify-content:center;animation:sealA 3s ease-in-out 0.5s infinite alternate}
-@keyframes sealA{40%{opacity:0}60%{opacity:0}100%{opacity:1}}
-.env-seal svg{width:20px;height:20px;fill:#fff;opacity:0.9}
-.env-card{position:absolute;width:72%;left:14%;bottom:8%;background:#fff;border-radius:10px;padding:14px 12px;box-shadow:0 8px 24px rgba(74,55,40,0.12);text-align:center;animation:cardA 3s ease-in-out 0.5s infinite alternate;transform-origin:bottom center}
-@keyframes cardA{0%,30%{transform:translateY(40%) scale(0.9);opacity:0}50%,100%{transform:translateY(-22%) scale(1);opacity:1}}
-.env-cn{font-family:var(--fs);font-size:13px;font-style:italic;font-weight:600;color:var(--dark)}
-.env-cd{font-family:var(--fu);font-size:8px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.feat-phone-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.feat-phone{width:min(280px,60vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(216,181,122,0.3);overflow:hidden;box-shadow:0 32px 80px rgba(94,74,58,0.3),0 8px 24px rgba(94,74,58,0.15),inset 0 1px 0 rgba(255,255,255,0.1);position:relative}
+.feat-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:22px;background:#0a0a0a;border-radius:0 0 14px 14px;z-index:5}
+.feat-phone-screen{width:100%;height:100%;position:relative;overflow:hidden}
+.feat-phone-iframe{width:100%;height:100%;border:none;display:block}
+.feat-phone-label{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;font-family:var(--fu);font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold2)}
+.feat-phone-label-dot{width:7px;height:7px;border-radius:50%;background:#25d366;box-shadow:0 0 0 0 rgba(37,211,102,0.5);animation:liveDotPulse 2s infinite}
+@keyframes liveDotPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,0.5)}70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
 .feat-tag{display:inline-block;font-family:var(--fu);font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--rose);border:1px solid rgba(196,133,106,0.3);border-radius:50px;padding:5px 14px;margin-bottom:20px}
 .feat-title{font-family:var(--fs);font-size:clamp(26px,3.5vw,40px);font-weight:300;font-style:italic;color:var(--dark);line-height:1.25;margin-bottom:14px}
 .feat-desc{font-family:var(--fs);font-size:15px;font-style:italic;color:var(--muted);line-height:1.8;margin-bottom:24px}
@@ -192,7 +199,7 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
   .steps{grid-template-columns:1fr 1fr}
   .themes{grid-template-columns:repeat(2,1fr)}
   .feat-inner{grid-template-columns:1fr;gap:40px}
-  .feat-env{width:min(300px,70vw)}
+  .feat-phone{width:min(260px,65vw)}
   .test-card,.skel{flex:0 0 calc(50% - 10px)}
   .how,.feat-wrap,.test-wrap,.themes-wrap,.soc-wrap{padding:60px 24px}
 }
@@ -208,6 +215,11 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
   .btn-dark,.btn-line{width:100%;justify-content:center}
   footer{padding:32px 20px 20px}
   .ft-in{flex-direction:column;align-items:center;text-align:center}
+  .wa-banner{padding:40px 20px}
+  .wa-banner-inner{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .feat-phone{width:min(240px,70vw)}
 }
 </style>
 </head>
@@ -276,14 +288,27 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 
 <!-- HOW IT WORKS -->
 <section class="how" id="features">
-  <span class="sec-eye rev">Simple Process</span>
-  <h2 class="sec-title rev">From Idea to Invitation in Minutes</h2>
-  <p class="sec-sub rev">No design skills needed. Just your love story.</p>
+  <span class="sec-eye rev">How InviSend Works</span>
+  <h2 class="sec-title rev">From a Message <em>to a Memory</em></h2>
+  <p class="sec-sub rev">No design skills needed. Just send us a message and we handle everything.</p>
   <div class="steps">
-    <div class="step rev"><div class="step-num"><span>01</span></div><div class="step-t">Choose Theme</div><p class="step-d">Select from three culturally rich themes that match your wedding style.</p></div>
-    <div class="step rev"><div class="step-num"><span>02</span></div><div class="step-t">Upload Photos</div><p class="step-d">Add your individual portraits and a couple photo for the cinematic reveal.</p></div>
-    <div class="step rev"><div class="step-num"><span>03</span></div><div class="step-t">Add Details</div><p class="step-d">Wedding date, venue, family names, a personal message, and music.</p></div>
-    <div class="step rev"><div class="step-num"><span>04</span></div><div class="step-t">Share the Link</div><p class="step-d">Copy your unique link and share it with every guest — instantly.</p></div>
+    <div class="step rev"><div class="step-num"><span>01</span></div><div class="step-t">Message Us</div><p class="step-d">Send us your wedding details — names, date, venue, and your favourite photos — all through WhatsApp.</p></div>
+    <div class="step rev"><div class="step-num"><span>02</span></div><div class="step-t">We Build It For You</div><p class="step-d">Our team crafts your cinematic invitation by hand, choosing the perfect theme and bringing your story to life.</p></div>
+    <div class="step rev"><div class="step-num"><span>03</span></div><div class="step-t">Get Your Link</div><p class="step-d">Within 24 hours we send you a personal link to your finished invitation — ready to share.</p></div>
+    <div class="step rev"><div class="step-num"><span>04</span></div><div class="step-t">Share on WhatsApp</div><p class="step-d">Send the link to every guest instantly. They open it, swipe, and fall in love with the moment.</p></div>
+  </div>
+</section>
+
+<section class="wa-banner rev">
+  <div class="wa-banner-inner">
+    <div class="wa-banner-text">
+      <h3 class="wa-banner-title">Ready to start? <em>It only takes a message.</em></h3>
+      <p class="wa-banner-sub">Tell us about your big day and we'll take care of the rest.</p>
+    </div>
+    <a href="https://wa.me/94713680340?text=Hello%20InviSend!%20I%20would%20love%20to%20create%20a%20wedding%20invitation." class="wa-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat on WhatsApp
+    </a>
   </div>
 </section>
 
@@ -355,26 +380,33 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 <!-- FEATURE -->
 <section class="feat-wrap" id="experience">
   <div class="feat-inner">
-    <div class="feat-vis rev">
-      <div class="feat-env">
-        <div class="env-outer">
-          <div class="env-flap"></div>
-          <div class="env-seal"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
-          <div class="env-card"><div class="env-cn">Ayasha &amp; Rohan</div><div class="env-cd">December 14, 2025</div></div>
+    <div class="feat-phone-wrap rev">
+      <div class="feat-phone">
+        <div class="feat-phone-notch"></div>
+        <div class="feat-phone-screen">
+          <iframe
+            src="https://www.invisend.com/invitation.html?slug=chalani-and-yasika-3"
+            class="feat-phone-iframe"
+            loading="lazy"
+            title="InviSend live invitation demo">
+          </iframe>
         </div>
+      </div>
+      <div class="feat-phone-label">
+        <span class="feat-phone-label-dot"></span>
+        Live Demo — Try It Yourself
       </div>
     </div>
     <div class="rev">
-      <span class="feat-tag">The Swipe Experience</span>
-      <h2 class="feat-title">An Invitation That Moves Hearts</h2>
-      <p class="feat-desc">Guests swipe two portraits together — they meet with a golden glow and reveal your couple photo in a cinematic moment.</p>
+      <span class="feat-tag">See It In Action</span>
+      <h2 class="feat-title">A Glimpse of <em>What We Create</em></h2>
+      <p class="feat-desc">Every invitation is built by hand for your story — a cinematic swipe reveal, your photos, your families, your celebration. This is a real invitation we made. Try swiping it.</p>
       <ul class="feat-pts">
-        <li>Touch-native swipe gesture on mobile</li>
-        <li>Physics-based animation with soft merge glow</li>
-        <li>Couple photo reveal with fade and scale</li>
-        <li>Ambient music plays through the experience</li>
-        <li>Optional pre-shoot gallery and video</li>
+        <li>Cinematic swipe reveal with golden merge glow</li>
+        <li>Family details, ceremony info and live countdown</li>
+        <li>Pre-shoot gallery and ambient music</li>
         <li>Real-time RSVP — see responses as they arrive</li>
+        <li>One link, shared instantly on WhatsApp</li>
       </ul>
     </div>
   </div>
