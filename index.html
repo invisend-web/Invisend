@@ -127,10 +127,32 @@ nav.scrolled{padding:10px 40px;background:rgba(245,239,232,0.97);box-shadow:0 4p
 .feat-phone{width:min(280px,60vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(216,181,122,0.3);overflow:hidden;box-shadow:0 32px 80px rgba(94,74,58,0.3),0 8px 24px rgba(94,74,58,0.15),inset 0 1px 0 rgba(255,255,255,0.1);position:relative}
 .feat-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:22px;background:#0a0a0a;border-radius:0 0 14px 14px;z-index:5}
 .feat-phone-screen{width:100%;height:100%;position:relative;overflow:hidden}
-.feat-phone-iframe{width:100%;height:100%;border:none;display:block}
 .feat-phone-label{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;font-family:var(--fu);font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold2)}
 .feat-phone-label-dot{width:7px;height:7px;border-radius:50%;background:#25d366;box-shadow:0 0 0 0 rgba(37,211,102,0.5);animation:liveDotPulse 2s infinite}
 @keyframes liveDotPulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,0.5)}70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.feat-phone-clickable{cursor:pointer;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);animation:phoneBreathe 3.5s ease-in-out infinite}
+.feat-phone-clickable:hover{transform:scale(1.02)}
+.feat-phone-preview-img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes phoneBreathe{
+  0%,100%{box-shadow:0 32px 80px rgba(94,74,58,0.3),0 8px 24px rgba(94,74,58,0.15),inset 0 1px 0 rgba(255,255,255,0.1),0 0 0 0 rgba(201,168,76,0.0)}
+  50%{box-shadow:0 32px 80px rgba(94,74,58,0.3),0 8px 24px rgba(94,74,58,0.15),inset 0 1px 0 rgba(255,255,255,0.1),0 0 0 14px rgba(201,168,76,0.08)}
+}
+.feat-phone-tap-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.12);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;pointer-events:none;animation:tapRingPulse 2.2s ease-in-out infinite}
+.feat-phone-tap-ring-inner{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.9);box-shadow:0 0 16px rgba(255,255,255,0.6)}
+@keyframes tapRingPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(0.9);opacity:0.55}
+  50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}
+}
+.demo-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(10,8,6,0.0);backdrop-filter:blur(0px);align-items:center;justify-content:center;transition:background 0.4s ease,backdrop-filter 0.4s ease}
+.demo-modal.open{display:flex;background:rgba(10,8,6,0.72);backdrop-filter:blur(18px)}
+.demo-modal-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:background 0.2s}
+.demo-modal-close:hover{background:rgba(255,255,255,0.2)}
+.demo-modal-phone{width:min(360px,88vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(216,181,122,0.35);overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.6);transform:scale(0.85);opacity:0;transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1),opacity 0.35s ease}
+.demo-modal.open .demo-modal-phone{transform:scale(1);opacity:1}
+.demo-modal-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:22px;background:#0a0a0a;border-radius:0 0 14px 14px;z-index:5}
+.demo-modal-screen{width:100%;height:100%;position:relative}
+.demo-modal-screen iframe{width:100%;height:100%;border:none;display:block}
+@media(max-width:600px){.demo-modal-phone{width:min(380px,92vw);height:88vh;aspect-ratio:unset}}
 .feat-tag{display:inline-block;font-family:var(--fu);font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--rose);border:1px solid rgba(196,133,106,0.3);border-radius:50px;padding:5px 14px;margin-bottom:20px}
 .feat-title{font-family:var(--fs);font-size:clamp(26px,3.5vw,40px);font-weight:300;font-style:italic;color:var(--dark);line-height:1.25;margin-bottom:14px}
 .feat-desc{font-family:var(--fs);font-size:15px;font-style:italic;color:var(--muted);line-height:1.8;margin-bottom:24px}
@@ -381,20 +403,29 @@ footer{background:var(--dark);padding:40px 40px 28px;border-top:1px solid rgba(2
 <section class="feat-wrap" id="experience">
   <div class="feat-inner">
     <div class="feat-phone-wrap rev">
-      <div class="feat-phone">
+      <div class="feat-phone feat-phone-clickable" onclick="openDemoModal()">
         <div class="feat-phone-notch"></div>
         <div class="feat-phone-screen">
-          <iframe
-            src="https://www.invisend.com/invitation.html?slug=chalani-and-yasika-3"
-            class="feat-phone-iframe"
-            loading="lazy"
-            title="InviSend live invitation demo">
-          </iframe>
+          <img src="assets/demo-preview.jpg" alt="InviSend invitation preview" class="feat-phone-preview-img">
+          <div class="feat-phone-tap-ring">
+            <div class="feat-phone-tap-ring-inner"></div>
+          </div>
         </div>
       </div>
       <div class="feat-phone-label">
         <span class="feat-phone-label-dot"></span>
         Live Demo: Try It Yourself
+      </div>
+    </div>
+
+    <!-- DEMO MODAL -->
+    <div class="demo-modal" id="demoModal" onclick="if(event.target===this)closeDemoModal()">
+      <button class="demo-modal-close" onclick="closeDemoModal()" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      <div class="demo-modal-phone">
+        <div class="demo-modal-notch"></div>
+        <div class="demo-modal-screen" id="demoModalScreen"></div>
       </div>
     </div>
     <div class="rev">
@@ -493,6 +524,31 @@ async function incrementLandingViews() {
   }
 }
 incrementLandingViews();
+
+// ─── DEMO MODAL ───
+function openDemoModal() {
+  const modal = document.getElementById('demoModal');
+  const screen = document.getElementById('demoModalScreen');
+  if (!screen.querySelector('iframe')) {
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://www.invisend.com/invitation.html?slug=chalani-and-yasika-3';
+    iframe.title = 'InviSend live invitation demo';
+    iframe.loading = 'eager';
+    screen.appendChild(iframe);
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDemoModal() {
+  const modal = document.getElementById('demoModal');
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeDemoModal();
+});
 
 // TESTIMONIALS
 (async () => {
