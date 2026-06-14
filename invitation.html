@@ -227,13 +227,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .preshoot-title{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:0.06em;color:var(--text);margin-bottom:6px}
 .preshoot-sub{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
 /* Carousel container */
-.ps-carousel-wrap{position:relative;width:100%;overflow:hidden}
-.ps-carousel{display:flex;padding:0 22%}
+.ps-carousel-wrap{position:relative;width:100%;overflow:hidden;padding:0 22%;box-sizing:border-box}
+.ps-carousel{display:flex;width:100%}
 .ps-carousel.ps-ready{transition:transform 0.4s cubic-bezier(0.23,1,0.32,1)}
 .ps-carousel.ps-dragging{transition:none!important}
-.ps-slide{min-width:56%;flex-shrink:0;box-sizing:border-box;padding:0 6px;opacity:0;transition:opacity 0.7s var(--ease)}
+.ps-slide{width:100%;flex-shrink:0;box-sizing:border-box;padding:0 6px;opacity:0;transition:opacity 0.7s var(--ease)}
 .ps-slide.in{opacity:1}
-@media(max-width:600px){.ps-carousel{padding:0 22%}.ps-slide{min-width:56%;padding:0 6px}}
+@media(max-width:600px){.ps-carousel-wrap{padding:0 9%}}
 .ps-img-box{width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);cursor:pointer;display:block}
 .ps-img-box img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;transition:transform 0.3s var(--ease)}
 .ps-img-box:active img{transform:scale(0.99)}
