@@ -1533,7 +1533,7 @@ function showErr() {
 }
 
 function render(d) {
-  document.title = d.couple_name ? `${d.couple_name} — Wedding Invitation` : 'Wedding Invitation';
+  document.title = d.couple_name ? `${d.couple_name} | Wedding Invitation` : 'Wedding Invitation';
   if (d.couple_name) document.getElementById('coupleNamesEl').innerHTML = d.couple_name.replace(' & ', ' <em>&</em> ');
   setImg('imgA', d.swipe_image_a_url);
   setImg('imgB', d.swipe_image_b_url);
@@ -2567,7 +2567,7 @@ function showPreviewBanner() {
   const banner = document.createElement('div');
   banner.className = 'preview-banner';
   banner.id = 'previewBanner';
-  banner.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" style="flex-shrink:0"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>Preview Mode — This is how your guests will see the invitation</span><button class="preview-banner-close" onclick="closePreviewBanner()">&#x2715;</button>';
+  banner.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" style="flex-shrink:0"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><span>Preview Mode: This is how your guests will see the invitation</span><button class="preview-banner-close" onclick="closePreviewBanner()">&#x2715;</button>';
   document.body.insertBefore(banner, document.body.firstChild);
   const hero = document.getElementById('heroSection');
   if (hero) hero.style.paddingTop = 'calc(60px + 40px)';
