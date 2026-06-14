@@ -115,7 +115,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="2"] .hero-tag,[data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="5"] .hero-tag{padding:6px 20px;border:1px solid rgba(212,175,55,0.35);border-radius:20px;background:rgba(212,175,55,0.06);letter-spacing:0.4em}
 /* SWIPE ARENA */
-.arena{width:100%;max-width:480px;height:56vh;height:56dvh;max-height:380px;min-height:300px;position:relative;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none;margin:0 auto}
+.arena{width:100%;max-width:480px;aspect-ratio:3/4;max-height:440px;position:relative;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none;margin:0 auto}
 .arena:active{cursor:grabbing}
 /* Themes 1-4: ensure hero content is
    vertically balanced now that justify-content
@@ -127,8 +127,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="1"] .arena,
 [data-theme="2"] .arena,
 [data-theme="3"] .arena,
-[data-theme="4"] .arena{height:52vh;height:52dvh;max-height:360px;min-height:280px}
-.swipe-card{position:absolute;width:43%;height:100%;overflow:hidden;border-radius:14px;will-change:transform;box-shadow:0 24px 64px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.06);background:transparent;display:flex;align-items:flex-end;justify-content:center}
+[data-theme="4"] .arena{max-height:360px}
+.swipe-card{position:absolute;width:48%;height:100%;overflow:hidden;border-radius:14px;will-change:transform;box-shadow:0 24px 64px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.06);background:transparent;display:flex;align-items:flex-end;justify-content:center}
 .swipe-card.left{left:0;transform-origin:right center}
 .swipe-card.right{right:0;transform-origin:left center}
 .swipe-card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;pointer-events:none;-webkit-user-drag:none;will-change:transform;opacity:0;transition:opacity 0.6s ease}
