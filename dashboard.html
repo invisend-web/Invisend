@@ -1708,12 +1708,21 @@ function openCropModal(file, type, callback) {
       if (btn.dataset.ratio === ratio.x + ':' + ratio.y) btn.classList.add('active');
     });
     cropImg.onload = () => {
+      const isPreshoot = type === 'preshoot';
       cropper = new Cropper(cropImg, {
         aspectRatio: ratio.x / ratio.y, viewMode: 1, dragMode: 'move',
-        autoCropArea: 0.9, restore: false, guides: true, center: true,
-        highlight: false, cropBoxMovable: true, cropBoxResizable: true,
+        autoCropArea: isPreshoot ? 1 : 0.9, restore: false, guides: true, center: true,
+        highlight: false,
+        cropBoxMovable: !isPreshoot,
+        cropBoxResizable: !isPreshoot,
         toggleDragModeOnDblclick: false, background: true,
       });
+      if (isPreshoot) {
+        // Lock the crop box to a fixed centered 4:5 frame.
+        // The image itself is draggable/zoomable underneath it
+        // (Instagram-style repositioning) via dragMode:'move'.
+        cropper.setDragMode('move');
+      }
     };
   };
   reader.readAsDataURL(file);
