@@ -227,20 +227,20 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .preshoot-title{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:0.06em;color:var(--text);margin-bottom:6px}
 .preshoot-sub{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
 /* Carousel container */
-.ps-carousel-wrap{position:relative;width:100%}
-.ps-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-behavior:smooth;padding:0 10%}
-.ps-carousel::-webkit-scrollbar{display:none}
-.ps-slide{min-width:80%;scroll-snap-align:center;padding:0 7px;transform:translateX(55px);opacity:0;transition:transform 0.7s var(--ease),opacity 0.7s var(--ease)}
+.ps-carousel-wrap{position:relative;width:100%;overflow:hidden}
+.ps-carousel{display:flex;overflow-x:hidden;touch-action:pan-y;padding:0 10%;will-change:transform}
+.ps-carousel.ps-dragging{transition:none!important}
+.ps-carousel.ps-animate{transition:transform 0.4s cubic-bezier(0.23,1,0.32,1)}
+.ps-slide{min-width:80%;flex-shrink:0;padding:0 7px;transform:translateX(55px);opacity:0;transition:transform 0.7s var(--ease),opacity 0.7s var(--ease)}
 .ps-slide.in{transform:none;opacity:1}
 @media(max-width:600px){.ps-carousel{padding:0}.ps-slide{min-width:100%;padding:0 16px}}
 .ps-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);display:block;cursor:pointer;transition:transform 0.3s var(--ease)}
 .ps-slide img:active{transform:scale(0.99)}
-/* Nav arrows */
-.ps-nav{position:absolute;top:38%;transform:translateY(-50%);width:40px;height:40px;background:rgba(0,0,0,0.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.14);border-radius:50%;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background 0.2s,opacity 0.25s;line-height:1}
-.ps-nav:hover{background:rgba(0,0,0,0.7)}
-.ps-nav.hidden{opacity:0;pointer-events:none}
-.ps-prev{left:7px}
-.ps-next{right:7px}
+/* Hint chevron */
+.ps-hint-chevron{position:absolute;top:50%;right:24px;transform:translateY(-50%);width:22px;height:22px;opacity:0;pointer-events:none;z-index:6;transition:opacity 0.4s ease}
+.ps-hint-chevron svg{width:100%;height:100%;fill:none;stroke:rgba(255,255,255,0.85);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))}
+.ps-hint-chevron.show{opacity:1}
+@media(max-width:600px){.ps-hint-chevron{right:28px}}
 /* Counter */
 .ps-counter{position:absolute;top:12px;right:calc(10% + 18px);font-family:var(--font-ui);font-size:10px;letter-spacing:0.18em;color:rgba(255,255,255,0.78);background:rgba(0,0,0,0.42);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;z-index:5}
 @media(max-width:600px){.ps-counter{right:24px}}
@@ -978,8 +978,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
     <div class="ps-carousel-wrap" id="psWrap">
       <div class="ps-carousel" id="psCarousel"></div>
-      <button class="ps-nav ps-prev hidden" id="psPrev">&#x2039;</button>
-      <button class="ps-nav ps-next" id="psNext">&#x203a;</button>
+      <div class="ps-hint-chevron" id="psHintChevron">
+        <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
       <div class="ps-counter" id="psCounter"></div>
     </div>
     <div class="ps-dots" id="psDots"></div>
@@ -1347,31 +1348,8 @@ function loadPreshoot(d) {
       </div>`).join('');
 
     const dots = document.getElementById('psDots');
-    dots.innerHTML = photos.map((_, i) => `<div class="ps-dot${i===0?' active':''}" onclick="psGoTo(${i})"></div>`).join('');
+    dots.innerHTML = photos.map((_, i) => `<div class="ps-dot${i===0?' active':''}"></div>`).join('');
     psUpdateCounter(0, photos.length);
-    psUpdateNav(0, photos.length);
-
-    let psScrollTimer2;
-    carousel.addEventListener('scroll', () => {
-      clearTimeout(psScrollTimer2);
-      psScrollTimer2 = setTimeout(() => {
-        const slides = carousel.querySelectorAll('.ps-slide');
-        let best = 0, bestDist = Infinity;
-        const cMid = carousel.getBoundingClientRect().left + carousel.offsetWidth / 2;
-        slides.forEach((s, i) => {
-          const r = s.getBoundingClientRect();
-          const dist = Math.abs(r.left + r.width / 2 - cMid);
-          if (dist < bestDist) { bestDist = dist; best = i; }
-        });
-        psCurrentIdx = best;
-        psUpdateCounter(best, photos.length);
-        psUpdateNav(best, photos.length);
-        dots.querySelectorAll('.ps-dot').forEach((dot, i) => dot.classList.toggle('active', i === best));
-      }, 60);
-    }, { passive: true });
-
-    document.getElementById('psPrev').onclick = () => psGoTo(psCurrentIdx - 1);
-    document.getElementById('psNext').onclick = () => psGoTo(psCurrentIdx + 1);
 
     // Slide-in animation on scroll into view
     const obs = new IntersectionObserver(entries => {
@@ -1381,6 +1359,8 @@ function loadPreshoot(d) {
       }
     }, { threshold: 0.15 });
     obs.observe(document.getElementById('preshootSection'));
+    initPreshootPaging(carousel, photos.length);
+    playPreshootHint(carousel, photos.length);
   } else {
     document.getElementById('psWrap').style.display = 'none';
     document.getElementById('psDots').style.display = 'none';
@@ -1402,22 +1382,101 @@ function loadPreshoot(d) {
 }
 function psGoTo(idx) {
   const carousel = document.getElementById('psCarousel');
-  const slides = Array.from(carousel.querySelectorAll('.ps-slide'));
-  idx = Math.max(0, Math.min(slides.length - 1, idx));
-  psCurrentIdx = idx;
-  slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  psUpdateCounter(idx, slides.length);
-  psUpdateNav(idx, slides.length);
-  document.querySelectorAll('.ps-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  if (carousel && carousel._psGoTo) carousel._psGoTo(idx);
 }
 function psUpdateCounter(idx, total) {
   const el = document.getElementById('psCounter');
   if (el) el.textContent = `${idx + 1} / ${total}`;
 }
-function psUpdateNav(idx, total) {
-  const prev = document.getElementById('psPrev'), next = document.getElementById('psNext');
-  if (prev) prev.classList.toggle('hidden', idx === 0);
-  if (next) next.classList.toggle('hidden', idx === total - 1);
+
+// ─── PRESHOOT ONE-SWIPE-ONE-SLIDE PAGING ───
+function initPreshootPaging(carouselEl, slideCount) {
+  if (!carouselEl || slideCount <= 1) return;
+
+  let currentIndex = 0;
+  let startX = 0;
+  let currentTranslate = 0;
+  let isDragging = false;
+  let slideWidth = 0;
+
+  function getSlideWidth() {
+    const slide = carouselEl.querySelector('.ps-slide');
+    if (!slide) return 0;
+    return slide.getBoundingClientRect().width;
+  }
+
+  function updatePosition(animate) {
+    slideWidth = getSlideWidth();
+    const offset = -currentIndex * slideWidth;
+    carouselEl.classList.toggle('ps-animate', animate);
+    carouselEl.classList.remove('ps-dragging');
+    carouselEl.style.transform = `translateX(${offset}px)`;
+    updateDotsAndCounter(currentIndex);
+  }
+
+  function onStart(x) {
+    isDragging = true;
+    startX = x;
+    slideWidth = getSlideWidth();
+    currentTranslate = -currentIndex * slideWidth;
+    carouselEl.classList.add('ps-dragging');
+    carouselEl.classList.remove('ps-animate');
+  }
+
+  function onMove(x) {
+    if (!isDragging) return;
+    const dx = x - startX;
+    carouselEl.style.transform = `translateX(${currentTranslate + dx}px)`;
+  }
+
+  function onEnd(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const dx = x - startX;
+    const threshold = Math.min(60, slideWidth * 0.15);
+    if (dx < -threshold && currentIndex < slideCount - 1) currentIndex++;
+    else if (dx > threshold && currentIndex > 0) currentIndex--;
+    updatePosition(true);
+  }
+
+  carouselEl.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+  carouselEl.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); onMove(e.touches[0].clientX); } }, { passive: false });
+  carouselEl.addEventListener('touchend', e => onEnd(e.changedTouches[0].clientX), { passive: true });
+  carouselEl.addEventListener('mousedown', e => onStart(e.clientX));
+  window.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
+  window.addEventListener('mouseup', e => onEnd(e.clientX));
+  window.addEventListener('resize', () => updatePosition(false), { passive: true });
+
+  const dots = carouselEl.parentElement.querySelectorAll('.ps-dot');
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { currentIndex = i; updatePosition(true); });
+  });
+
+  carouselEl._psGoTo = (i) => { currentIndex = i; updatePosition(true); };
+
+  updatePosition(false);
+
+  function updateDotsAndCounter(index) {
+    const allDots = carouselEl.parentElement.querySelectorAll('.ps-dot');
+    allDots.forEach((d, i) => d.classList.toggle('active', i === index));
+    const counter = carouselEl.parentElement.querySelector('.ps-counter');
+    if (counter) counter.textContent = `${index + 1} / ${slideCount}`;
+  }
+}
+
+function playPreshootHint(carouselEl, slideCount) {
+  if (slideCount <= 1) return;
+  const chevron = document.getElementById('psHintChevron');
+  setTimeout(() => {
+    const peekAmount = 38;
+    if (chevron) chevron.classList.add('show');
+    carouselEl.classList.add('ps-animate');
+    carouselEl.style.transform = `translateX(${-peekAmount}px)`;
+    setTimeout(() => {
+      carouselEl.style.transform = `translateX(0px)`;
+      setTimeout(() => { if (chevron) chevron.classList.remove('show'); }, 500);
+    }, 550);
+  }, 1500);
 }
 
 // ─── LIGHTBOX ───
