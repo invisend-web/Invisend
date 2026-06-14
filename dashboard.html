@@ -1948,8 +1948,9 @@ function checkDangerConfirm() {
 }
 async function executeDangerAction() {
   if (!dangerAction) return;
+  const action = dangerAction;
   closeDangerModal();
-  await dangerAction();
+  await action();
 }
 
 // ─── BIN ───
