@@ -228,13 +228,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .preshoot-sub{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
 /* Carousel container */
 .ps-carousel-wrap{position:relative;width:100%;overflow:hidden}
-.ps-carousel{display:flex;padding:0 18%}
+.ps-carousel{display:flex;padding:0 22%}
 .ps-carousel.ps-ready{transition:transform 0.4s cubic-bezier(0.23,1,0.32,1)}
 .ps-carousel.ps-dragging{transition:none!important}
-.ps-slide{min-width:64%;flex-shrink:0;box-sizing:border-box;padding:0 6px;opacity:0;transition:opacity 0.7s var(--ease)}
+.ps-slide{min-width:56%;flex-shrink:0;box-sizing:border-box;padding:0 6px;opacity:0;transition:opacity 0.7s var(--ease)}
 .ps-slide.in{opacity:1}
-@media(max-width:600px){.ps-carousel{padding:0 16%}.ps-slide{min-width:68%;padding:0 6px}}
-.ps-slide img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);display:block;cursor:pointer;transition:transform 0.3s var(--ease)}
+@media(max-width:600px){.ps-carousel{padding:0 22%}.ps-slide{min-width:56%;padding:0 6px}}
+.ps-slide img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);display:block;cursor:pointer;transition:transform 0.3s var(--ease)}
 .ps-slide img:active{transform:scale(0.99)}
 /* Hint chevron */
 .ps-hint-chevron{position:absolute;top:50%;right:24px;transform:translateY(-50%);width:22px;height:22px;opacity:0;pointer-events:none;z-index:6;transition:opacity 0.4s ease}
