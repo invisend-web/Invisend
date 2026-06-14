@@ -469,6 +469,7 @@ select.form-input{cursor:pointer}
           <div class="stat-card"><div class="stat-label">Live</div><div class="stat-value" style="color:var(--green)" id="statLive">—</div><div class="stat-sub">Active now</div></div>
           <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" style="color:var(--purple)" id="statMonth">—</div><div class="stat-sub">New invitations</div></div>
           <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value" style="color:var(--blue)" id="statTotalViews">—</div><div class="stat-sub">All invitations</div></div>
+          <div class="stat-card"><div class="stat-label">Landing Page Visits</div><div class="stat-value" style="color:var(--yellow)" id="statLandingViews">—</div><div class="stat-sub">All time</div></div>
         </div>
         <div class="table-card">
           <div class="table-header">
@@ -894,8 +895,25 @@ if (sessionStorage.getItem('inv_auth') === '1') {
   initDashboard();
 }
 
+// ─── LANDING VIEWS ───
+async function loadLandingViews() {
+  try {
+    const { data, error } = await sb
+      .from('site_stats')
+      .select('landing_views')
+      .eq('id', 1)
+      .single();
+    const el = document.getElementById('statLandingViews');
+    if (el && data) {
+      el.textContent = (data.landing_views || 0).toLocaleString();
+    }
+  } catch(e) {
+    console.warn('Landing views error:', e.message);
+  }
+}
+
 // ─── INIT ───
-async function initDashboard() { await loadInvitations(); populateRSVPSelect(); loadBinBadge(); }
+async function initDashboard() { await loadInvitations(); populateRSVPSelect(); loadBinBadge(); loadLandingViews(); }
 
 // ─── LOAD INVITATIONS ───
 async function loadInvitations() {

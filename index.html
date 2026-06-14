@@ -448,10 +448,24 @@ document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click
 const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } }), { threshold: 0.1 });
 document.querySelectorAll('.rev').forEach(el => obs.observe(el));
 
+// ─── LANDING PAGE VIEW TRACKING ───
+const SUPABASE_URL = 'https://uodiuclpqnhwsiclrbsq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZGl1Y2xwcW5od3NpY2xyYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2Njk2NDMsImV4cCI6MjA5NjI0NTY0M30.Jcw3HtHJY7jfwBqoNexDOQTegYzqi5X8AyRK3-IMbxE';
+async function incrementLandingViews() {
+  try {
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    await sb.rpc('increment_landing_views');
+  } catch(e) {
+    // Silent fail — never block page load
+  }
+}
+incrementLandingViews();
+
 // TESTIMONIALS
 (async () => {
   const { createClient } = supabase;
-  const sb = createClient('https://uodiuclpqnhwsiclrbsq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvZGl1Y2xwcW5od3NpY2xyYnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2Njk2NDMsImV4cCI6MjA5NjI0NTY0M30.Jcw3HtHJY7jfwBqoNexDOQTegYzqi5X8AyRK3-IMbxE');
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const track = document.getElementById('testTrack');
   const ctrl = document.getElementById('testCtrls');
   const dotsEl = document.getElementById('testDots');
