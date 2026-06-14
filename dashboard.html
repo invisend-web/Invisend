@@ -113,7 +113,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .stat-sub{font-size:11.5px;color:var(--text3)}
 /* TABLE */
 .table-card{background:var(--glass);border:1px solid var(--gb);border-radius:16px;overflow:hidden}
-.table-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.filter-tab{padding:6px 14px;border-radius:20px;border:1px solid var(--gb);background:var(--glass);color:var(--text3);font-size:12px;font-family:var(--font);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.filter-tab:hover{color:var(--text2);border-color:rgba(255,255,255,0.18)}
+.filter-tab.active{background:var(--accent,#c9a84c);border-color:var(--accent,#c9a84c);color:#000;font-weight:600}
 .table-title{font-size:15px;font-weight:600}
 .search-input{background:rgba(255,255,255,0.05);border:1px solid var(--gb);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:200px;transition:border-color 0.2s}
 .search-input:focus{border-color:var(--blue)}
@@ -484,6 +488,11 @@ select.form-input{cursor:pointer}
         <div class="table-card">
           <div class="table-header">
             <div class="table-title">All Invitations</div>
+            <div class="filter-tabs">
+              <button class="filter-tab active" data-filter="all" onclick="setInvFilter('all',this)">All</button>
+              <button class="filter-tab" data-filter="invisend" onclick="setInvFilter('invisend',this)">InviSend</button>
+              <button class="filter-tab" data-filter="tg" onclick="setInvFilter('tg',this)">TG Wedding Films</button>
+            </div>
             <input class="search-input" type="text" placeholder="Search..." oninput="filterTable(this.value)">
           </div>
           <div class="inv-table-wrap" style="overflow-x:auto">
@@ -892,6 +901,49 @@ try {
 
 // ─── STATE ───
 let allInvitations = [], editingId = null, selectedTheme = 1;
+let currentInvFilter = 'all';
+let currentSearchQuery = '';
+
+const TG_TEMPLATE_IDS = [7, 8, 9, 10];
+
+function setInvFilter(filter, btn) {
+  currentInvFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyInvFilters();
+}
+
+function applyInvFilters() {
+  let filtered = allInvitations;
+  if (currentInvFilter === 'invisend') {
+    filtered = filtered.filter(i => !TG_TEMPLATE_IDS.includes(i.template_id));
+  } else if (currentInvFilter === 'tg') {
+    filtered = filtered.filter(i => TG_TEMPLATE_IDS.includes(i.template_id));
+  }
+  if (currentSearchQuery) {
+    const q = currentSearchQuery.toLowerCase();
+    filtered = filtered.filter(i => (i.couple_name || '').toLowerCase().includes(q) || (i.slug || '').toLowerCase().includes(q));
+  }
+  renderTable(filtered);
+}
+
+// Mobile double-tap detection for inv-card
+(function() {
+  let lastTap = 0, lastTarget = null;
+  document.addEventListener('touchend', function(e) {
+    const card = e.target.closest('.inv-card');
+    if (!card) return;
+    // Ignore taps on action buttons inside the card
+    if (e.target.closest('.inv-card-act')) return;
+    const now = Date.now();
+    if (lastTarget === card && (now - lastTap) < 350) {
+      e.preventDefault();
+      card.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    }
+    lastTap = now;
+    lastTarget = card;
+  }, { passive: false });
+})();
 let editingTestId = null;
 let preshootUrls = new Array(10).fill('');
 let preshootCacheBust = new Array(10).fill(0);
@@ -954,7 +1006,7 @@ function renderTable(invs) {
   }
   body.innerHTML = invs.map(inv => {
     const hasPreshoot = hasPreshootContent(inv);
-    return `<tr>
+    return `<tr ondblclick='editInvitation("${inv.id}")' style="cursor:pointer">
       <td style="color:var(--text);font-weight:500">${esc(inv.couple_name || '—')}</td>
       <td><code style="font-size:12px;color:var(--blue)">${esc(inv.slug || '—')}</code></td>
       <td><span class="theme-dot" style="background:${themeColors[inv.template_id] || '#666'}"></span>${themeNames[inv.template_id] || '—'}</td>
@@ -986,7 +1038,7 @@ function renderMobileCards(invs) {
     const hasPre = hasPreshootContent(inv);
     const dateStr = inv.wedding_date ? new Date(inv.wedding_date).toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'numeric' }) : '—';
     const isLive = (inv.status || 'live') === 'live';
-    return `<div class="inv-card">
+    return `<div class="inv-card" ondblclick='editInvitation("${inv.id}")' style="cursor:pointer">
       <div class="inv-card-top">
         <div class="inv-card-name">${esc(inv.couple_name || '—')}</div>
         <span class="sbadge ${inv.status || 'live'}">${inv.status || 'live'}</span>
@@ -1011,7 +1063,10 @@ function hasPreshootContent(inv) {
   for (let i = 1; i <= 10; i++) { if (inv['preshoot_photo_' + i]) return true; }
   return false;
 }
-function filterTable(q) { renderTable(allInvitations.filter(i => (i.couple_name || '').toLowerCase().includes(q.toLowerCase()) || (i.slug || '').toLowerCase().includes(q.toLowerCase()))); }
+function filterTable(q) {
+  currentSearchQuery = q;
+  applyInvFilters();
+}
 function esc(s) { return (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
 
 // ─── SECTIONS ───
