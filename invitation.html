@@ -228,11 +228,11 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .preshoot-sub{font-family:var(--font-ui);font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
 /* Carousel container */
 .ps-carousel-wrap{position:relative;width:100%;overflow:hidden}
-.ps-carousel{display:flex;overflow-x:hidden;touch-action:pan-y;padding:0 10%;will-change:transform}
+.ps-carousel{display:flex;padding:0 10%}
+.ps-carousel.ps-ready{transition:transform 0.4s cubic-bezier(0.23,1,0.32,1)}
 .ps-carousel.ps-dragging{transition:none!important}
-.ps-carousel.ps-animate{transition:transform 0.4s cubic-bezier(0.23,1,0.32,1)}
-.ps-slide{min-width:80%;flex-shrink:0;padding:0 7px;transform:translateX(55px);opacity:0;transition:transform 0.7s var(--ease),opacity 0.7s var(--ease)}
-.ps-slide.in{transform:none;opacity:1}
+.ps-slide{min-width:80%;flex-shrink:0;box-sizing:border-box;padding:0 7px;opacity:0;transition:opacity 0.7s var(--ease)}
+.ps-slide.in{opacity:1}
 @media(max-width:600px){.ps-carousel{padding:0}.ps-slide{min-width:100%;padding:0 16px}}
 .ps-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;box-shadow:0 18px 56px rgba(0,0,0,0.42);display:block;cursor:pointer;transition:transform 0.3s var(--ease)}
 .ps-slide img:active{transform:scale(0.99)}
@@ -1348,7 +1348,7 @@ function loadPreshoot(d) {
       </div>`).join('');
 
     const dots = document.getElementById('psDots');
-    dots.innerHTML = photos.map((_, i) => `<div class="ps-dot${i===0?' active':''}"></div>`).join('');
+    dots.innerHTML = photos.map((_, i) => `<div class="ps-dot${i===0?' active':''}" onclick="psGoTo(${i})"></div>`).join('');
     psUpdateCounter(0, photos.length);
 
     // Slide-in animation on scroll into view
@@ -1359,8 +1359,9 @@ function loadPreshoot(d) {
       }
     }, { threshold: 0.15 });
     obs.observe(document.getElementById('preshootSection'));
+
     initPreshootPaging(carousel, photos.length);
-    playPreshootHint(carousel, photos.length);
+    setTimeout(() => playPreshootHint(carousel, photos.length), 1500);
   } else {
     document.getElementById('psWrap').style.display = 'none';
     document.getElementById('psDots').style.display = 'none';
@@ -1380,103 +1381,118 @@ function loadPreshoot(d) {
     }
   }
 }
-function psGoTo(idx) {
-  const carousel = document.getElementById('psCarousel');
-  if (carousel && carousel._psGoTo) carousel._psGoTo(idx);
-}
-function psUpdateCounter(idx, total) {
-  const el = document.getElementById('psCounter');
-  if (el) el.textContent = `${idx + 1} / ${total}`;
-}
 
-// ─── PRESHOOT ONE-SWIPE-ONE-SLIDE PAGING ───
+let psCurrentIndex = 0;
+
 function initPreshootPaging(carouselEl, slideCount) {
-  if (!carouselEl || slideCount <= 1) return;
+  if (!carouselEl) return;
+  psCurrentIndex = 0;
+  if (slideCount <= 1) {
+    carouselEl.classList.add('ps-ready');
+    return;
+  }
 
-  let currentIndex = 0;
-  let startX = 0;
-  let currentTranslate = 0;
-  let isDragging = false;
-  let slideWidth = 0;
+  let startX = 0, startY = 0, baseTranslate = 0, isDragging = false, slideWidth = 0, lockedAxis = null;
 
   function getSlideWidth() {
     const slide = carouselEl.querySelector('.ps-slide');
-    if (!slide) return 0;
-    return slide.getBoundingClientRect().width;
+    return slide ? slide.getBoundingClientRect().width : 0;
   }
 
-  function updatePosition(animate) {
+  function setTransform(px, animate) {
+    carouselEl.classList.toggle('ps-ready', animate);
+    carouselEl.classList.toggle('ps-dragging', !animate);
+    carouselEl.style.transform = `translateX(${px}px)`;
+  }
+
+  function goTo(index, animate) {
+    index = Math.max(0, Math.min(slideCount - 1, index));
+    psCurrentIndex = index;
     slideWidth = getSlideWidth();
-    const offset = -currentIndex * slideWidth;
-    carouselEl.classList.toggle('ps-animate', animate);
-    carouselEl.classList.remove('ps-dragging');
-    carouselEl.style.transform = `translateX(${offset}px)`;
-    updateDotsAndCounter(currentIndex);
+    setTransform(-index * slideWidth, animate !== false);
+    psUpdateCounter(index, slideCount);
+    const dots = document.querySelectorAll('.ps-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
-  function onStart(x) {
+  function onStart(x, y) {
     isDragging = true;
+    lockedAxis = null;
     startX = x;
+    startY = y;
     slideWidth = getSlideWidth();
-    currentTranslate = -currentIndex * slideWidth;
-    carouselEl.classList.add('ps-dragging');
-    carouselEl.classList.remove('ps-animate');
+    baseTranslate = -psCurrentIndex * slideWidth;
+    carouselEl.classList.remove('ps-ready');
   }
 
-  function onMove(x) {
+  function onMove(x, y, evt) {
     if (!isDragging) return;
     const dx = x - startX;
-    carouselEl.style.transform = `translateX(${currentTranslate + dx}px)`;
+    const dy = y - startY;
+    if (lockedAxis === null) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    }
+    if (lockedAxis === 'y') return;
+    if (evt && evt.cancelable) evt.preventDefault();
+    carouselEl.classList.add('ps-dragging');
+    carouselEl.style.transform = `translateX(${baseTranslate + dx}px)`;
   }
 
   function onEnd(x) {
     if (!isDragging) return;
     isDragging = false;
+    if (lockedAxis !== 'x') { lockedAxis = null; return; }
     const dx = x - startX;
     const threshold = Math.min(60, slideWidth * 0.15);
-    if (dx < -threshold && currentIndex < slideCount - 1) currentIndex++;
-    else if (dx > threshold && currentIndex > 0) currentIndex--;
-    updatePosition(true);
+    let next = psCurrentIndex;
+    if (dx < -threshold && psCurrentIndex < slideCount - 1) next = psCurrentIndex + 1;
+    else if (dx > threshold && psCurrentIndex > 0) next = psCurrentIndex - 1;
+    goTo(next, true);
+    lockedAxis = null;
   }
 
-  carouselEl.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
-  carouselEl.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); onMove(e.touches[0].clientX); } }, { passive: false });
+  carouselEl.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  carouselEl.addEventListener('touchmove', e => onMove(e.touches[0].clientX, e.touches[0].clientY, e), { passive: false });
   carouselEl.addEventListener('touchend', e => onEnd(e.changedTouches[0].clientX), { passive: true });
-  carouselEl.addEventListener('mousedown', e => onStart(e.clientX));
-  window.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
+
+  carouselEl.addEventListener('mousedown', e => { onStart(e.clientX, e.clientY); e.preventDefault(); });
+  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY, e));
   window.addEventListener('mouseup', e => onEnd(e.clientX));
-  window.addEventListener('resize', () => updatePosition(false), { passive: true });
 
-  const dots = carouselEl.parentElement.querySelectorAll('.ps-dot');
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => { currentIndex = i; updatePosition(true); });
-  });
+  window.addEventListener('resize', () => goTo(psCurrentIndex, false), { passive: true });
 
-  carouselEl._psGoTo = (i) => { currentIndex = i; updatePosition(true); };
+  window._psGoTo = (i) => goTo(i, true);
+  window._psSlideCount = slideCount;
 
-  updatePosition(false);
+  requestAnimationFrame(() => goTo(0, false));
+}
 
-  function updateDotsAndCounter(index) {
-    const allDots = carouselEl.parentElement.querySelectorAll('.ps-dot');
-    allDots.forEach((d, i) => d.classList.toggle('active', i === index));
-    const counter = carouselEl.parentElement.querySelector('.ps-counter');
-    if (counter) counter.textContent = `${index + 1} / ${slideCount}`;
-  }
+function psGoTo(idx) {
+  if (window._psGoTo) window._psGoTo(idx);
+}
+
+function psUpdateCounter(idx, total) {
+  const el = document.getElementById('psCounter');
+  if (el) el.textContent = `${idx + 1} / ${total}`;
 }
 
 function playPreshootHint(carouselEl, slideCount) {
   if (slideCount <= 1) return;
   const chevron = document.getElementById('psHintChevron');
+  const peekAmount = 38;
+
+  if (chevron) chevron.classList.add('show');
+  carouselEl.classList.add('ps-ready');
+  carouselEl.classList.remove('ps-dragging');
+  carouselEl.style.transform = `translateX(${-peekAmount}px)`;
+
   setTimeout(() => {
-    const peekAmount = 38;
-    if (chevron) chevron.classList.add('show');
-    carouselEl.classList.add('ps-animate');
-    carouselEl.style.transform = `translateX(${-peekAmount}px)`;
+    carouselEl.style.transform = `translateX(0px)`;
     setTimeout(() => {
-      carouselEl.style.transform = `translateX(0px)`;
-      setTimeout(() => { if (chevron) chevron.classList.remove('show'); }, 500);
-    }, 550);
-  }, 1500);
+      if (chevron) chevron.classList.remove('show');
+    }, 500);
+  }, 550);
 }
 
 // ─── LIGHTBOX ───
