@@ -652,7 +652,6 @@ select.form-input{cursor:pointer}
             <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Kalyanam</div><div class="theme-opt-sub">Tamil</div></div>
             <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3EC,#D8B57A)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
             <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Ariya Sinhala</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Kandyan</div></div>
-            <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1C1510,#8B1A1A,#C9A84C)"></div><div class="theme-opt-name" style="color:#C9A84C">Vintage Mood</div><div class="theme-opt-sub" style="color:#C9A84C;opacity:0.6">Wax Seal</div></div>
           </div>
         </div>
         <!-- TG Exclusive -->
@@ -749,7 +748,7 @@ select.form-input{cursor:pointer}
       <div class="form-grid" style="grid-template-columns:1fr">
         <div class="form-group"><label class="form-label">Couple Name *</label><input class="form-input" id="tCoupleName" type="text" placeholder="e.g. Ayasha & Rohan"></div>
         <div class="form-group"><label class="form-label">Caption / Review (optional)</label><input class="form-input" id="tCaption" type="text" placeholder="e.g. Beautiful invitation!"></div>
-        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option><option value="Ariya Sinhala">Ariya Sinhala</option><option value="Vintage Mood">Vintage Mood</option><option value="Udarata Sinhala TG">Udarata Sinhala · TG Wedding Films</option><option value="Western Luxury TG">Western Luxury · TG Wedding Films</option><option value="Kalyanam TG">Kalyanam · TG Wedding Films</option><option value="TG Premium">TG Premium · Cinema Noir</option></select></div>
+        <div class="form-group"><label class="form-label">Theme Used (optional)</label><select class="form-input" id="tTheme"><option value="">—</option><option value="Western Luxury">Western Luxury</option><option value="Udarata Sinhala">Udarata Sinhala</option><option value="Kalyanam">Kalyanam</option><option value="InviSend Ivory">InviSend Ivory</option><option value="Ariya Sinhala">Ariya Sinhala</option><option value="Udarata Sinhala TG">Udarata Sinhala · TG Wedding Films</option><option value="Western Luxury TG">Western Luxury · TG Wedding Films</option><option value="Kalyanam TG">Kalyanam · TG Wedding Films</option><option value="TG Premium">TG Premium · Cinema Noir</option></select></div>
       </div>
     </div>
     <div class="form-section">
@@ -933,8 +932,8 @@ function updateStats() {
   const totalViews = allInvitations.reduce((sum, inv) => sum + (inv.view_count || 0), 0);
   document.getElementById('statTotalViews').textContent = totalViews.toLocaleString();
 }
-const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Vintage Mood', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'TG Premium' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#C9A84C', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C9A84C' };
+const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'TG Premium' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C9A84C' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
