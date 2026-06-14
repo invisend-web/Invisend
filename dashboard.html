@@ -273,6 +273,9 @@ select.form-input{cursor:pointer}
 .upload-del-btn{position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(255,69,58,0.9);border-radius:50%;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:transform 0.15s;line-height:1}
 .upload-del-btn:active{transform:scale(0.88)}
 .upload-del-btn.confirming{font-size:8.5px;letter-spacing:-0.01em;background:var(--red)}
+.upload-recrop-btn{position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:5px 11px;color:#fff;font-family:var(--font);font-size:11px;font-weight:500;cursor:pointer;transition:background 0.2s;z-index:2}
+.upload-recrop-btn:hover{background:rgba(0,0,0,0.8)}
+.upload-recrop-btn svg{flex-shrink:0}
 .upload-status-lbl{position:absolute;bottom:7px;left:7px;background:rgba(0,0,0,0.62);color:#fff;font-size:9.5px;padding:3px 9px;border-radius:10px;pointer-events:none;font-family:var(--font);letter-spacing:0.02em}
 /* MUSIC WAVE STATE */
 .music-wave-bars{display:flex;align-items:flex-end;justify-content:center;gap:2px;height:28px}
@@ -1212,6 +1215,7 @@ function markUploadArea(areaId, type, fileName) {
   const area = document.getElementById(areaId); if (!area) return;
   area.classList.add('has-media');
   area.querySelector('.upload-del-btn')?.remove();
+  area.querySelector('.upload-recrop-btn')?.remove();
   area.querySelector('.upload-status-lbl')?.remove();
   area.querySelector('.music-wave-bars')?.remove();
   if (type === 'music') {
@@ -1222,6 +1226,19 @@ function markUploadArea(areaId, type, fileName) {
   const lbl = document.createElement('div'); lbl.className = 'upload-status-lbl';
   lbl.textContent = type === 'music' ? (fileName || 'Music uploaded') : 'Uploaded ✓';
   area.appendChild(lbl);
+
+  // Re-crop button - only for croppable image types
+  const croppableTypes = ['swipeA', 'swipeB', 'couple', 'background'];
+  if (croppableTypes.includes(type)) {
+    const previewId = area.querySelector('.upload-preview')?.id;
+    const recrop = document.createElement('button');
+    recrop.className = 'upload-recrop-btn';
+    recrop.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/></svg> Re-crop';
+    recrop.title = 'Adjust crop on existing photo';
+    recrop.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openRecropModal(type, areaId, previewId); };
+    area.appendChild(recrop);
+  }
+
   const del = document.createElement('button'); del.className = 'upload-del-btn'; del.innerHTML = '&#x2715;'; del.title = 'Remove';
   del.onclick = (e) => { e.preventDefault(); e.stopPropagation(); clearUploadArea(areaId, type); };
   area.appendChild(del);
@@ -1697,6 +1714,63 @@ function openCropModal(file, type, callback) {
     };
   };
   reader.readAsDataURL(file);
+}
+
+// ─── RE-CROP EXISTING IMAGE (overwrite in place) ───
+async function openRecropModal(type, areaId, previewId) {
+  const hiddenId = type === 'swipeA' ? 'fSwipeA' : type === 'swipeB' ? 'fSwipeB' : type === 'couple' ? 'fCouplePhoto' : type === 'background' ? 'fBgImage' : null;
+  if (!hiddenId) return;
+  const currentUrl = document.getElementById(hiddenId)?.value;
+  if (!currentUrl) { showToast('No existing image to re-crop', 'error'); return; }
+
+  // Extract storage path from public URL
+  // e.g. https://xxx.supabase.co/storage/v1/object/public/images/swipeA/171234.jpg
+  // -> swipeA/171234.jpg
+  const marker = '/object/public/images/';
+  const idx = currentUrl.indexOf(marker);
+  if (idx === -1) { showToast('Could not determine file path for re-crop', 'error'); return; }
+  const storagePath = currentUrl.substring(idx + marker.length).split('?')[0];
+
+  showLoading();
+  try {
+    // Fetch existing image as blob to avoid tainted canvas (CORS)
+    const resp = await fetch(currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { mode: 'cors' });
+    if (!resp.ok) throw new Error('Could not load existing image');
+    const blob = await resp.blob();
+    const ext = storagePath.split('.').pop() || 'jpg';
+    const file = new File([blob], `recrop.${ext}`, { type: blob.type || 'image/jpeg' });
+    hideLoading();
+
+    openCropModal(file, type, async (croppedFile) => {
+      showLoading();
+      try {
+        // Overwrite the SAME storage path - no new file, no extra space
+        const { error } = await sb.storage.from('images').upload(storagePath, croppedFile, { upsert: true });
+        if (error) throw error;
+
+        // Cache-bust the URL so the new crop shows immediately
+        const baseUrl = currentUrl.split('?')[0];
+        const freshUrl = baseUrl + '?v=' + Date.now();
+
+        document.getElementById(hiddenId).value = baseUrl;
+        if (previewId) {
+          const p = document.getElementById(previewId);
+          if (p) { p.src = freshUrl; p.style.display = 'block'; }
+        }
+        if (type === 'background') {
+          const bgPrev = document.getElementById('previewBgImage');
+          if (bgPrev) bgPrev.src = freshUrl;
+        }
+        showToast('Photo re-cropped and saved', 'success');
+      } catch (e) {
+        showToast('Re-crop failed: ' + e.message, 'error');
+      }
+      hideLoading();
+    });
+  } catch (e) {
+    hideLoading();
+    showToast('Could not load existing image for re-crop: ' + e.message, 'error');
+  }
 }
 
 function setCropRatio(x, y, btn) {
