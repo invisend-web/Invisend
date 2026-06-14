@@ -1566,13 +1566,17 @@ function render(d) {
 }
 
 function setImg(id, url) {
-  if (!url) return;
   const el = document.getElementById(id);
   if (!el) return;
+  if (!url) {
+    // No image provided — still mark loaded so
+    // the element doesn't stay invisible forever
+    el.classList.add('loaded');
+    return;
+  }
   el.onload = function() { el.classList.add('loaded'); };
   el.onerror = function() { el.classList.add('loaded'); };
   el.src = url;
-  if (el.complete && el.naturalWidth > 0) { el.classList.add('loaded'); }
 }
 
 function applyBackgroundImage(url) {
