@@ -2214,10 +2214,6 @@ function initOliveReveal(data) {
       scratchHint.classList.add('fade');
     }
 
-    if (pct > 0.10 && !revealed) {
-      revealed = true;
-      petalDissolve();
-    }
   }
 
   function petalDissolve() {
@@ -2265,6 +2261,7 @@ function initOliveReveal(data) {
   }
 
   let drawing = false;
+  let strokeCount = 0;
   function startDraw(e) {
     drawing = true;
     const p = getPoint(e);
@@ -2281,8 +2278,14 @@ function initOliveReveal(data) {
     e.preventDefault();
   }
   function endDraw() {
+    if (!drawing) return;
     drawing = false;
     lastPoint = null;
+    strokeCount++;
+    if (strokeCount >= 3 && !revealed) {
+      revealed = true;
+      petalDissolve();
+    }
   }
 
   canvas.addEventListener('mousedown', startDraw);
