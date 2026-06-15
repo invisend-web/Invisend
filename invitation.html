@@ -2271,6 +2271,7 @@ function initOliveReveal(data) {
     e.preventDefault();
     if (strokeCount >= 3 && !revealed) {
       revealed = true;
+      canvas.style.pointerEvents = 'none';
       setTimeout(petalDissolve, 300);
     }
   }
