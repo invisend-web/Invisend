@@ -2264,10 +2264,15 @@ function initOliveReveal(data) {
   let strokeCount = 0;
   function startDraw(e) {
     drawing = true;
+    strokeCount++;
     const p = getPoint(e);
     lastPoint = null;
     scratchAt(p.x, p.y);
     e.preventDefault();
+    if (strokeCount >= 3 && !revealed) {
+      revealed = true;
+      setTimeout(petalDissolve, 300);
+    }
   }
   function moveDraw(e) {
     if (!drawing) return;
@@ -2278,14 +2283,8 @@ function initOliveReveal(data) {
     e.preventDefault();
   }
   function endDraw() {
-    if (!drawing) return;
     drawing = false;
     lastPoint = null;
-    strokeCount++;
-    if (strokeCount >= 3 && !revealed) {
-      revealed = true;
-      petalDissolve();
-    }
   }
 
   canvas.addEventListener('mousedown', startDraw);
