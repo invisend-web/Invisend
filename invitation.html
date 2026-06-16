@@ -2155,95 +2155,84 @@ function initOliveReveal(data) {
     return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
   }
 
-  function scratchAt(x, y) {
-    ctx.beginPath();
-    if (lastPoint) {
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.lineWidth = 220;
-      ctx.moveTo(lastPoint.x, lastPoint.y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    }
-    ctx.arc(x, y, 110, 0, Math.PI * 2);
-    ctx.fill();
-    lastPoint = { x, y };
-    checkProgress();
+  function triggerReveal(x, y) {
+    if (revealed) return;
+    revealed = true;
+    smokeDissipate(x, y);
   }
 
-  function checkProgress() {
+  function smokeDissipate(originX, originY) {
     const w = canvas.width, h = canvas.height;
-    const px = ctx.getImageData(0, 0, w, h).data;
-    let cleared = 0, total = 0;
-    const sample = 16;
-    for (let i = 0; i < px.length; i += 4 * sample) {
-      total++;
-      if (px[i + 3] < 30) cleared++;
-    }
-    const pct = cleared / total;
-    if (pct > 0.09 && !revealed) {
-      revealed = true;
-      dissolveAndReveal();
-    }
-  }
+    const puffs = [];
+    const PUFF_COUNT = 26;
+    const smokeColors = ['rgba(245,241,228,', 'rgba(138,155,110,', 'rgba(201,163,104,', 'rgba(230,224,204,'];
 
-  function dissolveAndReveal() {
-    const w = canvas.width, h = canvas.height;
-    const cx = w / 2, cy = h / 2;
-    const maxR = Math.sqrt(cx * cx + cy * cy) * 1.2;
+    for (let i = 0; i < PUFF_COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * Math.max(w, h) * 0.65;
+      puffs.push({
+        x: originX + Math.cos(angle) * dist * 0.15,
+        y: originY + Math.sin(angle) * dist * 0.15,
+        targetX: originX + Math.cos(angle) * dist,
+        targetY: originY + Math.sin(angle) * dist,
+        radius: 40 + Math.random() * 90,
+        delay: Math.random() * 250,
+        color: smokeColors[i % smokeColors.length],
+        wobble: Math.random() * Math.PI * 2
+      });
+    }
+
     const start = performance.now();
-    const duration = 900;
+    const duration = 1300;
 
     function frame(now) {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const r = maxR * eased;
+      const elapsed = now - start;
       ctx.save();
       ctx.globalCompositeOperation = 'destination-out';
-      const grad = ctx.createRadialGradient(cx, cy, Math.max(0, r - 90), cx, cy, r);
-      grad.addColorStop(0, 'rgba(0,0,0,1)');
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fill();
+
+      let allDone = true;
+      puffs.forEach(p => {
+        const t = Math.max(0, Math.min(1, (elapsed - p.delay) / duration));
+        if (t < 1) allDone = false;
+        const eased = 1 - Math.pow(1 - t, 2.2);
+        const curX = p.x + (p.targetX - p.x) * eased + Math.sin(elapsed / 300 + p.wobble) * 6;
+        const curY = p.y + (p.targetY - p.y) * eased + Math.cos(elapsed / 260 + p.wobble) * 6;
+        const curRadius = p.radius * (0.4 + eased * 1.4);
+        const alpha = Math.sin(t * Math.PI) * 0.9 + (t > 0.7 ? (1 - t) * 2 : 0);
+
+        const grad = ctx.createRadialGradient(curX, curY, 0, curX, curY, curRadius);
+        grad.addColorStop(0, p.color + Math.min(1, Math.max(0, alpha)) + ')');
+        grad.addColorStop(1, p.color + '0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(curX, curY, curRadius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
       ctx.restore();
-      if (t < 1) {
+
+      if (!allDone) {
         requestAnimationFrame(frame);
       } else {
         ctx.clearRect(0, 0, w, h);
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
-        setTimeout(() => { namesLayer.style.opacity = '1'; }, 400);
+        setTimeout(() => {
+          namesLayer.style.opacity = '1';
+        }, 400);
         setTimeout(startNudgeLoop, 1400);
       }
     }
     requestAnimationFrame(frame);
   }
 
-  let drawing = false;
-  function startDraw(e) {
-    drawing = true;
-    lastPoint = null;
+  function handleTap(e) {
     const p = getPoint(e);
-    scratchAt(p.x, p.y);
-    e.preventDefault();
+    triggerReveal(p.x, p.y);
   }
-  function moveDraw(e) {
-    if (!drawing) return;
-    const p = getPoint(e);
-    scratchAt(p.x, p.y);
-    e.preventDefault();
-  }
-  function endDraw() { drawing = false; lastPoint = null; }
 
-  canvas.addEventListener('mousedown', startDraw);
-  canvas.addEventListener('mousemove', moveDraw);
-  canvas.addEventListener('mouseup', endDraw);
-  canvas.addEventListener('mouseleave', endDraw);
-  canvas.addEventListener('touchstart', startDraw, { passive: false });
-  canvas.addEventListener('touchmove', moveDraw, { passive: false });
-  canvas.addEventListener('touchend', endDraw);
+  canvas.addEventListener('mousedown', handleTap);
+  canvas.addEventListener('touchstart', handleTap, { passive: true });
 
   // ── Gentle repeating nudge — stops on first user scroll ──
   let nudgeRafId = null;
