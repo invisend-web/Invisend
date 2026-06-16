@@ -1185,7 +1185,6 @@ async function init() {
   try {
     const { data, error } = await sb.from('invitations').select('*').eq('slug', slug).eq('status', 'live').single();
     if (error || !data) { showErr(); return; }
-    if (data.expiry_date && new Date(data.expiry_date) < new Date()) { showErr(); return; }
     invData = data;
     applyTheme(data.template_id);
     handleThemeSpecificUI(data.template_id);
