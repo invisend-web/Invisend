@@ -671,6 +671,7 @@ select.form-input{cursor:pointer}
             <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a4020,#ffc61c)"></div><div class="theme-opt-name">Kalyanam</div><div class="theme-opt-sub">Tamil</div></div>
             <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3EC,#D8B57A)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
             <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Ariya Sinhala</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Kandyan</div></div>
+            <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FBF7EC,#8A9B6E)"></div><div class="theme-opt-name">Olive Cream</div><div class="theme-opt-sub">Botanical &amp; Light</div></div>
           </div>
         </div>
         <!-- TG Exclusive -->
@@ -995,8 +996,8 @@ function updateStats() {
   const totalViews = allInvitations.reduce((sum, inv) => sum + (inv.view_count || 0), 0);
   document.getElementById('statTotalViews').textContent = totalViews.toLocaleString();
 }
-const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'TG Premium' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C9A84C' };
+const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Olive Cream', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'TG Premium' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#8A9B6E', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C9A84C' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');

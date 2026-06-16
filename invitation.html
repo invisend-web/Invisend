@@ -109,6 +109,37 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .sound-btn{background:rgba(94,74,58,0.12);border-color:rgba(94,74,58,0.2)}
 [data-theme="4"] .sound-btn:hover{background:rgba(94,74,58,0.2)}
 [data-theme="4"] .sound-switch-track.muted{background:rgba(94,74,58,0.2)}
+[data-theme="6"] .sound-btn{background:rgba(94,111,71,0.12);border-color:rgba(94,111,71,0.2)}
+[data-theme="6"] .sound-btn:hover{background:rgba(94,111,71,0.2)}
+[data-theme="6"] .sound-switch-track.muted{background:rgba(94,111,71,0.2)}
+[data-theme="6"] .arena,
+[data-theme="6"] .couple-name-block,
+[data-theme="6"] .scroll-down-hint{display:none !important}
+[data-theme="6"] .olive-hero{display:block}
+/* OLIVE CREAM — normal document flow, no position:fixed anywhere */
+.olive-hero{display:none;position:relative;width:100%;height:100vh;overflow:hidden}
+@supports (height:100dvh){.olive-hero{height:100dvh}}
+.olive-bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#oliveCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;z-index:3}
+.leaf-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.leaf{position:absolute;top:0;left:0;will-change:transform;opacity:0.9}
+.leaf svg{display:block}
+.olive-names-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;opacity:0;transition:opacity 1s ease;padding-top:6%;z-index:5}
+.olive-couple-names{font-family:var(--font-display);font-size:clamp(36px,10vw,52px);font-style:italic;color:var(--text);line-height:1.2;text-align:center}
+.olive-couple-names em{color:var(--accent2);font-style:italic}
+.olive-nudge-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
+.olive-nudge-hint.show{opacity:1}
+.olive-nudge-hint span{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text2)}
+.olive-nudge-track{width:1px;height:26px;background:rgba(138,155,110,0.25);position:relative}
+.olive-nudge-chevron{position:absolute;top:0;left:50%;width:8px;height:8px;border-right:1.5px solid var(--accent2);border-bottom:1.5px solid var(--accent2);transform:translateX(-50%) rotate(45deg)}
+/* OLIVE CREAM — calendar widget */
+[data-theme="6"] .olive-calendar-wrap{display:block !important;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.olive-cal-month{font-family:var(--font-display);font-size:14px;letter-spacing:0.08em;color:var(--text2);text-align:center;margin-bottom:12px}
+.olive-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:280px;margin:0 auto}
+.olive-cal-dow{font-family:var(--font-ui);font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text3);text-align:center;padding-bottom:4px}
+.olive-cal-day{font-family:var(--font-ui);font-size:12px;color:var(--text2);text-align:center;padding:6px 0;border-radius:50%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+.olive-cal-day.empty{visibility:hidden}
+.olive-cal-day.marked{background:var(--accent2);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(201,163,104,0.4)}
 /* HERO */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 0 48px;position:relative;overflow:hidden}
 /* Prevent Chrome Android URL bar layout jump */
@@ -859,6 +890,23 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
+    <!-- OLIVE CREAM (theme 6) hero - normal document flow, no position:fixed anywhere -->
+    <div class="olive-hero" id="oliveHero">
+      <img class="olive-bg-image" id="oliveBgImage" src="" alt="">
+      <canvas id="oliveCanvas"></canvas>
+      <div class="leaf-layer" id="oliveLeafLayer"></div>
+      <div class="olive-names-layer" id="oliveNamesLayer">
+        <div class="name-deco">
+          <div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div>
+        </div>
+        <div class="olive-couple-names" id="oliveCoupleNames"></div>
+        <div class="couple-tagline">Together Forever</div>
+      </div>
+      <div class="olive-nudge-hint" id="oliveNudgeHint">
+        <div class="olive-nudge-track"><div class="olive-nudge-chevron"></div></div>
+        <span>Scroll to Continue</span>
+      </div>
+    </div>
 
     <div class="arena" id="arena">
       <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
@@ -968,6 +1016,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
           <div class="countdown-sep">·</div>
           <div class="countdown-unit"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-unit-label">Secs</div></div>
         </div>
+      </div>
+      <div class="olive-calendar-wrap" id="oliveCalendarWrap" style="display:none">
+        <div class="olive-cal-month" id="oliveCalMonth"></div>
+        <div class="olive-cal-grid" id="oliveCalGrid"></div>
       </div>
     </div>
   </section>
@@ -1261,6 +1313,8 @@ function render(d) {
   if (parseInt(d.template_id) === 10) {
     initCinema(d);
   }
+  initOliveReveal(d);
+  renderOliveCalendar(d.wedding_date);
 }
 
 function setImg(id, url) {
@@ -1975,6 +2029,278 @@ function tgDemoHint() {
   pulse();
 }
 
+// ══════════════════════════════════════
+// OLIVE CREAM (theme 6) — SCRATCH REVEAL
+// Normal document flow — no position:fixed
+// ══════════════════════════════════════
+function isOliveTheme() {
+  return parseInt(document.documentElement.getAttribute('data-theme')) === 6;
+}
+
+function initOliveReveal(data) {
+  if (!isOliveTheme()) return;
+
+  const hero = document.getElementById('oliveHero');
+  const bgImage = document.getElementById('oliveBgImage');
+  const canvas = document.getElementById('oliveCanvas');
+  const ctx = canvas.getContext('2d');
+  const namesLayer = document.getElementById('oliveNamesLayer');
+  const namesEl = document.getElementById('oliveCoupleNames');
+  const nudgeHint = document.getElementById('oliveNudgeHint');
+  const leafLayer = document.getElementById('oliveLeafLayer');
+
+  if (data.background_image_url) {
+    bgImage.src = data.background_image_url;
+  }
+
+  if (data.couple_name) {
+    const parts = data.couple_name.split('&').map(s => s.trim());
+    if (parts.length === 2) {
+      namesEl.innerHTML = parts[0] + ' <em>&amp;</em> ' + parts[1];
+    } else {
+      namesEl.textContent = data.couple_name;
+    }
+  }
+
+  let revealed = false;
+  let lastPoint = null;
+  let userScrolled = false;
+
+  // ── Leaf particles ──
+  function leafSVG(color, size) {
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="' + color + '" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8 6 4 10 4 15a8 8 0 0016 0c0-5-4-9-8-13z"/></svg>';
+  }
+  const leafColors = ['#8A9B6E', '#A8BC8A', '#6E8054', '#C9A368'];
+  const leaves = [];
+  const LEAF_COUNT = 8;
+
+  function initLeaves() {
+    const rect = hero.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    for (let i = 0; i < LEAF_COUNT; i++) {
+      const el = document.createElement('div');
+      el.className = 'leaf';
+      const size = 14 + Math.random() * 14;
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.innerHTML = leafSVG(leafColors[i % leafColors.length], size);
+      const baseX = Math.random() * w;
+      const baseY = Math.random() * h;
+      leafLayer.appendChild(el);
+      leaves.push({
+        el, baseX, baseY,
+        rot: Math.random() * 360,
+        swaySpeed: 0.4 + Math.random() * 1.0,
+        swayPhase: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 18
+      });
+    }
+    requestAnimationFrame(animateLeaves);
+  }
+
+  function animateLeaves() {
+    const t = Date.now() / 1000;
+    leaves.forEach(leaf => {
+      const swayX = Math.sin(t * leaf.swaySpeed + leaf.swayPhase) * 14;
+      const swayY = Math.cos(t * leaf.swaySpeed * 0.7 + leaf.swayPhase) * 9;
+      const rot = leaf.rot + t * leaf.rotSpeed;
+      leaf.el.style.transform = 'translate(' + (leaf.baseX + swayX) + 'px,' + (leaf.baseY + swayY) + 'px) rotate(' + rot + 'deg)';
+    });
+    requestAnimationFrame(animateLeaves);
+  }
+
+  // ── Canvas sizing — uses hero element's own box,
+  //    no fixed/viewport tricks needed ──
+  function sizeCanvas() {
+    const rect = hero.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    drawOverlay();
+  }
+
+  function drawOverlay() {
+    const w = canvas.width, h = canvas.height;
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#F5F1E4');
+    grad.addColorStop(0.5, '#EFEBDA');
+    grad.addColorStop(1, '#E6E4CC');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(138,155,110,0.06)';
+    for (let i = 0; i < 200; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.random() * 1.3 + 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'destination-out';
+  }
+
+  window.addEventListener('resize', sizeCanvas, { passive: true });
+  bgImage.onload = sizeCanvas;
+  requestAnimationFrame(() => {
+    sizeCanvas();
+    initLeaves();
+  });
+
+  function getPoint(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+  }
+
+  function triggerReveal(x, y) {
+    if (revealed) return;
+    revealed = true;
+    smokeDissipate(x, y);
+  }
+
+  function smokeDissipate(originX, originY) {
+    const w = canvas.width, h = canvas.height;
+    const puffs = [];
+    const PUFF_COUNT = 26;
+    const smokeColors = ['rgba(245,241,228,', 'rgba(138,155,110,', 'rgba(201,163,104,', 'rgba(230,224,204,'];
+
+    for (let i = 0; i < PUFF_COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * Math.max(w, h) * 0.65;
+      puffs.push({
+        x: originX + Math.cos(angle) * dist * 0.15,
+        y: originY + Math.sin(angle) * dist * 0.15,
+        targetX: originX + Math.cos(angle) * dist,
+        targetY: originY + Math.sin(angle) * dist,
+        radius: 40 + Math.random() * 90,
+        delay: Math.random() * 250,
+        color: smokeColors[i % smokeColors.length],
+        wobble: Math.random() * Math.PI * 2
+      });
+    }
+
+    const start = performance.now();
+    const duration = 1300;
+
+    function frame(now) {
+      const elapsed = now - start;
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+
+      let allDone = true;
+      puffs.forEach(p => {
+        const t = Math.max(0, Math.min(1, (elapsed - p.delay) / duration));
+        if (t < 1) allDone = false;
+        const eased = 1 - Math.pow(1 - t, 2.2);
+        const curX = p.x + (p.targetX - p.x) * eased + Math.sin(elapsed / 300 + p.wobble) * 6;
+        const curY = p.y + (p.targetY - p.y) * eased + Math.cos(elapsed / 260 + p.wobble) * 6;
+        const curRadius = p.radius * (0.4 + eased * 1.4);
+        const alpha = Math.sin(t * Math.PI) * 0.9 + (t > 0.7 ? (1 - t) * 2 : 0);
+
+        const grad = ctx.createRadialGradient(curX, curY, 0, curX, curY, curRadius);
+        grad.addColorStop(0, p.color + Math.min(1, Math.max(0, alpha)) + ')');
+        grad.addColorStop(1, p.color + '0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(curX, curY, curRadius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.restore();
+
+      if (!allDone) {
+        requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0, 0, w, h);
+        bgImage.style.transition = 'transform 8s ease-out';
+        bgImage.style.transform = 'scale(1.06)';
+        setTimeout(() => {
+          namesLayer.style.opacity = '1';
+        }, 400);
+        setTimeout(startNudgeLoop, 1400);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function handleTap(e) {
+    const p = getPoint(e);
+    triggerReveal(p.x, p.y);
+  }
+
+  canvas.addEventListener('mousedown', handleTap);
+  canvas.addEventListener('touchstart', handleTap, { passive: true });
+
+  // ── Gentle repeating nudge — stops on first user scroll ──
+  let nudgeRafId = null;
+  function markUserScrolled() {
+    if (userScrolled) return;
+    userScrolled = true;
+    nudgeHint.classList.remove('show');
+    if (nudgeRafId) cancelAnimationFrame(nudgeRafId);
+    hero.style.transform = '';
+    window.removeEventListener('scroll', onAnyScroll);
+    window.removeEventListener('wheel', onAnyScroll);
+    window.removeEventListener('touchmove', onAnyScroll);
+  }
+  function onAnyScroll() { markUserScrolled(); }
+  window.addEventListener('scroll', onAnyScroll, { passive: true });
+  window.addEventListener('wheel', onAnyScroll, { passive: true });
+  window.addEventListener('touchmove', onAnyScroll, { passive: true });
+
+  function startNudgeLoop() {
+    if (userScrolled) return;
+    nudgeHint.classList.add('show');
+    let cycle = 0;
+    const cycleDuration = 2600;
+    const pauseDuration = 1800;
+
+    function loop(now) {
+      if (userScrolled) return;
+      if (cycle === 0) cycle = now;
+      const elapsed = (now - cycle) % (cycleDuration + pauseDuration);
+      if (elapsed < cycleDuration) {
+        const t = elapsed / cycleDuration;
+        const eased = Math.sin(t * Math.PI);
+        hero.style.transform = 'translateY(-' + (eased * 36) + 'px)';
+      } else {
+        hero.style.transform = 'translateY(0px)';
+      }
+      nudgeRafId = requestAnimationFrame(loop);
+    }
+    nudgeRafId = requestAnimationFrame(loop);
+  }
+}
+
+function renderOliveCalendar(weddingDateStr) {
+  if (!isOliveTheme() || !weddingDateStr) return;
+  const wrap = document.getElementById('oliveCalendarWrap');
+  const monthEl = document.getElementById('oliveCalMonth');
+  const gridEl = document.getElementById('oliveCalGrid');
+  if (!wrap || !monthEl || !gridEl) return;
+
+  const weddingDate = new Date(weddingDateStr);
+  const year = weddingDate.getFullYear();
+  const month = weddingDate.getMonth();
+  const dayOfMonth = weddingDate.getDate();
+
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthEl.textContent = monthNames[month] + ' ' + year;
+
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let html = '';
+  ['S','M','T','W','T','F','S'].forEach(function(d) {
+    html += '<div class="olive-cal-dow">' + d + '</div>';
+  });
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    html += '<div class="olive-cal-day empty"></div>';
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const markedClass = (d === dayOfMonth) ? ' marked' : '';
+    html += '<div class="olive-cal-day' + markedClass + '">' + d + '</div>';
+  }
+  gridEl.innerHTML = html;
+}
 
 /* ── THEME 10: CINEMA NOIR REVEAL ── */
 let cinemaDone = false;
