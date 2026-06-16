@@ -161,7 +161,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 #olivePersistNames.active{display:flex}
 #olivePersistNames.show{opacity:1;transition:opacity 1.5s ease 0.1s}
 /* Theme 6: canvas and leaves still fixed from inside hero */
-[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:auto}
+[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:auto;overflow:visible}
 [data-theme="6"] .hero-tag{display:none}
 [data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible;z-index:auto}
 [data-theme="6"] #oliveCanvas{position:fixed;inset:0;z-index:3}
@@ -2150,6 +2150,13 @@ function initOliveReveal(data) {
   const leafLayer = document.getElementById('oliveLeafLayer');
   const persistBg = document.getElementById('olivePersistBg');
   const persistNames = document.getElementById('olivePersistNames');
+
+  // Hoist fixed elements to body — escapes hero's overflow:hidden and any stacking context
+  document.body.appendChild(canvas);
+  document.body.appendChild(leafLayer);
+  document.body.appendChild(scratchHint);
+  document.body.appendChild(progressRing);
+  document.body.appendChild(scrollHint);
 
   if (data.background_image_url) {
     persistBg.style.backgroundImage = `url('${data.background_image_url}')`;
