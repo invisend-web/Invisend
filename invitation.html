@@ -2160,12 +2160,12 @@ function initOliveReveal(data) {
     if (lastPoint) {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.lineWidth = 130;
+      ctx.lineWidth = 220;
       ctx.moveTo(lastPoint.x, lastPoint.y);
       ctx.lineTo(x, y);
       ctx.stroke();
     }
-    ctx.arc(x, y, 65, 0, Math.PI * 2);
+    ctx.arc(x, y, 110, 0, Math.PI * 2);
     ctx.fill();
     lastPoint = { x, y };
     checkProgress();
@@ -2181,7 +2181,7 @@ function initOliveReveal(data) {
       if (px[i + 3] < 30) cleared++;
     }
     const pct = cleared / total;
-    if (pct > 0.18 && !revealed) {
+    if (pct > 0.09 && !revealed) {
       revealed = true;
       dissolveAndReveal();
     }
