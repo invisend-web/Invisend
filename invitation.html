@@ -153,15 +153,15 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
 .olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
 @media(max-width:600px){.olive-hero{height:100dvh}}
-/* Theme 6: BG/canvas/names/leaves are fixed to viewport; content scrolls over them */
-[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0}
+/* Theme 6: olive-hero is the single fixed full-screen layer; children are absolute inside it */
+[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;overflow:visible;z-index:auto}
 [data-theme="6"] .hero-tag{display:none}
-[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible}
-[data-theme="6"] .olive-bg-image{position:fixed;inset:0;width:100%;height:100%;z-index:1}
-[data-theme="6"] .olive-names-layer{position:fixed;inset:0;width:100%;height:100%;z-index:2}
-[data-theme="6"] #oliveCanvas{position:fixed;inset:0;z-index:3}
-[data-theme="6"] .leaf-layer{position:fixed;inset:0;z-index:4}
-[data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:fixed;z-index:5}
+[data-theme="6"] .olive-hero{display:block;position:fixed;inset:0;width:100%;height:100%;top:0;left:0;transform:none;overflow:hidden;z-index:1;margin:0}
+[data-theme="6"] .olive-bg-image{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+[data-theme="6"] .olive-names-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+[data-theme="6"] #oliveCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:4;cursor:grab;touch-action:none}
+[data-theme="6"] .leaf-layer{position:absolute;inset:0;z-index:5;overflow:hidden}
+[data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:absolute;z-index:6}
 [data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:10;background:var(--bg)}
 /* Ken Burns zoom on BG image after reveal */
 @keyframes oliveBgZoom{from{transform:scale(1.1)}to{transform:scale(1.0)}}
