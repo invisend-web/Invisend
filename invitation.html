@@ -1205,7 +1205,7 @@ async function init() {
     if (loaderTextEl) loaderTextEl.textContent = 'Preparing your invitation';
     const minTime = new Promise(resolve => setTimeout(resolve, 800));
     Promise.all([preloadCriticalImages(data), minTime]).then(() => { hideLoader(); });
-  } catch (e) { showErr(); }
+  } catch (e) { console.error('InviSend init error:', e); showErr(); }
 }
 
 function applyTheme(t) { document.documentElement.setAttribute('data-theme', t || 1); }
@@ -2070,7 +2070,7 @@ function initOliveReveal(data) {
   const brideFirst = (data.bride_name || (data.couple_name || '').split('&')[0] || '').trim();
   const groomFirst = (data.groom_name || (data.couple_name || '').split('&')[1] || '').trim();
   if (brideFirst && groomFirst) {
-    namesEl.innerHTML = `${esc(brideFirst)} <em>&amp;</em> ${esc(groomFirst)}`;
+    namesEl.innerHTML = `${brideFirst} <em>&amp;</em> ${groomFirst}`;
   } else if (data.couple_name) {
     namesEl.textContent = data.couple_name;
   }
