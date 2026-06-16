@@ -136,16 +136,16 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-scratch-hint svg{width:30px;height:30px;opacity:0.8;animation:oliveSwipeHint 1.6s ease-in-out infinite}
 @keyframes oliveSwipeHint{0%{transform:translateX(-16px);opacity:0.3}50%{transform:translateX(16px);opacity:1}100%{transform:translateX(-16px);opacity:0.3}}
 .olive-scratch-hint.fade{opacity:0}
-.olive-scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transition:opacity 0.8s ease;pointer-events:none;z-index:6}
+.olive-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;opacity:0;transition:opacity 1s ease;pointer-events:none;z-index:5}
 .olive-scroll-hint.show{opacity:1}
-.osh-arrow{width:16px;height:10px;color:var(--accent2);display:block;flex-shrink:0}
-.osh-arrow.osh-up{opacity:0.35}
-.osh-arrow.osh-down{animation:oshDown 1.8s ease-in-out infinite}
-@keyframes oshDown{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(4px);opacity:1}}
-.osh-track{width:1px;height:40px;background:rgba(138,155,110,0.25);border-radius:1px;position:relative;overflow:hidden}
-.osh-thumb{width:3px;height:10px;background:var(--accent2);border-radius:2px;position:absolute;left:-1px;animation:oshThumb 2s ease-in-out infinite}
-@keyframes oshThumb{0%,100%{top:0;opacity:0.55}50%{top:30px;opacity:1}}
-.osh-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);margin-top:2px}
+.osh-arrow{width:22px;height:13px;color:var(--accent2);display:block;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(201,163,104,0.7))}
+.osh-arrow.osh-up{opacity:0.3}
+.osh-arrow.osh-down{animation:oshDown 1.6s ease-in-out infinite}
+@keyframes oshDown{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(6px);opacity:1}}
+.osh-track{width:2px;height:52px;background:rgba(138,155,110,0.2);border-radius:2px;position:relative;overflow:hidden}
+.osh-thumb{width:4px;height:16px;background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:3px;position:absolute;left:-1px;box-shadow:0 0 10px rgba(201,163,104,0.7);animation:oshThumb 2.2s ease-in-out infinite}
+@keyframes oshThumb{0%,100%{top:0;opacity:0.5}50%{top:36px;opacity:1}}
+.osh-label{font-family:var(--font-ui);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--text2);margin-top:2px}
 .olive-progress-ring{position:absolute;top:16px;right:16px;width:36px;height:36px;z-index:6;opacity:0.85;transition:opacity 0.4s ease}
 .olive-progress-ring.hide{opacity:0}
 .olive-progress-ring svg{transform:rotate(-90deg)}
@@ -153,18 +153,23 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
 .olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
 @media(max-width:600px){.olive-hero{height:100dvh}}
-/* Theme 6: sticky hero so BG + names persist while scrolling */
-[data-theme="6"] .hero{position:sticky;top:0;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0;overflow:hidden}
+/* Theme 6: BG/canvas/names/leaves are fixed to viewport; content scrolls over them */
+[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0}
 [data-theme="6"] .hero-tag{display:none}
-[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%}
-[data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:1;background:var(--bg)}
+[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible}
+[data-theme="6"] .olive-bg-image{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+[data-theme="6"] .olive-names-layer{position:fixed;inset:0;width:100%;height:100%;z-index:2}
+[data-theme="6"] #oliveCanvas{position:fixed;inset:0;z-index:3}
+[data-theme="6"] .leaf-layer{position:fixed;inset:0;z-index:4}
+[data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:fixed;z-index:5}
+[data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:10;background:var(--bg)}
 /* Ken Burns zoom on BG image after reveal */
 @keyframes oliveBgZoom{from{transform:scale(1.1)}to{transform:scale(1.0)}}
 .olive-bg-image.revealed{animation:oliveBgZoom 14s ease-out forwards}
 /* Names layer: hidden until reveal, then fade in */
 .olive-names-layer.show{opacity:1;transition:opacity 1.5s ease}
 /* Calendar widget */
-.olive-cal-section{display:none;padding:40px 24px;max-width:420px;margin:0 auto;position:relative;z-index:1;background:var(--bg)}
+.olive-cal-section{display:none;padding:40px 24px;max-width:420px;margin:0 auto;position:relative;z-index:10;background:var(--bg)}
 [data-theme="6"] .olive-cal-section{display:block}
 .olive-cal-wrap{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 20px;box-shadow:0 8px 32px rgba(138,155,110,0.1)}
 .olive-cal-header{text-align:center;margin-bottom:22px}
@@ -2156,8 +2161,7 @@ function initOliveReveal(data) {
   const LEAF_COUNT = 9;
 
   function initLeaves() {
-    const rect = hero.getBoundingClientRect();
-    const w = rect.width, h = rect.height;
+    const w = window.innerWidth, h = window.innerHeight;
     for (let i = 0; i < LEAF_COUNT; i++) {
       const el = document.createElement('div');
       el.className = 'leaf';
@@ -2208,9 +2212,8 @@ function initOliveReveal(data) {
   }, { passive: true });
 
   function sizeCanvas() {
-    const rect = hero.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     drawOverlay();
   }
 
@@ -2253,12 +2256,12 @@ function initOliveReveal(data) {
     if (lastPoint) {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.lineWidth = 140;
+      ctx.lineWidth = 260;
       ctx.moveTo(lastPoint.x, lastPoint.y);
       ctx.lineTo(x, y);
       ctx.stroke();
     }
-    ctx.arc(x, y, 70, 0, Math.PI * 2);
+    ctx.arc(x, y, 130, 0, Math.PI * 2);
     ctx.fill();
     lastPoint = { x, y };
     checkProgress();
@@ -2328,6 +2331,36 @@ function initOliveReveal(data) {
 
   function showScrollHint() {
     scrollHint.classList.add('show');
+
+    let userTookControl = false;
+
+    function releaseControl() {
+      if (userTookControl) return;
+      userTookControl = true;
+      scrollHint.style.transition = 'opacity 0.4s ease';
+      scrollHint.style.opacity = '0';
+    }
+
+    window.addEventListener('wheel', releaseControl, { passive: true, once: true });
+    window.addEventListener('touchstart', releaseControl, { passive: true, once: true });
+
+    function nudge() {
+      if (userTookControl) return;
+      const peekDist = Math.round(window.innerHeight * 0.38);
+      window.scrollTo({ top: peekDist, behavior: 'smooth' });
+      setTimeout(() => {
+        if (!userTookControl) window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 950);
+    }
+
+    setTimeout(() => {
+      if (userTookControl) return;
+      nudge();
+      const iv = setInterval(() => {
+        if (userTookControl) { clearInterval(iv); return; }
+        nudge();
+      }, 3800);
+    }, 3000);
   }
 
   let drawing = false;
