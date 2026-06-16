@@ -153,19 +153,23 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
 .olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
 @media(max-width:600px){.olive-hero{height:100dvh}}
-/* Theme 6: BG/canvas/names/leaves are fixed to viewport; content scrolls over them */
+/* Theme 6: body-level fixed divs for persistent backdrop (no stacking context issues) */
+#olivePersistBg{display:none;position:fixed;inset:0;background-size:cover;background-position:center top;z-index:1;will-change:transform}
+#olivePersistBg.active{display:block}
+#olivePersistBg.revealed{animation:oliveBgZoom 14s ease-out forwards}
+#olivePersistNames{display:none;position:fixed;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding-top:6%;z-index:2;pointer-events:none;opacity:0}
+#olivePersistNames.active{display:flex}
+#olivePersistNames.show{opacity:1;transition:opacity 1.5s ease 0.1s}
+/* Theme 6: canvas and leaves still fixed from inside hero */
 [data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0}
 [data-theme="6"] .hero-tag{display:none}
-[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible}
-[data-theme="6"] .olive-bg-image{position:fixed;inset:0;width:100%;height:100%;z-index:1}
-[data-theme="6"] .olive-names-layer{position:fixed;inset:0;width:100%;height:100%;z-index:2}
+[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible;z-index:auto}
 [data-theme="6"] #oliveCanvas{position:fixed;inset:0;z-index:3}
 [data-theme="6"] .leaf-layer{position:fixed;inset:0;z-index:4}
 [data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:fixed;z-index:5}
 [data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:10;background:var(--bg)}
-/* Ken Burns zoom on BG image after reveal */
-@keyframes oliveBgZoom{from{transform:scale(1.1)}to{transform:scale(1.0)}}
-.olive-bg-image.revealed{animation:oliveBgZoom 14s ease-out forwards}
+/* Ken Burns zoom on BG after reveal */
+@keyframes oliveBgZoom{from{transform:scale(1.08)}to{transform:scale(1.0)}}
 /* Names layer: hidden until reveal, then fade in */
 .olive-names-layer.show{opacity:1;transition:opacity 1.5s ease}
 /* Calendar widget */
@@ -929,6 +933,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 <div class="page" id="page">
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
+  <!-- Theme 6: body-level fixed backdrop — outside hero stacking context -->
+  <div id="olivePersistBg"></div>
+  <div id="olivePersistNames"></div>
+
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
@@ -2135,18 +2143,24 @@ function initOliveReveal(data) {
   const progressRing = document.getElementById('oliveProgressRing');
   const fgRing = document.getElementById('oliveFgRing');
   const leafLayer = document.getElementById('oliveLeafLayer');
+  const persistBg = document.getElementById('olivePersistBg');
+  const persistNames = document.getElementById('olivePersistNames');
 
   if (data.background_image_url) {
-    bgImage.src = data.background_image_url;
+    persistBg.style.backgroundImage = `url('${data.background_image_url}')`;
+    persistBg.classList.add('active');
   }
 
   const brideFirst = (data.bride_name || (data.couple_name || '').split('&')[0] || '').trim();
   const groomFirst = (data.groom_name || (data.couple_name || '').split('&')[1] || '').trim();
   if (brideFirst && groomFirst) {
     namesEl.innerHTML = `${brideFirst} <em>&amp;</em> ${groomFirst}`;
+    persistNames.innerHTML = `<div class="name-deco"><div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div></div><div class="olive-couple-names">${brideFirst} <em>&amp;</em> ${groomFirst}</div><div class="couple-tagline">Together Forever</div>`;
   } else if (data.couple_name) {
     namesEl.textContent = data.couple_name;
+    persistNames.innerHTML = `<div class="olive-couple-names">${data.couple_name}</div>`;
   }
+  persistNames.classList.add('active');
 
   buildOliveCalendar(data.wedding_date);
 
@@ -2322,8 +2336,8 @@ function initOliveReveal(data) {
       } else {
         ctx.clearRect(0, 0, w, h);
         progressRing.classList.add('hide');
-        bgImage.classList.add('revealed');
-        setTimeout(() => { namesLayer.classList.add('show'); showScrollHint(); }, 400);
+        persistBg.classList.add('revealed');
+        setTimeout(() => { persistNames.classList.add('show'); showScrollHint(); }, 400);
       }
     }
     requestAnimationFrame(frame);
@@ -2333,11 +2347,31 @@ function initOliveReveal(data) {
     scrollHint.classList.add('show');
 
     let userTookControl = false;
+    let nudgeRaf = null;
+
+    function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+
+    function animScroll(targetY, duration, onDone) {
+      if (nudgeRaf) cancelAnimationFrame(nudgeRaf);
+      const startY = window.scrollY;
+      const dist = targetY - startY;
+      if (Math.abs(dist) < 1) { if (onDone) onDone(); return; }
+      const t0 = performance.now();
+      function step(now) {
+        if (userTookControl) { if (onDone) onDone(); return; }
+        const p = Math.min(1, (now - t0) / duration);
+        window.scrollTo(0, startY + dist * easeInOutSine(p));
+        if (p < 1) { nudgeRaf = requestAnimationFrame(step); }
+        else { nudgeRaf = null; if (onDone) onDone(); }
+      }
+      nudgeRaf = requestAnimationFrame(step);
+    }
 
     function releaseControl() {
       if (userTookControl) return;
       userTookControl = true;
-      scrollHint.style.transition = 'opacity 0.4s ease';
+      if (nudgeRaf) { cancelAnimationFrame(nudgeRaf); nudgeRaf = null; }
+      scrollHint.style.transition = 'opacity 0.6s ease';
       scrollHint.style.opacity = '0';
     }
 
@@ -2346,11 +2380,13 @@ function initOliveReveal(data) {
 
     function nudge() {
       if (userTookControl) return;
-      const peekDist = Math.round(window.innerHeight * 0.38);
-      window.scrollTo({ top: peekDist, behavior: 'smooth' });
-      setTimeout(() => {
-        if (!userTookControl) window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 950);
+      const peek = Math.round(window.innerHeight * 0.2);
+      animScroll(peek, 1300, () => {
+        if (userTookControl) return;
+        setTimeout(() => {
+          if (!userTookControl) animScroll(0, 1100);
+        }, 500);
+      });
     }
 
     setTimeout(() => {
@@ -2359,7 +2395,7 @@ function initOliveReveal(data) {
       const iv = setInterval(() => {
         if (userTookControl) { clearInterval(iv); return; }
         nudge();
-      }, 3800);
+      }, 4000);
     }, 3000);
   }
 
