@@ -148,6 +148,30 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
 .olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
 @media(max-width:600px){.olive-hero{height:100dvh}}
+/* Theme 6: sticky hero so BG + names persist while scrolling */
+[data-theme="6"] .hero{position:sticky;top:0;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0;overflow:hidden}
+[data-theme="6"] .hero-tag{display:none}
+[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%}
+[data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:1;background:var(--bg)}
+/* Ken Burns zoom on BG image after reveal */
+@keyframes oliveBgZoom{from{transform:scale(1.1)}to{transform:scale(1.0)}}
+.olive-bg-image.revealed{animation:oliveBgZoom 14s ease-out forwards}
+/* Names layer: hidden until reveal, then fade in */
+.olive-names-layer.show{opacity:1;transition:opacity 1.5s ease}
+/* Calendar widget */
+.olive-cal-section{display:none;padding:40px 24px;max-width:420px;margin:0 auto;position:relative;z-index:1;background:var(--bg)}
+[data-theme="6"] .olive-cal-section{display:block}
+.olive-cal-wrap{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 20px;box-shadow:0 8px 32px rgba(138,155,110,0.1)}
+.olive-cal-header{text-align:center;margin-bottom:22px}
+.olive-cal-month{font-family:var(--font-ui);font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.olive-cal-year{font-family:var(--font-display);font-size:30px;color:var(--text);font-style:italic;display:block;line-height:1}
+.olive-cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px}
+.olive-cal-days-header span{font-family:var(--font-ui);font-size:8px;letter-spacing:0.1em;color:var(--text3);text-align:center;padding:3px 0}
+.olive-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.olive-cal-day,.olive-cal-empty{font-family:var(--font-ui);font-size:12px;color:var(--text2);text-align:center;padding:6px 2px;border-radius:50%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;line-height:1}
+.olive-cal-empty{color:transparent;pointer-events:none}
+.olive-cal-day.olive-cal-marked{background:var(--accent2);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(201,163,104,0.45);transform:scale(1.15)}
+.olive-cal-label{text-align:center;margin-top:20px;font-family:var(--font-ui);font-size:9.5px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);padding-top:16px;border-top:1px solid var(--border)}
 /* HERO */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 0 48px;position:relative;overflow:hidden}
 /* Prevent Chrome Android URL bar layout jump */
@@ -958,6 +982,21 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <div class="scroll-down-chevron"></div>
       <div class="scroll-down-chevron"></div>
       <span class="scroll-down-label">Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- THEME 6 OLIVE — WEDDING DATE CALENDAR -->
+  <section class="olive-cal-section" id="oliveCalSection">
+    <div class="olive-cal-wrap">
+      <div class="olive-cal-header">
+        <span class="olive-cal-month" id="oliveCalMonth"></span>
+        <span class="olive-cal-year" id="oliveCalYear"></span>
+      </div>
+      <div class="olive-cal-days-header">
+        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+      </div>
+      <div class="olive-cal-grid" id="oliveCalGrid"></div>
+      <div class="olive-cal-label" id="oliveCalLabel"></div>
     </div>
   </section>
 
@@ -2048,6 +2087,28 @@ function isOliveTheme() {
   return parseInt(document.documentElement.getAttribute('data-theme')) === 6;
 }
 
+function buildOliveCalendar(weddingDate) {
+  const calSection = document.getElementById('oliveCalSection');
+  if (!weddingDate || !calSection) return;
+  const d = new Date(weddingDate);
+  const year = d.getFullYear();
+  const month = d.getMonth();
+  const day = d.getDate();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('oliveCalMonth').textContent = months[month].toUpperCase();
+  document.getElementById('oliveCalYear').textContent = year;
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += '<span class="olive-cal-empty"></span>';
+  for (let i = 1; i <= daysInMonth; i++) {
+    html += `<span class="olive-cal-day${i === day ? ' olive-cal-marked' : ''}">${i}</span>`;
+  }
+  document.getElementById('oliveCalGrid').innerHTML = html;
+  const label = d.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('oliveCalLabel').textContent = label;
+}
+
 function initOliveReveal(data) {
   if (!isOliveTheme()) return;
 
@@ -2074,6 +2135,8 @@ function initOliveReveal(data) {
   } else if (data.couple_name) {
     namesEl.textContent = data.couple_name;
   }
+
+  buildOliveCalendar(data.wedding_date);
 
   let revealed = false;
   let lastPoint = null;
@@ -2208,7 +2271,6 @@ function initOliveReveal(data) {
 
     const circumference = 97.4;
     fgRing.setAttribute('stroke-dashoffset', circumference * (1 - pct));
-    namesLayer.style.opacity = Math.min(1, pct * 6);
 
     if (pct > 0.02 && !scratchHint.classList.contains('fade')) {
       scratchHint.classList.add('fade');
@@ -2245,8 +2307,8 @@ function initOliveReveal(data) {
       } else {
         ctx.clearRect(0, 0, w, h);
         progressRing.classList.add('hide');
-        namesLayer.style.opacity = '1';
-        showScrollHint();
+        bgImage.classList.add('revealed');
+        setTimeout(() => { namesLayer.classList.add('show'); showScrollHint(); }, 400);
       }
     }
     requestAnimationFrame(frame);
@@ -2255,7 +2317,7 @@ function initOliveReveal(data) {
   function showScrollHint() {
     scrollHint.classList.add('show');
     setTimeout(() => {
-      const next = document.getElementById('familySection') || document.querySelector('.section');
+      const next = document.getElementById('oliveCalSection') || document.getElementById('familySection') || document.querySelector('.section');
       if (next) next.scrollIntoView({ behavior: 'smooth' });
     }, 2000);
   }
