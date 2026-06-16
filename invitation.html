@@ -136,11 +136,16 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-scratch-hint svg{width:30px;height:30px;opacity:0.8;animation:oliveSwipeHint 1.6s ease-in-out infinite}
 @keyframes oliveSwipeHint{0%{transform:translateX(-16px);opacity:0.3}50%{transform:translateX(16px);opacity:1}100%{transform:translateX(-16px);opacity:0.3}}
 .olive-scratch-hint.fade{opacity:0}
-.olive-scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
+.olive-scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transition:opacity 0.8s ease;pointer-events:none;z-index:6}
 .olive-scroll-hint.show{opacity:1}
-.olive-scroll-hint span{font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text2)}
-.olive-scroll-hint svg{width:18px;height:18px;color:var(--accent2);animation:oliveScrollBounce 1.6s ease-in-out infinite;display:block;margin:4px auto 0}
-@keyframes oliveScrollBounce{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(6px);opacity:1}}
+.osh-arrow{width:16px;height:10px;color:var(--accent2);display:block;flex-shrink:0}
+.osh-arrow.osh-up{opacity:0.35}
+.osh-arrow.osh-down{animation:oshDown 1.8s ease-in-out infinite}
+@keyframes oshDown{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(4px);opacity:1}}
+.osh-track{width:1px;height:40px;background:rgba(138,155,110,0.25);border-radius:1px;position:relative;overflow:hidden}
+.osh-thumb{width:3px;height:10px;background:var(--accent2);border-radius:2px;position:absolute;left:-1px;animation:oshThumb 2s ease-in-out infinite}
+@keyframes oshThumb{0%,100%{top:0;opacity:0.55}50%{top:30px;opacity:1}}
+.osh-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text3);margin-top:2px}
 .olive-progress-ring{position:absolute;top:16px;right:16px;width:36px;height:36px;z-index:6;opacity:0.85;transition:opacity 0.4s ease}
 .olive-progress-ring.hide{opacity:0}
 .olive-progress-ring svg{transform:rotate(-90deg)}
@@ -945,8 +950,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         </svg>
       </div>
       <div class="olive-scroll-hint" id="oliveScrollHint">
-        <span>Scroll to Continue</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <svg class="osh-arrow osh-up" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 10L10 2l9 8"/></svg>
+        <div class="osh-track"><div class="osh-thumb"></div></div>
+        <svg class="osh-arrow osh-down" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 2l9 8 9-8"/></svg>
+        <span class="osh-label">Scroll</span>
       </div>
     </div>
 
@@ -2276,6 +2283,11 @@ function initOliveReveal(data) {
       scratchHint.classList.add('fade');
     }
 
+    if (pct >= 0.25 && !revealed) {
+      revealed = true;
+      canvas.style.pointerEvents = 'none';
+      setTimeout(petalDissolve, 200);
+    }
   }
 
   function petalDissolve() {
@@ -2316,26 +2328,15 @@ function initOliveReveal(data) {
 
   function showScrollHint() {
     scrollHint.classList.add('show');
-    setTimeout(() => {
-      const next = document.getElementById('oliveCalSection') || document.getElementById('familySection') || document.querySelector('.section');
-      if (next) next.scrollIntoView({ behavior: 'smooth' });
-    }, 2000);
   }
 
   let drawing = false;
-  let strokeCount = 0;
   function startDraw(e) {
     drawing = true;
-    strokeCount++;
     const p = getPoint(e);
     lastPoint = null;
     scratchAt(p.x, p.y);
     e.preventDefault();
-    if (strokeCount >= 3 && !revealed) {
-      revealed = true;
-      canvas.style.pointerEvents = 'none';
-      setTimeout(petalDissolve, 300);
-    }
   }
   function moveDraw(e) {
     if (!drawing) return;
