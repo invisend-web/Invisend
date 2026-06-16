@@ -153,25 +153,19 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
 .olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
 @media(max-width:600px){.olive-hero{height:100dvh}}
-/* Theme 6: body-level fixed divs for persistent backdrop (no stacking context issues) */
-#olivePersistBg{display:none;position:fixed;inset:0;background-size:cover;background-position:center top;z-index:1;will-change:transform}
-#olivePersistBg.active{display:block}
-#olivePersistBg.revealed{animation:oliveBgZoom 14s ease-out forwards}
-#olivePersistNames{display:none;position:fixed;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding-top:6%;z-index:2;pointer-events:none;opacity:0}
-#olivePersistNames.active{display:flex}
-#olivePersistNames.show{opacity:1;transition:opacity 1.5s ease 0.1s}
-/* Theme 6: canvas and leaves still fixed from inside hero */
-[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:auto;overflow:visible}
+/* Theme 6: BG/canvas/names/leaves are fixed to viewport; content scrolls over them */
+[data-theme="6"] .hero{position:relative;height:100vh;height:100dvh;min-height:unset;padding:0;z-index:0}
 [data-theme="6"] .hero-tag{display:none}
-[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible;z-index:auto}
+[data-theme="6"] .olive-hero{margin-top:0;left:0;transform:none;width:100%;overflow:visible}
+[data-theme="6"] .olive-bg-image{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+[data-theme="6"] .olive-names-layer{position:fixed;inset:0;width:100%;height:100%;z-index:2}
 [data-theme="6"] #oliveCanvas{position:fixed;inset:0;z-index:3}
 [data-theme="6"] .leaf-layer{position:fixed;inset:0;z-index:4}
 [data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:fixed;z-index:5}
 [data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:10;background:var(--bg)}
-#oliveContentWrap{}
-[data-theme="6"] #oliveContentWrap{position:relative;z-index:10;background:var(--bg);width:100%}
-/* Ken Burns zoom on BG after reveal */
-@keyframes oliveBgZoom{from{transform:scale(1.08)}to{transform:scale(1.0)}}
+/* Ken Burns zoom on BG image after reveal */
+@keyframes oliveBgZoom{from{transform:scale(1.1)}to{transform:scale(1.0)}}
+.olive-bg-image.revealed{animation:oliveBgZoom 14s ease-out forwards}
 /* Names layer: hidden until reveal, then fade in */
 .olive-names-layer.show{opacity:1;transition:opacity 1.5s ease}
 /* Calendar widget */
@@ -935,10 +929,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 <div class="page" id="page">
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
-  <!-- Theme 6: body-level fixed backdrop — outside hero stacking context -->
-  <div id="olivePersistBg"></div>
-  <div id="olivePersistNames"></div>
-
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
@@ -1048,8 +1038,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </div>
   <div class="cinema-flash" id="cinemaFlash"></div>
 
-  <!-- Theme 6: full-width wrapper so fixed bg doesn't bleed through narrow section gaps -->
-  <div id="oliveContentWrap">
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
   <!-- FAMILY -->
@@ -1182,7 +1170,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </section>
 
   <footer class="inv-footer"><div class="footer-brand">Powered by InviSend &times; TG Wedding Films</div></footer>
-  </div><!-- /#oliveContentWrap -->
 
   <div class="sound-control" id="soundControl">
     <button class="sound-btn" id="soundBtn" onclick="toggleMusic()" aria-label="Toggle music">
@@ -2148,31 +2135,18 @@ function initOliveReveal(data) {
   const progressRing = document.getElementById('oliveProgressRing');
   const fgRing = document.getElementById('oliveFgRing');
   const leafLayer = document.getElementById('oliveLeafLayer');
-  const persistBg = document.getElementById('olivePersistBg');
-  const persistNames = document.getElementById('olivePersistNames');
-
-  // Hoist fixed elements to body — escapes hero's overflow:hidden and any stacking context
-  document.body.appendChild(canvas);
-  document.body.appendChild(leafLayer);
-  document.body.appendChild(scratchHint);
-  document.body.appendChild(progressRing);
-  document.body.appendChild(scrollHint);
 
   if (data.background_image_url) {
-    persistBg.style.backgroundImage = `url('${data.background_image_url}')`;
-    // Do NOT add 'active' yet — canvas must paint its cream overlay first
+    bgImage.src = data.background_image_url;
   }
 
   const brideFirst = (data.bride_name || (data.couple_name || '').split('&')[0] || '').trim();
   const groomFirst = (data.groom_name || (data.couple_name || '').split('&')[1] || '').trim();
   if (brideFirst && groomFirst) {
     namesEl.innerHTML = `${brideFirst} <em>&amp;</em> ${groomFirst}`;
-    persistNames.innerHTML = `<div class="name-deco"><div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div></div><div class="olive-couple-names">${brideFirst} <em>&amp;</em> ${groomFirst}</div><div class="couple-tagline">Together Forever</div>`;
   } else if (data.couple_name) {
     namesEl.textContent = data.couple_name;
-    persistNames.innerHTML = `<div class="olive-couple-names">${data.couple_name}</div>`;
   }
-  persistNames.classList.add('active');
 
   buildOliveCalendar(data.wedding_date);
 
@@ -2267,9 +2241,8 @@ function initOliveReveal(data) {
   window.addEventListener('resize', sizeCanvas, { passive: true });
   bgImage.onload = sizeCanvas;
   requestAnimationFrame(() => {
-    sizeCanvas(); // draws cream overlay first
+    sizeCanvas();
     initLeaves();
-    if (data.background_image_url) persistBg.classList.add('active'); // bg hidden under canvas until now
   });
 
   function getPoint(e) {
@@ -2349,8 +2322,8 @@ function initOliveReveal(data) {
       } else {
         ctx.clearRect(0, 0, w, h);
         progressRing.classList.add('hide');
-        persistBg.classList.add('revealed');
-        setTimeout(() => { persistNames.classList.add('show'); showScrollHint(); }, 400);
+        bgImage.classList.add('revealed');
+        setTimeout(() => { namesLayer.classList.add('show'); showScrollHint(); }, 400);
       }
     }
     requestAnimationFrame(frame);
@@ -2360,31 +2333,11 @@ function initOliveReveal(data) {
     scrollHint.classList.add('show');
 
     let userTookControl = false;
-    let nudgeRaf = null;
-
-    function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
-
-    function animScroll(targetY, duration, onDone) {
-      if (nudgeRaf) cancelAnimationFrame(nudgeRaf);
-      const startY = window.scrollY;
-      const dist = targetY - startY;
-      if (Math.abs(dist) < 1) { if (onDone) onDone(); return; }
-      const t0 = performance.now();
-      function step(now) {
-        if (userTookControl) { if (onDone) onDone(); return; }
-        const p = Math.min(1, (now - t0) / duration);
-        window.scrollTo(0, startY + dist * easeInOutSine(p));
-        if (p < 1) { nudgeRaf = requestAnimationFrame(step); }
-        else { nudgeRaf = null; if (onDone) onDone(); }
-      }
-      nudgeRaf = requestAnimationFrame(step);
-    }
 
     function releaseControl() {
       if (userTookControl) return;
       userTookControl = true;
-      if (nudgeRaf) { cancelAnimationFrame(nudgeRaf); nudgeRaf = null; }
-      scrollHint.style.transition = 'opacity 0.6s ease';
+      scrollHint.style.transition = 'opacity 0.4s ease';
       scrollHint.style.opacity = '0';
     }
 
@@ -2393,13 +2346,11 @@ function initOliveReveal(data) {
 
     function nudge() {
       if (userTookControl) return;
-      const peek = Math.round(window.innerHeight * 0.2);
-      animScroll(peek, 1300, () => {
-        if (userTookControl) return;
-        setTimeout(() => {
-          if (!userTookControl) animScroll(0, 1100);
-        }, 500);
-      });
+      const peekDist = Math.round(window.innerHeight * 0.38);
+      window.scrollTo({ top: peekDist, behavior: 'smooth' });
+      setTimeout(() => {
+        if (!userTookControl) window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 950);
     }
 
     setTimeout(() => {
@@ -2408,7 +2359,7 @@ function initOliveReveal(data) {
       const iv = setInterval(() => {
         if (userTookControl) { clearInterval(iv); return; }
         nudge();
-      }, 4000);
+      }, 3800);
     }, 3000);
   }
 
