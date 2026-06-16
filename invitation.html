@@ -168,6 +168,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .leaf-layer{position:fixed;inset:0;z-index:4}
 [data-theme="6"] .olive-scratch-hint,[data-theme="6"] .olive-progress-ring,[data-theme="6"] .olive-scroll-hint{position:fixed;z-index:5}
 [data-theme="6"] .orn-div,[data-theme="6"] .section,[data-theme="6"] .message-block,[data-theme="6"] .location-wrap,[data-theme="6"] .preshoot-section,[data-theme="6"] .rsvp-section{position:relative;z-index:10;background:var(--bg)}
+#oliveContentWrap{}
+[data-theme="6"] #oliveContentWrap{position:relative;z-index:10;background:var(--bg);width:100%}
 /* Ken Burns zoom on BG after reveal */
 @keyframes oliveBgZoom{from{transform:scale(1.08)}to{transform:scale(1.0)}}
 /* Names layer: hidden until reveal, then fade in */
@@ -1046,6 +1048,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </div>
   <div class="cinema-flash" id="cinemaFlash"></div>
 
+  <!-- Theme 6: full-width wrapper so fixed bg doesn't bleed through narrow section gaps -->
+  <div id="oliveContentWrap">
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
   <!-- FAMILY -->
@@ -1178,6 +1182,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </section>
 
   <footer class="inv-footer"><div class="footer-brand">Powered by InviSend &times; TG Wedding Films</div></footer>
+  </div><!-- /#oliveContentWrap -->
 
   <div class="sound-control" id="soundControl">
     <button class="sound-btn" id="soundBtn" onclick="toggleMusic()" aria-label="Toggle music">
@@ -2148,7 +2153,7 @@ function initOliveReveal(data) {
 
   if (data.background_image_url) {
     persistBg.style.backgroundImage = `url('${data.background_image_url}')`;
-    persistBg.classList.add('active');
+    // Do NOT add 'active' yet — canvas must paint its cream overlay first
   }
 
   const brideFirst = (data.bride_name || (data.couple_name || '').split('&')[0] || '').trim();
@@ -2255,8 +2260,9 @@ function initOliveReveal(data) {
   window.addEventListener('resize', sizeCanvas, { passive: true });
   bgImage.onload = sizeCanvas;
   requestAnimationFrame(() => {
-    sizeCanvas();
+    sizeCanvas(); // draws cream overlay first
     initLeaves();
+    if (data.background_image_url) persistBg.classList.add('active'); // bg hidden under canvas until now
   });
 
   function getPoint(e) {
