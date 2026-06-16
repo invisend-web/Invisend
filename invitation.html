@@ -123,31 +123,30 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .couple-name-block,
 [data-theme="6"] .scroll-down-hint{display:none !important}
 [data-theme="6"] .olive-hero{display:block}
-.olive-hero{display:none;position:relative;width:100vw;left:50%;transform:translateX(-50%);height:100vh;overflow:hidden;margin-top:-20px}
-.olive-bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s cubic-bezier(0.22,1,0.36,1)}
-.olive-names-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;opacity:0;transition:opacity 0.6s ease;padding-top:6%;z-index:3}
-.olive-couple-names{font-family:var(--font-display);font-size:clamp(36px,10vw,52px);font-style:italic;color:var(--text);line-height:1.2;text-align:center}
-.olive-couple-names em{color:var(--accent2);font-style:italic}
-#oliveCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;z-index:4}
-.leaf-layer{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+/* OLIVE CREAM — normal document flow, no position:fixed anywhere */
+.olive-hero{display:none;position:relative;width:100%;height:100vh;overflow:hidden}
+@supports (height:100dvh){.olive-hero{height:100dvh}}
+.olive-bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#oliveCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;z-index:3}
+.leaf-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
 .leaf{position:absolute;top:0;left:0;will-change:transform;opacity:0.9}
 .leaf svg{display:block}
-.olive-scratch-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-ui);font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text2);pointer-events:none;z-index:6;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;transition:opacity 0.5s ease}
-.olive-scratch-hint svg{width:30px;height:30px;opacity:0.8;animation:oliveSwipeHint 1.6s ease-in-out infinite}
-@keyframes oliveSwipeHint{0%{transform:translateX(-16px);opacity:0.3}50%{transform:translateX(16px);opacity:1}100%{transform:translateX(-16px);opacity:0.3}}
-.olive-scratch-hint.fade{opacity:0}
-.olive-scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
-.olive-scroll-hint.show{opacity:1}
-.olive-scroll-hint span{font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--text2)}
-.olive-scroll-hint svg{width:18px;height:18px;color:var(--accent2);animation:oliveScrollBounce 1.6s ease-in-out infinite;display:block;margin:4px auto 0}
-@keyframes oliveScrollBounce{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(6px);opacity:1}}
-.olive-progress-ring{position:absolute;top:16px;right:16px;width:36px;height:36px;z-index:6;opacity:0.85;transition:opacity 0.4s ease}
-.olive-progress-ring.hide{opacity:0}
-.olive-progress-ring svg{transform:rotate(-90deg)}
-.olive-progress-ring circle{fill:none;stroke-width:3}
-.olive-progress-ring .bg-ring{stroke:rgba(94,111,71,0.18)}
-.olive-progress-ring .fg-ring{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset 0.15s ease-out}
-@media(max-width:600px){.olive-hero{height:100dvh}}
+.olive-names-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;opacity:0;transition:opacity 1s ease;padding-top:6%;z-index:5}
+.olive-couple-names{font-family:var(--font-display);font-size:clamp(36px,10vw,52px);font-style:italic;color:var(--text);line-height:1.2;text-align:center}
+.olive-couple-names em{color:var(--accent2);font-style:italic}
+.olive-nudge-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
+.olive-nudge-hint.show{opacity:1}
+.olive-nudge-hint span{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text2)}
+.olive-nudge-track{width:1px;height:26px;background:rgba(138,155,110,0.25);position:relative}
+.olive-nudge-chevron{position:absolute;top:0;left:50%;width:8px;height:8px;border-right:1.5px solid var(--accent2);border-bottom:1.5px solid var(--accent2);transform:translateX(-50%) rotate(45deg)}
+/* OLIVE CREAM — calendar widget */
+[data-theme="6"] .olive-calendar-wrap{display:block !important;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.olive-cal-month{font-family:var(--font-display);font-size:14px;letter-spacing:0.08em;color:var(--text2);text-align:center;margin-bottom:12px}
+.olive-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:280px;margin:0 auto}
+.olive-cal-dow{font-family:var(--font-ui);font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text3);text-align:center;padding-bottom:4px}
+.olive-cal-day{font-family:var(--font-ui);font-size:12px;color:var(--text2);text-align:center;padding:6px 0;border-radius:50%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+.olive-cal-day.empty{visibility:hidden}
+.olive-cal-day.marked{background:var(--accent2);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(201,163,104,0.4)}
 /* HERO */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 0 48px;position:relative;overflow:hidden}
 /* Prevent Chrome Android URL bar layout jump */
@@ -898,9 +897,11 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
-    <!-- OLIVE ELEGANT (theme 6) - scratch reveal hero -->
+    <!-- OLIVE CREAM (theme 6) hero - normal document flow, no position:fixed anywhere -->
     <div class="olive-hero" id="oliveHero">
       <img class="olive-bg-image" id="oliveBgImage" src="" alt="">
+      <canvas id="oliveCanvas"></canvas>
+      <div class="leaf-layer" id="oliveLeafLayer"></div>
       <div class="olive-names-layer" id="oliveNamesLayer">
         <div class="name-deco">
           <div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div>
@@ -908,21 +909,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         <div class="olive-couple-names" id="oliveCoupleNames"></div>
         <div class="couple-tagline">Together Forever</div>
       </div>
-      <canvas id="oliveCanvas"></canvas>
-      <div class="leaf-layer" id="oliveLeafLayer"></div>
-      <div class="olive-scratch-hint" id="oliveScratchHint">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <span>Swipe to Reveal</span>
-      </div>
-      <div class="olive-progress-ring" id="oliveProgressRing">
-        <svg viewBox="0 0 36 36">
-          <circle class="bg-ring" cx="18" cy="18" r="15.5"/>
-          <circle class="fg-ring" id="oliveFgRing" cx="18" cy="18" r="15.5" stroke-dasharray="97.4" stroke-dashoffset="97.4"/>
-        </svg>
-      </div>
-      <div class="olive-scroll-hint" id="oliveScrollHint">
+      <div class="olive-nudge-hint" id="oliveNudgeHint">
+        <div class="olive-nudge-track"><div class="olive-nudge-chevron"></div></div>
         <span>Scroll to Continue</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       </div>
     </div>
 
@@ -1034,6 +1023,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
           <div class="countdown-sep">·</div>
           <div class="countdown-unit"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-unit-label">Secs</div></div>
         </div>
+      </div>
+      <div class="olive-calendar-wrap" id="oliveCalendarWrap" style="display:none">
+        <div class="olive-cal-month" id="oliveCalMonth"></div>
+        <div class="olive-cal-grid" id="oliveCalGrid"></div>
       </div>
     </div>
   </section>
@@ -1326,6 +1319,7 @@ function render(d) {
     initCinema(d);
   }
   initOliveReveal(d);
+  renderOliveCalendar(d.wedding_date);
 }
 
 function setImg(id, url) {
@@ -2041,7 +2035,8 @@ function tgDemoHint() {
 }
 
 // ══════════════════════════════════════
-// INVISEND OLIVE ELEGANT (theme 6) — SCRATCH REVEAL
+// OLIVE CREAM (theme 6) — SCRATCH REVEAL
+// Normal document flow — no position:fixed
 // ══════════════════════════════════════
 function isOliveTheme() {
   return parseInt(document.documentElement.getAttribute('data-theme')) === 6;
@@ -2056,33 +2051,33 @@ function initOliveReveal(data) {
   const ctx = canvas.getContext('2d');
   const namesLayer = document.getElementById('oliveNamesLayer');
   const namesEl = document.getElementById('oliveCoupleNames');
-  const scratchHint = document.getElementById('oliveScratchHint');
-  const scrollHint = document.getElementById('oliveScrollHint');
-  const progressRing = document.getElementById('oliveProgressRing');
-  const fgRing = document.getElementById('oliveFgRing');
+  const nudgeHint = document.getElementById('oliveNudgeHint');
   const leafLayer = document.getElementById('oliveLeafLayer');
 
   if (data.background_image_url) {
     bgImage.src = data.background_image_url;
   }
 
-  const brideFirst = (data.bride_name || (data.couple_name || '').split('&')[0] || '').trim();
-  const groomFirst = (data.groom_name || (data.couple_name || '').split('&')[1] || '').trim();
-  if (brideFirst && groomFirst) {
-    namesEl.innerHTML = `${esc(brideFirst)} <em>&amp;</em> ${esc(groomFirst)}`;
-  } else if (data.couple_name) {
-    namesEl.textContent = data.couple_name;
+  if (data.couple_name) {
+    const parts = data.couple_name.split('&').map(s => s.trim());
+    if (parts.length === 2) {
+      namesEl.innerHTML = parts[0] + ' <em>&amp;</em> ' + parts[1];
+    } else {
+      namesEl.textContent = data.couple_name;
+    }
   }
 
   let revealed = false;
   let lastPoint = null;
+  let userScrolled = false;
 
+  // ── Leaf particles ──
   function leafSVG(color, size) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8 6 4 10 4 15a8 8 0 0016 0c0-5-4-9-8-13z"/></svg>`;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="' + color + '" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8 6 4 10 4 15a8 8 0 0016 0c0-5-4-9-8-13z"/></svg>';
   }
   const leafColors = ['#8A9B6E', '#A8BC8A', '#6E8054', '#C9A368'];
   const leaves = [];
-  const LEAF_COUNT = 9;
+  const LEAF_COUNT = 8;
 
   function initLeaves() {
     const rect = hero.getBoundingClientRect();
@@ -2100,42 +2095,27 @@ function initOliveReveal(data) {
       leaves.push({
         el, baseX, baseY,
         rot: Math.random() * 360,
-        driftX: (Math.random() - 0.5) * 2,
-        driftY: (Math.random() - 0.5) * 1.5,
-        swaySpeed: 0.4 + Math.random() * 1.2,
+        swaySpeed: 0.4 + Math.random() * 1.0,
         swayPhase: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 25
+        rotSpeed: (Math.random() - 0.5) * 18
       });
     }
     requestAnimationFrame(animateLeaves);
   }
 
-  let touchOffsetX = 0, touchOffsetY = 0, scrollVel = 0, lastScrollY = window.scrollY;
-
   function animateLeaves() {
     const t = Date.now() / 1000;
     leaves.forEach(leaf => {
-      const swayX = Math.sin(t * leaf.swaySpeed + leaf.swayPhase) * 16;
-      const swayY = Math.cos(t * leaf.swaySpeed * 0.7 + leaf.swayPhase) * 10;
-      const driftAmountX = leaf.driftX * scrollVel * 1.5 + touchOffsetX * 0.5;
-      const driftAmountY = leaf.driftY * scrollVel * 1.5 + touchOffsetY * 0.5;
+      const swayX = Math.sin(t * leaf.swaySpeed + leaf.swayPhase) * 14;
+      const swayY = Math.cos(t * leaf.swaySpeed * 0.7 + leaf.swayPhase) * 9;
       const rot = leaf.rot + t * leaf.rotSpeed;
-      const x = leaf.baseX + swayX + driftAmountX;
-      const y = leaf.baseY + swayY + driftAmountY;
-      leaf.el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+      leaf.el.style.transform = 'translate(' + (leaf.baseX + swayX) + 'px,' + (leaf.baseY + swayY) + 'px) rotate(' + rot + 'deg)';
     });
-    scrollVel *= 0.92;
-    touchOffsetX *= 0.92;
-    touchOffsetY *= 0.92;
     requestAnimationFrame(animateLeaves);
   }
 
-  window.addEventListener('scroll', () => {
-    const dy = window.scrollY - lastScrollY;
-    scrollVel = dy * 0.6;
-    lastScrollY = window.scrollY;
-  }, { passive: true });
-
+  // ── Canvas sizing — uses hero element's own box,
+  //    no fixed/viewport tricks needed ──
   function sizeCanvas() {
     const rect = hero.getBoundingClientRect();
     canvas.width = rect.width;
@@ -2151,14 +2131,12 @@ function initOliveReveal(data) {
     grad.addColorStop(1, '#E6E4CC');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
-
-    ctx.fillStyle = 'rgba(138,155,110,0.07)';
-    for (let i = 0; i < 220; i++) {
+    ctx.fillStyle = 'rgba(138,155,110,0.06)';
+    for (let i = 0; i < 200; i++) {
       const x = Math.random() * w;
       const y = Math.random() * h;
-      const r = Math.random() * 1.4 + 0.3;
       ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.arc(x, y, Math.random() * 1.3 + 0.3, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalCompositeOperation = 'destination-out';
@@ -2174,7 +2152,7 @@ function initOliveReveal(data) {
   function getPoint(e) {
     const rect = canvas.getBoundingClientRect();
     const touch = e.touches ? e.touches[0] : e;
-    return { x: (touch.clientX - rect.left), y: (touch.clientY - rect.top) };
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
   }
 
   function scratchAt(x, y) {
@@ -2182,12 +2160,12 @@ function initOliveReveal(data) {
     if (lastPoint) {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.lineWidth = 140;
+      ctx.lineWidth = 130;
       ctx.moveTo(lastPoint.x, lastPoint.y);
       ctx.lineTo(x, y);
       ctx.stroke();
     }
-    ctx.arc(x, y, 70, 0, Math.PI * 2);
+    ctx.arc(x, y, 65, 0, Math.PI * 2);
     ctx.fill();
     lastPoint = { x, y };
     checkProgress();
@@ -2195,42 +2173,34 @@ function initOliveReveal(data) {
 
   function checkProgress() {
     const w = canvas.width, h = canvas.height;
-    const data2 = ctx.getImageData(0, 0, w, h).data;
-    let cleared = 0;
+    const px = ctx.getImageData(0, 0, w, h).data;
+    let cleared = 0, total = 0;
     const sample = 16;
-    let total = 0;
-    for (let i = 0; i < data2.length; i += 4 * sample) {
+    for (let i = 0; i < px.length; i += 4 * sample) {
       total++;
-      if (data2[i + 3] < 30) cleared++;
+      if (px[i + 3] < 30) cleared++;
     }
     const pct = cleared / total;
-
-    const circumference = 97.4;
-    fgRing.setAttribute('stroke-dashoffset', circumference * (1 - pct));
-    namesLayer.style.opacity = Math.min(1, pct * 6);
-
-    if (pct > 0.02 && !scratchHint.classList.contains('fade')) {
-      scratchHint.classList.add('fade');
+    if (pct > 0.18 && !revealed) {
+      revealed = true;
+      dissolveAndReveal();
     }
-
   }
 
-  function petalDissolve() {
+  function dissolveAndReveal() {
     const w = canvas.width, h = canvas.height;
     const cx = w / 2, cy = h / 2;
     const maxR = Math.sqrt(cx * cx + cy * cy) * 1.2;
-    let r = 0;
     const start = performance.now();
-    const duration = 850;
+    const duration = 900;
 
     function frame(now) {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      r = maxR * eased;
-
+      const r = maxR * eased;
       ctx.save();
       ctx.globalCompositeOperation = 'destination-out';
-      const grad = ctx.createRadialGradient(cx, cy, Math.max(0, r - 80), cx, cy, r);
+      const grad = ctx.createRadialGradient(cx, cy, Math.max(0, r - 90), cx, cy, r);
       grad.addColorStop(0, 'rgba(0,0,0,1)');
       grad.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = grad;
@@ -2238,33 +2208,24 @@ function initOliveReveal(data) {
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
-
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
         ctx.clearRect(0, 0, w, h);
-        progressRing.classList.add('hide');
-        namesLayer.style.opacity = '1';
-        showScrollHint();
+        bgImage.style.transition = 'transform 8s ease-out';
+        bgImage.style.transform = 'scale(1.06)';
+        setTimeout(() => { namesLayer.style.opacity = '1'; }, 400);
+        setTimeout(startNudgeLoop, 1400);
       }
     }
     requestAnimationFrame(frame);
   }
 
-  function showScrollHint() {
-    scrollHint.classList.add('show');
-    setTimeout(() => {
-      const next = document.getElementById('familySection') || document.querySelector('.section');
-      if (next) next.scrollIntoView({ behavior: 'smooth' });
-    }, 2000);
-  }
-
   let drawing = false;
-  let strokeCount = 0;
   function startDraw(e) {
     drawing = true;
-    const p = getPoint(e);
     lastPoint = null;
+    const p = getPoint(e);
     scratchAt(p.x, p.y);
     e.preventDefault();
   }
@@ -2272,20 +2233,9 @@ function initOliveReveal(data) {
     if (!drawing) return;
     const p = getPoint(e);
     scratchAt(p.x, p.y);
-    touchOffsetX += (Math.random() - 0.5) * 4;
-    touchOffsetY += (Math.random() - 0.5) * 4;
     e.preventDefault();
   }
-  function endDraw() {
-    if (!drawing) return;
-    drawing = false;
-    lastPoint = null;
-    strokeCount++;
-    if (strokeCount >= 3 && !revealed) {
-      revealed = true;
-      petalDissolve();
-    }
-  }
+  function endDraw() { drawing = false; lastPoint = null; }
 
   canvas.addEventListener('mousedown', startDraw);
   canvas.addEventListener('mousemove', moveDraw);
@@ -2295,14 +2245,77 @@ function initOliveReveal(data) {
   canvas.addEventListener('touchmove', moveDraw, { passive: false });
   canvas.addEventListener('touchend', endDraw);
 
-  hero.addEventListener('mousemove', (e) => {
-    if (revealed) {
-      const rect = hero.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      bgImage.style.transform = `scale(1.04) translate(${-x * 10}px, ${-y * 10}px)`;
+  // ── Gentle repeating nudge — stops on first user scroll ──
+  let nudgeRafId = null;
+  function markUserScrolled() {
+    if (userScrolled) return;
+    userScrolled = true;
+    nudgeHint.classList.remove('show');
+    if (nudgeRafId) cancelAnimationFrame(nudgeRafId);
+    hero.style.transform = '';
+    window.removeEventListener('scroll', onAnyScroll);
+    window.removeEventListener('wheel', onAnyScroll);
+    window.removeEventListener('touchmove', onAnyScroll);
+  }
+  function onAnyScroll() { markUserScrolled(); }
+  window.addEventListener('scroll', onAnyScroll, { passive: true });
+  window.addEventListener('wheel', onAnyScroll, { passive: true });
+  window.addEventListener('touchmove', onAnyScroll, { passive: true });
+
+  function startNudgeLoop() {
+    if (userScrolled) return;
+    nudgeHint.classList.add('show');
+    let cycle = 0;
+    const cycleDuration = 2600;
+    const pauseDuration = 1800;
+
+    function loop(now) {
+      if (userScrolled) return;
+      if (cycle === 0) cycle = now;
+      const elapsed = (now - cycle) % (cycleDuration + pauseDuration);
+      if (elapsed < cycleDuration) {
+        const t = elapsed / cycleDuration;
+        const eased = Math.sin(t * Math.PI);
+        hero.style.transform = 'translateY(-' + (eased * 36) + 'px)';
+      } else {
+        hero.style.transform = 'translateY(0px)';
+      }
+      nudgeRafId = requestAnimationFrame(loop);
     }
+    nudgeRafId = requestAnimationFrame(loop);
+  }
+}
+
+function renderOliveCalendar(weddingDateStr) {
+  if (!isOliveTheme() || !weddingDateStr) return;
+  const wrap = document.getElementById('oliveCalendarWrap');
+  const monthEl = document.getElementById('oliveCalMonth');
+  const gridEl = document.getElementById('oliveCalGrid');
+  if (!wrap || !monthEl || !gridEl) return;
+
+  const weddingDate = new Date(weddingDateStr);
+  const year = weddingDate.getFullYear();
+  const month = weddingDate.getMonth();
+  const dayOfMonth = weddingDate.getDate();
+
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthEl.textContent = monthNames[month] + ' ' + year;
+
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let html = '';
+  ['S','M','T','W','T','F','S'].forEach(function(d) {
+    html += '<div class="olive-cal-dow">' + d + '</div>';
   });
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    html += '<div class="olive-cal-day empty"></div>';
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const markedClass = (d === dayOfMonth) ? ' marked' : '';
+    html += '<div class="olive-cal-day' + markedClass + '">' + d + '</div>';
+  }
+  gridEl.innerHTML = html;
 }
 
 /* ── THEME 10: CINEMA NOIR REVEAL ── */
