@@ -1183,8 +1183,9 @@ async function init() {
   const slug = params.get('slug') || location.pathname.split('/').filter(Boolean).pop();
   if (!slug) { showErr(); return; }
   try {
-    const { data, error } = await sb.from('invitations').select('*').eq('slug', slug).eq('status', 'live').single();
+    const { data, error } = await sb.from('invitations').select('*').eq('slug', slug).single();
     if (error || !data) { showErr(); return; }
+    if (data.status && data.status !== 'live') { showErr(); return; }
     invData = data;
     applyTheme(data.template_id);
     handleThemeSpecificUI(data.template_id);
