@@ -2856,8 +2856,8 @@ async function submitRSVPWithCount(count) {
   const btnText = document.getElementById('rsvpBtnText');
   btn.disabled = true; spinner.style.display = 'block'; btnText.textContent = 'Submitting...';
   try {
-    const { data: existing } = await sb.from('rsvp').select('id').eq('invitation_slug', invData.slug).eq('phone', phone).single();
-    if (existing) {
+    const { data: existing } = await sb.rpc('check_rsvp_exists', { p_slug: invData.slug, p_phone: phone });
+    if (existing === true) {
       btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Confirm Response';
       showRsvpAlreadySubmitted(); return;
     }
