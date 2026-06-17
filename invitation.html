@@ -66,6 +66,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .couple-card{box-shadow:0 32px 80px rgba(138,155,110,0.25),0 0 60px rgba(201,163,104,0.35)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="6"] .hero-tag{display:none !important}
+[data-theme="6"] .hero{padding-top:0 !important}
 [data-theme="4"] .family-card{border-top:2px solid var(--accent)}
 [data-theme="6"] .family-card{border-top:2px solid var(--accent)}
 /* LOADER */
@@ -123,9 +124,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .couple-name-block,
 [data-theme="6"] .scroll-down-hint{display:none !important}
 [data-theme="6"] .olive-hero{display:block}
-/* OLIVE CREAM — normal document flow, no position:fixed anywhere */
-.olive-hero{display:none;position:relative;width:100%;height:100vh;overflow:hidden}
-@supports (height:100dvh){.olive-hero{height:100dvh}}
+[data-theme="6"] .olive-hero{margin-bottom:-100vh}
+@supports (height:100dvh){[data-theme="6"] .olive-hero{margin-bottom:-100dvh}}
+/* OLIVE CREAM — sticky persist, no position:fixed anywhere */
+.olive-hero{display:none;position:relative;width:100%;height:220vh}
+@supports (height:100dvh){.olive-hero{height:220dvh}}
+.olive-sticky-wrap{position:sticky;top:0;width:100%;height:100vh;overflow:hidden}
+@supports (height:100dvh){.olive-sticky-wrap{height:100dvh}}
 .olive-bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 #oliveCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;z-index:3}
 .leaf-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
@@ -905,26 +910,28 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
-    <!-- OLIVE CREAM (theme 6) hero - normal document flow, no position:fixed anywhere -->
+    <!-- OLIVE CREAM (theme 6) hero - sticky persist, no position:fixed anywhere -->
     <div class="olive-hero" id="oliveHero">
-      <img class="olive-bg-image" id="oliveBgImage" src="" alt="">
-      <canvas id="oliveCanvas"></canvas>
-      <div class="olive-tap-hint" id="oliveTapHint">
-        <div class="olive-tap-ring r1"></div>
-        <div class="olive-tap-ring r2"></div>
-        <div class="olive-tap-dot"></div>
-      </div>
-      <div class="leaf-layer" id="oliveLeafLayer"></div>
-      <div class="olive-names-layer" id="oliveNamesLayer">
-        <div class="name-deco">
-          <div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div>
+      <div class="olive-sticky-wrap" id="oliveStickyWrap">
+        <img class="olive-bg-image" id="oliveBgImage" src="" alt="">
+        <canvas id="oliveCanvas"></canvas>
+        <div class="olive-tap-hint" id="oliveTapHint">
+          <div class="olive-tap-ring r1"></div>
+          <div class="olive-tap-ring r2"></div>
+          <div class="olive-tap-dot"></div>
         </div>
-        <div class="olive-couple-names" id="oliveCoupleNames"></div>
-        <div class="couple-tagline">Together Forever</div>
-      </div>
-      <div class="olive-nudge-hint" id="oliveNudgeHint">
-        <div class="olive-nudge-track"><div class="olive-nudge-chevron"></div></div>
-        <span>Scroll to Continue</span>
+        <div class="leaf-layer" id="oliveLeafLayer"></div>
+        <div class="olive-names-layer" id="oliveNamesLayer">
+          <div class="name-deco">
+            <div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div>
+          </div>
+          <div class="olive-couple-names" id="oliveCoupleNames"></div>
+          <div class="couple-tagline">Together Forever</div>
+        </div>
+        <div class="olive-nudge-hint" id="oliveNudgeHint">
+          <div class="olive-nudge-track"><div class="olive-nudge-chevron"></div></div>
+          <span>Scroll to Continue</span>
+        </div>
       </div>
     </div>
 
@@ -2059,6 +2066,7 @@ function initOliveReveal(data) {
   if (!isOliveTheme()) return;
 
   const hero = document.getElementById('oliveHero');
+  const stickyWrap = document.getElementById('oliveStickyWrap');
   const bgImage = document.getElementById('oliveBgImage');
   const canvas = document.getElementById('oliveCanvas');
   const ctx = canvas.getContext('2d');
@@ -2093,7 +2101,7 @@ function initOliveReveal(data) {
   const LEAF_COUNT = 8;
 
   function initLeaves() {
-    const rect = hero.getBoundingClientRect();
+    const rect = stickyWrap.getBoundingClientRect();
     const w = rect.width, h = rect.height;
     for (let i = 0; i < LEAF_COUNT; i++) {
       const el = document.createElement('div');
@@ -2130,7 +2138,7 @@ function initOliveReveal(data) {
   // ── Canvas sizing — uses hero element's own box,
   //    no fixed/viewport tricks needed ──
   function sizeCanvas() {
-    const rect = hero.getBoundingClientRect();
+    const rect = stickyWrap.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
     drawOverlay();
@@ -2190,15 +2198,15 @@ function initOliveReveal(data) {
         y: originY + Math.sin(angle) * dist * 0.15,
         targetX: originX + Math.cos(angle) * dist,
         targetY: originY + Math.sin(angle) * dist,
-        radius: 40 + Math.random() * 90,
-        delay: Math.random() * 250,
+        radius: 50 + Math.random() * 110,
+        delay: Math.random() * 450,
         color: smokeColors[i % smokeColors.length],
         wobble: Math.random() * Math.PI * 2
       });
     }
 
     const start = performance.now();
-    const duration = 1300;
+    const duration = 1900;
 
     function frame(now) {
       const elapsed = now - start;
@@ -2262,7 +2270,7 @@ function initOliveReveal(data) {
   function preRevealScrollAttempt(e) {
     if (revealed) return;
     if (e.cancelable) e.preventDefault();
-    const rect = hero.getBoundingClientRect();
+    const rect = stickyWrap.getBoundingClientRect();
     triggerReveal(rect.width / 2, rect.height / 2);
     unlockScroll();
   }
@@ -2284,7 +2292,7 @@ function initOliveReveal(data) {
     userScrolled = true;
     nudgeHint.classList.remove('show');
     if (nudgeRafId) cancelAnimationFrame(nudgeRafId);
-    hero.style.transform = '';
+    stickyWrap.style.transform = '';
     window.removeEventListener('scroll', onAnyScroll);
     window.removeEventListener('wheel', onAnyScroll);
     window.removeEventListener('touchmove', onAnyScroll);
@@ -2308,9 +2316,9 @@ function initOliveReveal(data) {
       if (elapsed < cycleDuration) {
         const t = elapsed / cycleDuration;
         const eased = Math.sin(t * Math.PI);
-        hero.style.transform = 'translateY(-' + (eased * 36) + 'px)';
+        stickyWrap.style.transform = 'translateY(-' + (eased * 36) + 'px)';
       } else {
-        hero.style.transform = 'translateY(0px)';
+        stickyWrap.style.transform = 'translateY(0px)';
       }
       nudgeRafId = requestAnimationFrame(loop);
     }
