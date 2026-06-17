@@ -74,12 +74,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .login-logo{text-align:center;margin-bottom:28px}
 .login-title{font-size:20px;font-weight:600;margin-bottom:6px;text-align:center}
 .login-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:28px}
-.login-field{background:rgba(255,255,255,0.05);border:1px solid var(--gb);border-radius:10px;padding:13px 16px;color:var(--text);font-family:var(--font);font-size:14px;width:100%;outline:none;margin-bottom:12px;transition:border-color 0.2s;-webkit-appearance:none}
-.login-field:focus{border-color:var(--blue)}
-.login-field::placeholder{color:var(--text3)}
 .login-btn{width:100%;padding:13px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;margin-top:4px;transition:opacity 0.2s}
 .login-btn:hover{opacity:0.9}
-.login-error{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
+.google-btn{background:#fff;color:#3c4043;display:flex;align-items:center;justify-content:center;gap:10px}
+.google-btn:hover{background:#f8f8f8;opacity:1}
+.login-error{color:var(--red);font-size:13px;text-align:center;margin-top:16px;display:none;line-height:1.5}
 .login-error.show{display:block}
 
 /* LAYOUT */
@@ -409,15 +408,14 @@ select.form-input{cursor:pointer}
   <div class="login-card">
     <div class="login-logo"><img src="logo.png" alt="InviSend" style="height:56px;width:auto;display:block;margin:0 auto;filter:drop-shadow(0 2px 8px rgba(255,255,255,0.15))"></div>
     <div class="login-title">Admin Dashboard</div>
-    <div class="login-sub">Enter password to continue</div>
-    <div style="position:relative;margin-bottom:12px">
-      <input class="login-field" type="password" id="loginPass" placeholder="Password" autocomplete="current-password" style="padding-right:44px;margin-bottom:0">
-      <button type="button" onclick="togglePassView()" id="eyeBtn" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;line-height:0">
-        <svg id="eyeIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-      </button>
+    <div class="login-sub">Sign in to continue</div>
+    <button class="login-btn google-btn" id="googleSignInBtn" onclick="handleGoogleSignIn()">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      Sign in with Google
+    </button>
+    <div class="login-error" id="loginUnauthorized">This Google account is not authorized to access this dashboard.
+      <button class="login-btn" style="margin-top:12px" onclick="handleSignOut()">Sign Out</button>
     </div>
-    <button class="login-btn" onclick="attemptLogin()">Sign In</button>
-    <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
   </div>
 </div>
 
@@ -453,7 +451,7 @@ select.form-input{cursor:pointer}
       <span class="bin-badge" id="binBadge" style="display:none">0</span>
     </div>
     <div class="sidebar-bottom">
-      <div class="logout-btn" onclick="logout()">
+      <div class="logout-btn" onclick="handleSignOut()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
         Sign Out
       </div>
@@ -862,32 +860,20 @@ select.form-input{cursor:pointer}
 </div>
 
 <script>
-// ─── AUTH FUNCTIONS FIRST (login must work even if supabase CDN fails) ───
-const ADMIN_PASS_VAL = "I@mfc!sm@S";
+// ─── AUTH FUNCTIONS ───
+async function handleGoogleSignIn() {
+  const btn = document.getElementById('googleSignInBtn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; }
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/dashboard.html' }
+  });
+}
 
-function attemptLogin() {
-  if (document.getElementById('loginPass').value.trim() === ADMIN_PASS_VAL) {
-    sessionStorage.setItem('inv_auth', '1');
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('dashboard').classList.add('active');
-    initDashboard();
-  } else {
-    document.getElementById('loginError').classList.add('show');
-    document.getElementById('loginPass').value = '';
-  }
+async function handleSignOut() {
+  await sb.auth.signOut();
+  window.location.reload();
 }
-function togglePassView() {
-  const f = document.getElementById('loginPass');
-  const icon = document.getElementById('eyeIcon');
-  if (f.type === 'password') {
-    f.type = 'text';
-    icon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
-  } else {
-    f.type = 'password';
-    icon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
-  }
-}
-function logout() { sessionStorage.removeItem('inv_auth'); location.reload(); }
 
 // ─── SUPABASE (try-catch so CDN failure never crashes auth above) ───
 const SUPABASE_URL = "https://uodiuclpqnhwsiclrbsq.supabase.co";
@@ -951,12 +937,18 @@ let preshootCacheBust = new Array(10).fill(0);
 let currentRsvpData = [];
 
 // ─── SESSION CHECK ───
-document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
-if (sessionStorage.getItem('inv_auth') === '1') {
-  document.getElementById('loginOverlay').style.display = 'none';
-  document.getElementById('dashboard').classList.add('active');
-  initDashboard();
-}
+const AUTHORIZED_EMAIL = 'info.invisend@gmail.com';
+(async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user.email === AUTHORIZED_EMAIL) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+    initDashboard();
+  } else if (session && session.user.email !== AUTHORIZED_EMAIL) {
+    document.getElementById('loginUnauthorized').classList.add('show');
+  }
+  // No session: login overlay stays visible (default state)
+})();
 
 // ─── LANDING VIEWS ───
 async function loadLandingViews() {
