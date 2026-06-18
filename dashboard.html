@@ -249,10 +249,21 @@ select.form-input{cursor:pointer}
 .exit-confirm-card{background:var(--bg2);border:1px solid var(--gb);border-radius:18px;padding:30px 32px 24px;width:min(340px,88vw);box-shadow:0 28px 64px rgba(0,0,0,0.55);text-align:center;animation:toastIn 0.22s var(--ease)}
 .exit-confirm-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
 .exit-confirm-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.5}
-.exit-confirm-btns{display:flex;gap:10px}
-.exit-confirm-btns .btn-ghost{flex:1}
+.exit-confirm-btns{display:flex;flex-direction:column;gap:8px}
+.exit-confirm-btns-row{display:flex;gap:8px}
+.exit-confirm-btns-row .btn-ghost{flex:1}
+.exit-confirm-draft{width:100%;padding:11px 18px;border:1px solid rgba(10,132,255,0.35);border-radius:10px;background:rgba(10,132,255,0.1);color:var(--blue);font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.exit-confirm-draft:hover{background:rgba(10,132,255,0.18);border-color:rgba(10,132,255,0.6)}
 .exit-confirm-discard{flex:1;padding:10px 18px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;transition:opacity 0.15s}
 .exit-confirm-discard:hover{opacity:0.85}
+.draft-banner{display:none;align-items:center;justify-content:space-between;gap:12px;background:rgba(10,132,255,0.08);border:1px solid rgba(10,132,255,0.22);border-radius:10px;padding:11px 14px;margin-bottom:18px}
+.draft-banner-text{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--blue)}
+.draft-banner-text svg{flex-shrink:0}
+.draft-banner-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.draft-restore-btn{font-family:var(--font);font-size:12px;font-weight:600;color:#fff;background:var(--blue);border:none;border-radius:7px;cursor:pointer;padding:5px 13px;transition:opacity 0.15s}
+.draft-restore-btn:hover{opacity:0.85}
+.draft-dismiss-btn{font-family:var(--font);font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;transition:color 0.15s}
+.draft-dismiss-btn:hover{color:var(--text2)}
 /* LOADING */
 .loading-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center}
 .loading-overlay.show{display:flex}
@@ -435,11 +446,17 @@ select.form-input{cursor:pointer}
 <div class="toast-wrap" id="toastWrap"></div>
 <div class="exit-confirm-overlay" id="exitConfirmOverlay">
   <div class="exit-confirm-card">
-    <div class="exit-confirm-title">Discard changes?</div>
-    <div class="exit-confirm-sub">You have unsaved changes.<br>Are you sure you want to exit?</div>
+    <div class="exit-confirm-title">Leave without saving?</div>
+    <div class="exit-confirm-sub">Save a draft to continue later,<br>or discard your changes.</div>
     <div class="exit-confirm-btns">
-      <button class="btn-ghost" onclick="keepEditing()">Keep Editing</button>
-      <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Discard</button>
+      <button class="exit-confirm-draft" onclick="saveDraft()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px;margin-right:5px"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+        Save as Draft
+      </button>
+      <div class="exit-confirm-btns-row">
+        <button class="btn-ghost" onclick="keepEditing()">Keep Editing</button>
+        <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Discard</button>
+      </div>
     </div>
   </div>
 </div>
@@ -679,6 +696,14 @@ select.form-input{cursor:pointer}
       <div class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
     </div>
 
+    <div class="draft-banner" id="draftBanner">
+      <div class="draft-banner-text"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>You have an unsaved draft</div>
+      <div class="draft-banner-actions">
+        <button class="draft-dismiss-btn" onclick="dismissDraft()">Dismiss</button>
+        <button class="draft-restore-btn" onclick="restoreDraft()">Restore</button>
+      </div>
+    </div>
+
     <div class="form-section">
       <div class="form-section-title">Theme</div>
       <div class="theme-selector">
@@ -840,6 +865,7 @@ select.form-input{cursor:pointer}
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeCropModal()">Cancel</button>
+      <button class="btn-ghost" id="cropOriginalBtn" onclick="applyOriginal()" title="Upload without cropping">Original</button>
       <button class="btn-primary" id="cropApplyBtn" onclick="applyCrop()">
         <svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         Use This Crop
@@ -1182,6 +1208,7 @@ function openCreateModal() {
   document.getElementById('modalTitle').textContent = 'New Invitation';
   formDirty = false;
   clearForm(); document.getElementById('invModal').classList.add('open');
+  checkDraftBanner(null);
 }
 function closeModal() { _doCloseModal(); }
 function clearForm() {
@@ -1254,6 +1281,7 @@ function editInvitation(id) {
   }
   formDirty = false;
   document.getElementById('invModal').classList.add('open');
+  checkDraftBanner(id);
 }
 
 function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); markFormDirty(); }
@@ -1435,7 +1463,7 @@ async function saveInvitation() {
     });
     if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast(editingId ? 'Invitation updated!' : 'Invitation created!', 'success');
-    formDirty = false; closeModal(); await loadInvitations(); populateRSVPSelect();
+    formDirty = false; clearDraft(); closeModal(); await loadInvitations(); populateRSVPSelect();
   } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
   hideLoading();
 }
@@ -1744,6 +1772,68 @@ function markFormDirty() { formDirty = true; }
 function keepEditing() { document.getElementById('exitConfirmOverlay').classList.remove('show'); }
 function exitWithoutSaving() { document.getElementById('exitConfirmOverlay').classList.remove('show'); _doCloseModal(); }
 function _doCloseModal() { formDirty = false; document.getElementById('invModal').classList.remove('open'); }
+
+// ─── DRAFT (sessionStorage, no DB) ───
+const DRAFT_KEY = 'invisend_inv_draft';
+function saveDraft() {
+  const draft = {
+    editingId,
+    selectedTheme,
+    fields: ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fStatus','fWeddingDate'].reduce((a, id) => { const el = document.getElementById(id); if (el) a[id] = el.value; return a; }, {}),
+    urls: { swipeA: document.getElementById('fSwipeA')?.value||'', swipeB: document.getElementById('fSwipeB')?.value||'', couplePhoto: document.getElementById('fCouplePhoto')?.value||'', musicUrl: document.getElementById('fMusicUrl')?.value||'', bgImage: document.getElementById('fBgImage')?.value||'' },
+    preshootEnabled: document.getElementById('preshootEnabled')?.checked || false,
+    preshootTitle: document.getElementById('fPreshootTitle')?.value || '',
+    preshootVideo: document.getElementById('fPreshootVideo')?.value || '',
+    preshootUrls: [...preshootUrls],
+    savedAt: Date.now(),
+  };
+  sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  document.getElementById('exitConfirmOverlay').classList.remove('show');
+  _doCloseModal();
+  showToast('Draft saved — restore it when you return', 'info');
+}
+function clearDraft() { sessionStorage.removeItem(DRAFT_KEY); }
+function getDraft() { try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY)); } catch { return null; } }
+function checkDraftBanner(currentEditingId) {
+  const draft = getDraft();
+  const banner = document.getElementById('draftBanner');
+  if (!draft || draft.editingId !== currentEditingId) { banner.style.display = 'none'; return; }
+  banner.style.display = 'flex';
+}
+function dismissDraft() { clearDraft(); document.getElementById('draftBanner').style.display = 'none'; }
+function restoreDraft() {
+  const draft = getDraft(); if (!draft) return;
+  Object.entries(draft.fields || {}).forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.value = val; });
+  if (draft.selectedTheme) {
+    selectedTheme = draft.selectedTheme;
+    document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', parseInt(el.dataset.val) === selectedTheme));
+  }
+  const u = draft.urls || {};
+  if (u.swipeA) { document.getElementById('fSwipeA').value = u.swipeA; const p = document.getElementById('previewSwipeA'); p.src = u.swipeA; p.style.display='block'; markUploadArea('uploadA','swipeA',''); }
+  if (u.swipeB) { document.getElementById('fSwipeB').value = u.swipeB; const p = document.getElementById('previewSwipeB'); p.src = u.swipeB; p.style.display='block'; markUploadArea('uploadB','swipeB',''); }
+  if (u.couplePhoto) { document.getElementById('fCouplePhoto').value = u.couplePhoto; const p = document.getElementById('previewCouple'); p.src = u.couplePhoto; p.style.display='block'; markUploadArea('uploadCouple','couple',''); }
+  if (u.musicUrl) { document.getElementById('fMusicUrl').value = u.musicUrl; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; markUploadArea('uploadMusic','music',''); }
+  if (u.bgImage) { document.getElementById('fBgImage').value = u.bgImage; const p = document.getElementById('previewBgImage'); p.src = u.bgImage; p.style.display='block'; document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓'; markUploadArea('uploadBgImage','background',''); }
+  if (draft.preshootEnabled) {
+    document.getElementById('preshootEnabled').checked = true;
+    document.getElementById('fPreshootTitle').value = draft.preshootTitle || '';
+    document.getElementById('fPreshootVideo').value = draft.preshootVideo || '';
+    preshootUrls = draft.preshootUrls || new Array(10).fill('');
+    document.getElementById('preshootFields').style.display = '';
+    buildPreshootGrid();
+  }
+  document.getElementById('draftBanner').style.display = 'none';
+  formDirty = true;
+  showToast('Draft restored', 'success');
+}
+
+// ─── USE ORIGINAL (skip crop) ───
+function applyOriginal() {
+  if (!cropCallback || !cropFile) return;
+  const cb = cropCallback; const f = cropFile;
+  closeCropModal();
+  cb(f);
+}
 
 // ─── QUICK STATUS TOGGLE ───
 async function toggleStatus(id, currentStatus) {
