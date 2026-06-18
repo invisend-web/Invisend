@@ -1003,8 +1003,9 @@ async function initDashboard() { await loadInvitations(); populateRSVPSelect(); 
 // ─── LOAD INVITATIONS ───
 async function loadInvitations() {
   try {
-    const { data, error } = await sb.from('invitations').select('*').order('created_at', { ascending: false });
-    if (error) throw error;
+    const res = await fetch('/api/get-invitations');
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
+    const { data } = await res.json();
     allInvitations = data || [];
     renderTable(allInvitations);
     updateStats();
@@ -1388,10 +1389,12 @@ async function saveInvitation() {
   }
   showLoading();
   try {
-    let err;
-    if (editingId) { ({ error: err } = await sb.from('invitations').update(payload).eq('id', editingId)); }
-    else { ({ error: err } = await sb.from('invitations').insert(payload)); }
-    if (err) throw err;
+    const res = await fetch('/api/save-invitation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payload, editingId })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast(editingId ? 'Invitation updated!' : 'Invitation created!', 'success');
     closeModal(); await loadInvitations(); populateRSVPSelect();
   } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
@@ -1410,35 +1413,12 @@ function deleteInvitation(id) {
     async () => {
       showLoading();
       try {
-        const mediaUrls = [
-          inv.swipe_image_a_url,
-          inv.swipe_image_b_url,
-          inv.couple_photo_url,
-          inv.music_url,
-          inv.background_image_url,
-          inv.preshoot_video_url,
-          inv.preshoot_photo_1,
-          inv.preshoot_photo_2,
-          inv.preshoot_photo_3,
-          inv.preshoot_photo_4,
-          inv.preshoot_photo_5,
-          inv.preshoot_photo_6,
-          inv.preshoot_photo_7,
-          inv.preshoot_photo_8,
-          inv.preshoot_photo_9,
-          inv.preshoot_photo_10,
-        ].filter(Boolean);
-        const { data: rsvps } = await sb.from('rsvp').select('*').eq('invitation_slug', inv.slug);
-        const { error: binError } = await sb.from('bin').insert({
-          item_type: 'invitation', item_id: inv.id, item_label: coupleName,
-          item_data: { invitation: inv, rsvps: rsvps || [] },
-          media_urls: mediaUrls,
-          purge_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        const res = await fetch('/api/delete-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
         });
-        if (binError) throw binError;
-        await sb.from('rsvp').delete().eq('invitation_slug', inv.slug);
-        const { error: delError } = await sb.from('invitations').delete().eq('id', id);
-        if (delError) throw delError;
+        if (!res.ok) throw new Error((await res.json()).error || res.statusText);
         showToast(`"${coupleName}" moved to Recycle Bin`, 'info');
         await loadInvitations(); populateRSVPSelect(); loadBinBadge();
       } catch(e) { showToast('Failed to delete: ' + (e.message || e), 'error'); }
@@ -1475,8 +1455,9 @@ async function loadRSVPForInv(slug) {
   if (!slug) { document.getElementById('rsvpContent').style.display = 'none'; return; }
   showLoading();
   try {
-    const { data, error } = await sb.from('rsvp').select('*').eq('invitation_slug', slug).order('created_at', { ascending: false });
-    if (error) throw error;
+    const res = await fetch('/api/get-rsvps?slug=' + encodeURIComponent(slug));
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
+    const { data } = await res.json();
     currentRsvpData = data || [];
     const yes = currentRsvpData.filter(r => r.attendance === 'yes').length;
     const no = currentRsvpData.filter(r => r.attendance === 'no').length;
@@ -1661,10 +1642,12 @@ async function saveTestimonial() {
   const payload = { couple_name, image_url, caption: document.getElementById('tCaption').value.trim() || null, theme: document.getElementById('tTheme').value || null, sort_order: parseInt(document.getElementById('tOrder').value) || 1, is_visible: document.getElementById('tVisible').value === 'true' };
   showLoading();
   try {
-    let err;
-    if (editingTestId) { ({ error: err } = await sb.from('testimonials').update(payload).eq('id', editingTestId)); }
-    else { ({ error: err } = await sb.from('testimonials').insert(payload)); }
-    if (err) throw err;
+    const res = await fetch('/api/save-testimonial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payload, editingTestId })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast(editingTestId ? 'Updated!' : 'Added!', 'success');
     closeTestimonialModal(); loadTestimonials();
   } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
@@ -1723,8 +1706,12 @@ async function toggleStatus(id, currentStatus) {
   if (!confirm(`Set this invitation to ${label}?`)) return;
   showLoading();
   try {
-    const { error } = await sb.from('invitations').update({ status: newStatus }).eq('id', id);
-    if (error) throw error;
+    const res = await fetch('/api/save-invitation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payload: { status: newStatus }, editingId: id })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast(`Invitation set to ${label}`, newStatus === 'live' ? 'success' : 'info');
     await loadInvitations();
   } catch (e) { showToast('Update failed', 'error'); }
@@ -2056,8 +2043,10 @@ async function loadBin() {
   const list = document.getElementById('binList');
   list.innerHTML = '<div style="padding:40px;text-align:center"><div class="loading-ring" style="margin:auto"></div></div>';
   try {
-    const { data, error } = await sb.from('bin').select('*').order('deleted_at', { ascending: false });
-    if (error) throw error;
+    const res = await fetch('/api/get-bin');
+    const binJson = await res.json();
+    if (!res.ok) throw new Error(binJson.error || res.statusText);
+    const data = binJson.data;
     document.getElementById('emptyBinBtn').style.display = data && data.length ? 'flex' : 'none';
     if (!data || !data.length) {
       list.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M15 4V3H9v1H4v2h1l1 13a2 2 0 002 2h8a2 2 0 002-2l1-13h1V4h-5zm-5 12H8.5l-.5-10h2v10zm4 0h-2V8h2v8zm2.5-10l-.5 10H14V8h2.5z"/></svg></div><div class="empty-title">Recycle Bin is Empty</div><div class="empty-sub">Deleted items appear here for 3 days</div></div>`;
@@ -2089,7 +2078,9 @@ async function loadBin() {
 
 async function loadBinBadge() {
   try {
-    const { count } = await sb.from('bin').select('id', { count: 'exact', head: true });
+    const res = await fetch('/api/get-bin?countOnly=true');
+    if (!res.ok) return;
+    const { count } = await res.json();
     const badge = document.getElementById('binBadge');
     if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
     else { badge.style.display = 'none'; }
@@ -2099,20 +2090,12 @@ async function loadBinBadge() {
 async function restoreFromBin(binId) {
   showLoading();
   try {
-    const { data: binItem, error } = await sb.from('bin').select('*').eq('id', binId).single();
-    if (error) throw error;
-    if (binItem.item_type === 'invitation') {
-      const { invitation, rsvps } = binItem.item_data;
-      const invPayload = { ...invitation, status: 'live' };
-      delete invPayload.id;
-      const { error: restoreErr } = await sb.from('invitations').upsert(invPayload);
-      if (restoreErr) throw restoreErr;
-      if (rsvps && rsvps.length) {
-        const cleanRsvps = rsvps.map(r => { const c = {...r}; delete c.id; return c; });
-        await sb.from('rsvp').insert(cleanRsvps);
-      }
-    }
-    await sb.from('bin').delete().eq('id', binId);
+    const res = await fetch('/api/restore-invitation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ binId })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast('Item restored successfully', 'success');
     loadBin(); loadBinBadge(); await loadInvitations(); populateRSVPSelect();
   } catch(e) { showToast('Restore failed: ' + (e.message || e), 'error'); }
@@ -2127,12 +2110,12 @@ async function permanentDelete(binId, label) {
     async () => {
       showLoading();
       try {
-        const { data: binItem, error } = await sb.from('bin').select('*').eq('id', binId).single();
-        if (error) throw error;
-        if (binItem && binItem.media_urls && binItem.media_urls.length) {
-          await deleteStorageFiles(binItem.media_urls);
-        }
-        await sb.from('bin').delete().eq('id', binId);
+        const res = await fetch('/api/purge-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'single', binId })
+        });
+        if (!res.ok) throw new Error((await res.json()).error || res.statusText);
         showToast('Permanently deleted', 'info');
         loadBin(); loadBinBadge();
       } catch(e) { showToast('Delete failed: ' + (e.message || e), 'error'); }
@@ -2149,20 +2132,12 @@ async function emptyBinNow() {
     async () => {
       showLoading();
       try {
-        const { data: allBin, error } = await sb.from('bin').select('*');
-        if (error) throw error;
-        const allUrls = [];
-        for (const item of allBin || []) {
-          if (item.media_urls && item.media_urls.length) {
-            allUrls.push(...item.media_urls);
-          }
-        }
-        if (allUrls.length > 0) {
-          await deleteStorageFiles(allUrls);
-        }
-        if (allBin && allBin.length > 0) {
-          await sb.from('bin').delete().in('id', allBin.map(i => i.id));
-        }
+        const res = await fetch('/api/purge-invitation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'all' })
+        });
+        if (!res.ok) throw new Error((await res.json()).error || res.statusText);
         showToast('Recycle Bin emptied', 'info');
         loadBin(); loadBinBadge();
       } catch(e) { showToast('Failed to empty bin: ' + (e.message || e), 'error'); }
