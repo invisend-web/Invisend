@@ -1142,8 +1142,7 @@ async function handlePreshootUpload(input, idx) {
       if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
       const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
       const path = `preshoot/${Date.now()}_${idx}.${ext}`;
-      const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
-      if (error) throw error;
+      await storageUpload('images', path, croppedFile);
       const { data: u } = sb.storage.from('images').getPublicUrl(path);
       preshootUrls[idx] = u.publicUrl;
       trackFileUpload(path, 'images', u.publicUrl, 'preshoot_photo_' + (idx + 1), 'invitations', editingId || 'new');
@@ -1235,6 +1234,19 @@ function editInvitation(id) {
 
 function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); }
 
+// ─── STORAGE UPLOAD (via service role signed URL — bypasses RLS) ───
+async function storageUpload(bucket, path, file) {
+  const res = await fetch('/api/get-upload-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bucket, path })
+  });
+  if (!res.ok) throw new Error((await res.json()).error || 'Failed to get upload URL');
+  const { token } = await res.json();
+  const { error } = await sb.storage.from(bucket).uploadToSignedUrl(path, token, file);
+  if (error) throw error;
+}
+
 // ─── FILE TRACKING ───
 async function trackFileUpload(filePath, bucket, publicUrl, fileType, referencedBy, referenceId) {
   try {
@@ -1288,8 +1300,7 @@ async function handleUpload(input, type, areaId, previewId) {
     // Mark old file orphaned and delete from storage
     const oldUrl = type === 'music' ? document.getElementById('fMusicUrl')?.value : null;
     if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
-    const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
-    if (error) throw error;
+    await storageUpload(bucket, path, file);
     const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
     const url = u.publicUrl;
     if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
@@ -1619,8 +1630,7 @@ async function handleTestimonialUpload(input) {
   showLoading();
   try {
     const path = `testimonials/${Date.now()}.${file.name.split('.').pop()}`;
-    const { error } = await sb.storage.from('images').upload(path, file, { upsert: true });
-    if (error) throw error;
+    await storageUpload('images', path, file);
     const { data: u } = sb.storage.from('images').getPublicUrl(path);
     const oldTestUrl = document.getElementById('tImageUrl').value;
     if (oldTestUrl) markFileOrphaned(oldTestUrl);
@@ -1831,8 +1841,7 @@ async function openRecropModal(type, areaId, previewId) {
       showLoading();
       try {
         // Overwrite the SAME storage path - no new file, no extra space
-        const { error } = await sb.storage.from('images').upload(storagePath, croppedFile, { upsert: true });
-        if (error) throw error;
+        await storageUpload('images', storagePath, croppedFile);
 
         // Persist cache-busting param in the saved URL
         // so invitation.html shows updated crop on all devices
@@ -1884,8 +1893,7 @@ async function openRecropPreshoot(idx, e) {
     openCropModal(file, 'preshoot', async (croppedFile) => {
       showLoading();
       try {
-        const { error } = await sb.storage.from('images').upload(storagePath, croppedFile, { upsert: true });
-        if (error) throw error;
+        await storageUpload('images', storagePath, croppedFile);
 
         const baseUrl = currentUrl.split('?')[0];
         const cacheBustTs = Date.now();
@@ -1966,8 +1974,7 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
       if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
       const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
       const path = `${type}/${Date.now()}.${ext}`;
-      const { error } = await sb.storage.from('images').upload(path, croppedFile, { upsert: true });
-      if (error) throw error;
+      await storageUpload('images', path, croppedFile);
       const { data: u } = sb.storage.from('images').getPublicUrl(path);
       const url = u.publicUrl;
       if (hiddenId) document.getElementById(hiddenId).value = url;
