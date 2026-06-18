@@ -16,6 +16,7 @@ module.exports = async function handler(req, res) {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${serviceRoleKey}`,
+      'apikey': serviceRoleKey,
       'Content-Type': mimeType,
       'x-upsert': 'true',
     },
