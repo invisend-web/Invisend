@@ -234,13 +234,25 @@ select.form-input{cursor:pointer}
 .test-thumb-btn.red{color:var(--red);border-color:rgba(255,69,58,0.2)}
 .test-thumb-btn.red:hover{background:rgba(255,69,58,0.1)}
 /* TOAST */
-.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:8px}
-.toast{background:var(--bg3);border:1px solid var(--gb);border-radius:12px;padding:12px 18px;font-size:13.5px;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;animation:toastIn 0.3s var(--ease);max-width:320px}
-@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.toast-wrap{position:fixed;top:28px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:rgba(22,22,30,0.88);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:11px 20px;font-size:13.5px;color:var(--text);box-shadow:0 8px 40px rgba(0,0,0,0.55),0 2px 8px rgba(0,0,0,0.3);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;gap:9px;animation:toastIn 0.28s var(--ease);white-space:nowrap;pointer-events:auto}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-8px) scale(0.93)}}
+.toast.out{animation:toastOut 0.22s var(--ease) forwards}
 .toast.success .toast-icon{color:var(--green)}
 .toast.error .toast-icon{color:var(--red)}
 .toast.info .toast-icon{color:var(--blue)}
-.toast-icon svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+.toast-icon svg{width:15px;height:15px;fill:currentColor;flex-shrink:0}
+/* EXIT CONFIRM DIALOG */
+.exit-confirm-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center}
+.exit-confirm-overlay.show{display:flex}
+.exit-confirm-card{background:var(--bg2);border:1px solid var(--gb);border-radius:18px;padding:30px 32px 24px;width:min(340px,88vw);box-shadow:0 28px 64px rgba(0,0,0,0.55);text-align:center;animation:toastIn 0.22s var(--ease)}
+.exit-confirm-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.exit-confirm-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.5}
+.exit-confirm-btns{display:flex;gap:10px}
+.exit-confirm-btns .btn-ghost{flex:1}
+.exit-confirm-discard{flex:1;padding:10px 18px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;transition:opacity 0.15s}
+.exit-confirm-discard:hover{opacity:0.85}
 /* LOADING */
 .loading-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center}
 .loading-overlay.show{display:flex}
@@ -276,10 +288,10 @@ select.form-input{cursor:pointer}
 .slug-preview{font-family:'SFMono-Regular',Consolas,'Courier New',monospace;font-size:10px;color:var(--text3);margin-top:5px;display:none;line-height:1.6;word-break:break-all}
 .slug-preview-val{color:var(--blue)}
 /* ─── UPLOAD WITH MEDIA ─── */
-.upload-area.has-media{padding:0;border-style:solid;overflow:hidden}
+.upload-area.has-media{padding:0;border-style:solid;overflow:hidden;min-height:unset;height:110px}
 .upload-area.has-media .upload-icon,.upload-area.has-media .upload-label,
 .upload-area.has-media .upload-sub,.upload-area.has-media .upload-hint{display:none !important}
-.upload-area.has-media .upload-preview{display:block !important;width:100%;min-height:90px;max-height:none;object-fit:cover;border-radius:0}
+.upload-area.has-media .upload-preview{display:block !important;width:100%;height:110px;min-height:unset;max-height:110px;object-fit:cover;border-radius:0}
 .upload-del-btn{position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(255,69,58,0.9);border-radius:50%;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:transform 0.15s;line-height:1}
 .upload-del-btn:active{transform:scale(0.88)}
 .upload-del-btn.confirming{font-size:8.5px;letter-spacing:-0.01em;background:var(--red)}
@@ -421,6 +433,16 @@ select.form-input{cursor:pointer}
 
 <div class="loading-overlay" id="loadingOverlay"><div class="loading-ring"></div></div>
 <div class="toast-wrap" id="toastWrap"></div>
+<div class="exit-confirm-overlay" id="exitConfirmOverlay">
+  <div class="exit-confirm-card">
+    <div class="exit-confirm-title">Discard changes?</div>
+    <div class="exit-confirm-sub">You have unsaved changes.<br>Are you sure you want to exit?</div>
+    <div class="exit-confirm-btns">
+      <button class="btn-ghost" onclick="keepEditing()">Keep Editing</button>
+      <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Discard</button>
+    </div>
+  </div>
+</div>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <!-- DASHBOARD -->
@@ -1158,9 +1180,10 @@ function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); 
 function openCreateModal() {
   editingId = null; selectedTheme = 1; preshootUrls = new Array(10).fill(''); preshootCacheBust = new Array(10).fill(0);
   document.getElementById('modalTitle').textContent = 'New Invitation';
+  formDirty = false;
   clearForm(); document.getElementById('invModal').classList.add('open');
 }
-function closeModal() { document.getElementById('invModal').classList.remove('open'); }
+function closeModal() { _doCloseModal(); }
 function clearForm() {
   ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fBgImage','fPreshootTitle','fPreshootVideo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
@@ -1229,10 +1252,11 @@ function editInvitation(id) {
     document.getElementById('fPreshootVideo').value = inv.preshoot_video_url || '';
     buildPreshootGrid();
   }
+  formDirty = false;
   document.getElementById('invModal').classList.add('open');
 }
 
-function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); }
+function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); markFormDirty(); }
 
 // ─── STORAGE UPLOAD (via service role signed URL — bypasses RLS) ───
 async function storageUpload(bucket, path, file) {
@@ -1316,6 +1340,7 @@ async function handleUpload(input, type, areaId, previewId) {
 }
 function markUploadArea(areaId, type, fileName) {
   const area = document.getElementById(areaId); if (!area) return;
+  markFormDirty();
   area.classList.add('has-media');
   area.querySelector('.upload-del-btn')?.remove();
   area.querySelector('.upload-recrop-btn')?.remove();
@@ -1410,7 +1435,7 @@ async function saveInvitation() {
     });
     if (!res.ok) throw new Error((await res.json()).error || res.statusText);
     showToast(editingId ? 'Invitation updated!' : 'Invitation created!', 'success');
-    closeModal(); await loadInvitations(); populateRSVPSelect();
+    formDirty = false; closeModal(); await loadInvitations(); populateRSVPSelect();
   } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
   hideLoading();
 }
@@ -1709,8 +1734,16 @@ async function deleteTestimonial(id) { if (!confirm('Delete this testimonial?'))
 function showToast(msg, type = 'info') {
   const icons = { success: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>', error: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>', info: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' };
   const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
-  document.getElementById('toastWrap').appendChild(t); setTimeout(() => t.remove(), 3500);
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 220); }, 3000);
 }
+
+// ─── EXIT CONFIRM ───
+let formDirty = false;
+function markFormDirty() { formDirty = true; }
+function keepEditing() { document.getElementById('exitConfirmOverlay').classList.remove('show'); }
+function exitWithoutSaving() { document.getElementById('exitConfirmOverlay').classList.remove('show'); _doCloseModal(); }
+function _doCloseModal() { formDirty = false; document.getElementById('invModal').classList.remove('open'); }
 
 // ─── QUICK STATUS TOGGLE ───
 async function toggleStatus(id, currentStatus) {
@@ -1767,10 +1800,20 @@ function autoGenerateSlug() {
 
 function showLoading() { document.getElementById('loadingOverlay').classList.add('show'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
-document.getElementById('invModal').addEventListener('click', e => { if (e.target === document.getElementById('invModal')) closeModal(); });
+document.getElementById('invModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('invModal')) {
+    if (formDirty) { document.getElementById('exitConfirmOverlay').classList.add('show'); }
+    else { _doCloseModal(); }
+  }
+});
 document.getElementById('testModal').addEventListener('click', e => { if (e.target === document.getElementById('testModal')) closeTestimonialModal(); });
 document.getElementById('dangerModal').addEventListener('click', e => { if (e.target === document.getElementById('dangerModal')) closeDangerModal(); });
 document.getElementById('cropModal').addEventListener('click', e => { if (e.target === document.getElementById('cropModal')) closeCropModal(); });
+// Dirty tracking on all inv modal inputs
+document.querySelectorAll('#invModal input:not([type=file]):not([type=hidden]), #invModal select, #invModal textarea').forEach(el => {
+  el.addEventListener('input', markFormDirty);
+  el.addEventListener('change', markFormDirty);
+});
 
 // ─── CROP ───
 let cropper = null, cropCallback = null, cropFile = null;
