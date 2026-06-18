@@ -1236,15 +1236,18 @@ function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => 
 
 // ─── STORAGE UPLOAD (via service role signed URL — bypasses RLS) ───
 async function storageUpload(bucket, path, file) {
-  const res = await fetch('/api/get-upload-url', {
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+  const res = await fetch('/api/upload-file', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ bucket, path })
+    body: JSON.stringify({ bucket, path, base64, mimeType: file.type || 'application/octet-stream' })
   });
-  if (!res.ok) throw new Error((await res.json()).error || 'Failed to get upload URL');
-  const { token } = await res.json();
-  const { error } = await sb.storage.from(bucket).uploadToSignedUrl(path, token, file);
-  if (error) throw error;
+  if (!res.ok) throw new Error((await res.json()).error || 'Upload failed');
 }
 
 // ─── FILE TRACKING ───
