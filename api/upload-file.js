@@ -8,10 +8,14 @@ module.exports = async function handler(req, res) {
   const { bucket, path, base64, mimeType } = req.body;
   if (!bucket || !path || !base64 || !mimeType) return res.status(400).json({ error: 'Missing required fields' });
 
+  let keyRole = 'unknown';
+  try { keyRole = JSON.parse(Buffer.from(serviceRoleKey.split('.')[1], 'base64').toString()).role; } catch(e) {}
+  if (keyRole !== 'service_role') {
+    return res.status(500).json({ error: `Wrong key in SUPABASE_SERVICE_ROLE_KEY (role="${keyRole}"). Go to Supabase → Settings → API and copy the service_role secret.` });
+  }
+
   const buffer = Buffer.from(base64, 'base64');
 
-  // Direct REST API call — no JS client layer, service role key goes straight
-  // into the Authorization header, bypassing storage.objects RLS entirely
   const uploadRes = await fetch(`${supabaseUrl}/storage/v1/object/${bucket}/${path}`, {
     method: 'POST',
     headers: {
