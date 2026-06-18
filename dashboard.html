@@ -939,12 +939,41 @@ let currentRsvpData = [];
 
 // ─── SESSION CHECK ───
 const AUTHORIZED_EMAIL = 'info.invisend@gmail.com';
+
+// Fires when Supabase detects session from OAuth
+// redirect URL hash, as well as on sign-out.
+// This is the reliable path for post-Google-login
+// init — getSession() alone may not see the token
+// before the page finishes loading.
+let dashboardInitialized = false;
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    if (session.user?.email === AUTHORIZED_EMAIL) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('dashboard').classList.add('active');
+      if (!dashboardInitialized) {
+        dashboardInitialized = true;
+        initDashboard();
+      }
+    } else {
+      document.getElementById('loginOverlay').style.display = 'flex';
+      document.getElementById('loginUnauthorized').classList.add('show');
+    }
+  }
+  if (event === 'SIGNED_OUT') {
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
+});
+
 (async function initAuth() {
   const { data: { session } } = await sb.auth.getSession();
   if (session && session.user.email === AUTHORIZED_EMAIL) {
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('dashboard').classList.add('active');
-    initDashboard();
+    if (!dashboardInitialized) {
+      dashboardInitialized = true;
+      initDashboard();
+    }
   } else if (session && session.user.email !== AUTHORIZED_EMAIL) {
     document.getElementById('loginUnauthorized').classList.add('show');
   }
