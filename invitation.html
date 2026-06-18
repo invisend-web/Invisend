@@ -49,9 +49,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(247,243,236,0.4) 40%,rgba(247,243,236,0.85) 70%,rgba(247,243,236,1) 100%)}
 [data-theme="6"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(247,243,231,0.4) 40%,rgba(247,243,231,0.85) 70%,rgba(247,243,231,1) 100%)}
 [data-theme="5"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(18,8,0,0.4) 40%,rgba(18,8,0,0.85) 70%,rgba(18,8,0,1) 100%)}
-[data-theme="7"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
-[data-theme="8"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
-[data-theme="9"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(6,18,8,0.4) 40%,rgba(6,18,8,0.85) 70%,rgba(6,18,8,1) 100%)}
+[data-theme="8"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
+[data-theme="9"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
+[data-theme="10"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(6,18,8,0.4) 40%,rgba(6,18,8,0.85) 70%,rgba(6,18,8,1) 100%)}
 .custom-bg-overlay{position:absolute;inset:0;pointer-events:none}
 [data-theme="1"] .custom-bg-overlay{background:rgba(7,6,10,0.35)}
 [data-theme="2"] .custom-bg-overlay{background:rgba(22,4,4,0.35)}
@@ -59,9 +59,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="4"] .custom-bg-overlay{background:rgba(247,243,236,0.25)}
 [data-theme="6"] .custom-bg-overlay{background:rgba(247,243,231,0.18)}
 [data-theme="5"] .custom-bg-overlay{background:rgba(18,8,0,0.4)}
-[data-theme="7"] .custom-bg-overlay{background:rgba(22,4,4,0.45)}
-[data-theme="8"] .custom-bg-overlay{background:rgba(7,6,10,0.45)}
-[data-theme="9"] .custom-bg-overlay{background:rgba(6,18,8,0.45)}
+[data-theme="8"] .custom-bg-overlay{background:rgba(22,4,4,0.45)}
+[data-theme="9"] .custom-bg-overlay{background:rgba(7,6,10,0.45)}
+[data-theme="10"] .custom-bg-overlay{background:rgba(6,18,8,0.45)}
 [data-theme="4"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="4"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="6"] .hero-tag{display:none !important}
@@ -150,6 +150,72 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes oliveTapPulse{0%{transform:scale(0.5);opacity:0.9}100%{transform:scale(1.8);opacity:0}}
 /* OLIVE CREAM — calendar widget */
 [data-theme="6"] .olive-calendar-wrap{display:block !important;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+
+/* ══════════════════════════════════════
+   PAPER GARDEN (theme 7)
+   ══════════════════════════════════════ */
+[data-theme="7"]{--bg:#FAF8F5;--bg2:#F2EFE9;--card:#F2EFE9;--accent:#5B7B6F;--accent2:#3D6057;--glow:rgba(91,123,111,0.25);--text:#2C2C2C;--text2:#8A9E98;--text3:#B0BCB8;--border:rgba(91,123,111,0.18);--merge-glow:radial-gradient(ellipse at center,rgba(91,123,111,0.4) 0%,rgba(91,123,111,0.15) 50%,transparent 70%);--section-bg:rgba(91,123,111,0.05);}
+[data-theme="7"] .bg-layer{background:#FAF8F5}
+[data-theme="7"] .hero-tag{display:none !important}
+[data-theme="7"] .hero{padding-top:0 !important}
+[data-theme="7"] .arena,[data-theme="7"] .couple-name-block,[data-theme="7"] .scroll-down-hint{display:none !important}
+[data-theme="7"] .pg-hero{display:block}
+[data-theme="7"] .pg-hero{margin-bottom:-100vh}
+@supports (height:100dvh){[data-theme="7"] .pg-hero{margin-bottom:-100dvh}}
+[data-theme="7"] .rsvp-submit{background:#5B7B6F;box-shadow:0 8px 24px rgba(91,123,111,0.3)}
+[data-theme="7"] .rsvp-submit:hover{background:#4A6960}
+[data-theme="7"] .family-card{border-top:2px solid var(--accent)}
+[data-theme="7"] .pg-timeline-section,[data-theme="7"] .pg-photo-section{display:block}
+
+/* Paper Garden Hero */
+.pg-hero{display:none;position:relative;width:100%;height:220vh}
+@supports (height:100dvh){.pg-hero{height:220dvh}}
+.pg-sticky-wrap{position:sticky;top:0;width:100%;height:100vh;overflow:hidden}
+@supports (height:100dvh){.pg-sticky-wrap{height:100dvh}}
+.pg-bg-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#pgCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;touch-action:pan-y;z-index:3}
+.pg-tap-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;z-index:5;pointer-events:none;transition:opacity 0.4s ease}
+.pg-tap-hint.hide{opacity:0}
+.pg-tap-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(91,123,111,0.6);animation:pgTapPulse 2.2s ease-out infinite}
+.pg-tap-ring.r2{animation-delay:1.1s}
+.pg-tap-dot{position:absolute;top:50%;left:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:rgba(91,123,111,0.9);box-shadow:0 0 14px rgba(91,123,111,0.5)}
+@keyframes pgTapPulse{0%{transform:scale(0.5);opacity:0.9}100%{transform:scale(1.8);opacity:0}}
+.pg-names-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none;opacity:0;transition:opacity 1s ease;padding-top:5%;z-index:5}
+.pg-couple-names{font-family:var(--font-display);font-size:clamp(34px,10vw,54px);font-style:italic;color:#FAF8F5;line-height:1.2;text-align:center;text-shadow:0 2px 24px rgba(44,44,44,0.35)}
+.pg-couple-names em{color:#c8ddd8;font-style:italic}
+.pg-tagline{font-family:var(--font-ui);font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(250,248,245,0.75);margin-top:6px}
+.pg-nudge-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
+.pg-nudge-hint.show{opacity:1}
+.pg-nudge-hint span{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(250,248,245,0.75)}
+.pg-nudge-track{width:1px;height:26px;background:rgba(250,248,245,0.3);position:relative}
+.pg-nudge-chevron{position:absolute;top:0;left:50%;width:8px;height:8px;border-right:1.5px solid rgba(250,248,245,0.75);border-bottom:1.5px solid rgba(250,248,245,0.75);transform:translateX(-50%) rotate(45deg)}
+
+/* Torn paper edge */
+.pg-torn-bottom{position:absolute;bottom:-2px;left:0;width:100%;z-index:7;pointer-events:none;line-height:0}
+.pg-torn-bottom svg{width:100%;display:block}
+.pg-torn-top{position:relative;left:0;width:100%;z-index:1;pointer-events:none;line-height:0;margin-bottom:-2px}
+.pg-torn-top svg{width:100%;display:block}
+
+/* Paper Garden — event timeline section */
+.pg-timeline-section{display:none;padding:48px 24px 16px;max-width:480px;margin:0 auto}
+.pg-timeline-eyebrow{font-family:var(--font-ui);font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:32px}
+.pg-timeline{display:flex;flex-direction:column;gap:0}
+.pg-tl-item{display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid var(--border);position:relative}
+.pg-tl-item:last-child{border-bottom:none}
+.pg-tl-icon{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.pg-tl-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.pg-tl-body{flex:1;padding-top:4px}
+.pg-tl-time{font-family:var(--font-ui);font-size:10px;letter-spacing:0.1em;color:var(--text2);margin-bottom:3px}
+.pg-tl-title{font-family:var(--font-display);font-size:17px;font-style:italic;color:var(--text);margin-bottom:2px}
+.pg-tl-venue{font-family:var(--font-ui);font-size:12px;color:var(--text2);line-height:1.5}
+
+/* Paper Garden — mid-page static photo */
+.pg-photo-section{display:none;position:relative;width:100%;margin:24px 0}
+.pg-photo-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.pg-photo-torn-top{line-height:0;position:relative;z-index:1;margin-bottom:-2px}
+.pg-photo-torn-top svg{width:100%;display:block}
+.pg-photo-torn-bottom{line-height:0;position:relative;z-index:1;margin-top:-2px}
+.pg-photo-torn-bottom svg{width:100%;display:block}
 .olive-cal-month{font-family:var(--font-display);font-size:14px;letter-spacing:0.08em;color:var(--text2);text-align:center;margin-bottom:12px}
 .olive-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:280px;margin:0 auto}
 .olive-cal-dow{font-family:var(--font-ui);font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text3);text-align:center;padding-bottom:4px}
@@ -159,10 +225,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* HERO */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 0 48px;position:relative;overflow:hidden}
 /* Prevent Chrome Android URL bar layout jump */
-[data-theme="7"] .tg-dock,
 [data-theme="8"] .tg-dock,
 [data-theme="9"] .tg-dock,
-[data-theme="10"] .cinema-stage {
+[data-theme="10"] .tg-dock,
+[data-theme="11"] .cinema-stage {
   min-height: 100dvh;
 }
 .tg-dock{position:fixed;bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);}
@@ -478,82 +544,82 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* ════════════════════════════════════
    THEME 7: UDARATA SINHALA BY TG WEDDING FILMS
 ════════════════════════════════════ */
-[data-theme="7"]{--bg:#160404;--bg2:#200808;--card:#2d0c0c;--accent:#f1cb14;--accent2:#ffe066;--glow:rgba(241,203,20,0.4);--text:#fff5e0;--text2:#c4903a;--text3:#7a4a20;--border:rgba(241,203,20,0.2);--section-bg:rgba(255,255,255,0.025);--merge-glow:radial-gradient(ellipse at center,rgba(241,203,20,0.8) 0%,rgba(228,74,10,0.3) 40%,transparent 70%);--particle-color:#f1cb14;}
-[data-theme="7"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404;}
-[data-theme="7"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
-[data-theme="7"] .swipe-card::before{display:none!important;}
-[data-theme="7"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
-[data-theme="7"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
-[data-theme="7"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
-[data-theme="7"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
-[data-theme="7"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow7 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#f1cb14;letter-spacing:0.06em;}
-[data-theme="7"] .couple-names em{color:#ffe066;font-style:italic;}
-[data-theme="7"] .name-diamond{background:linear-gradient(135deg,#f1cb14,#e8450a);}
-[data-theme="7"] .name-line.l{background:linear-gradient(90deg,transparent,#f1cb14);}
-[data-theme="7"] .name-line.r{background:linear-gradient(90deg,#f1cb14,transparent);}
-[data-theme="7"] .couple-tagline{color:rgba(241,203,20,0.5);letter-spacing:0.4em;font-size:9px;}
-@keyframes tgNameGlow7{0%,100%{text-shadow:0 0 20px rgba(241,203,20,0.5),0 0 40px rgba(241,203,20,0.2);}50%{text-shadow:0 0 40px rgba(241,203,20,0.9),0 0 80px rgba(241,203,20,0.5);}}
-
-/* ════════════════════════════════════
-   THEME 8: WESTERN LUXURY BY TG WEDDING FILMS
-════════════════════════════════════ */
-[data-theme="8"]{--bg:#07060a;--bg2:#0f0d14;--card:#161220;--accent:#c9a84c;--accent2:#e8cc7a;--glow:rgba(201,168,76,0.35);--text:#f5ead4;--text2:#9a8468;--text3:#52463a;--border:rgba(201,168,76,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(201,168,76,0.7) 0%,rgba(201,168,76,0.1) 50%,transparent 70%);--particle-color:#c9a84c;}
-[data-theme="8"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(201,168,76,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(201,168,76,0.05) 0%,transparent 60%),#07060a;}
+[data-theme="8"]{--bg:#160404;--bg2:#200808;--card:#2d0c0c;--accent:#f1cb14;--accent2:#ffe066;--glow:rgba(241,203,20,0.4);--text:#fff5e0;--text2:#c4903a;--text3:#7a4a20;--border:rgba(241,203,20,0.2);--section-bg:rgba(255,255,255,0.025);--merge-glow:radial-gradient(ellipse at center,rgba(241,203,20,0.8) 0%,rgba(228,74,10,0.3) 40%,transparent 70%);--particle-color:#f1cb14;}
+[data-theme="8"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(241,203,20,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(228,74,10,0.07) 0%,transparent 60%),#160404;}
 [data-theme="8"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
 [data-theme="8"] .swipe-card::before{display:none!important;}
 [data-theme="8"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
 [data-theme="8"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
 [data-theme="8"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
 [data-theme="8"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
-[data-theme="8"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow8 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#c9a84c;letter-spacing:0.06em;}
-[data-theme="8"] .couple-names em{color:#e8cc7a;font-style:italic;}
-[data-theme="8"] .name-diamond{background:linear-gradient(135deg,#c9a84c,#e8cc7a);}
-[data-theme="8"] .name-line.l{background:linear-gradient(90deg,transparent,#c9a84c);}
-[data-theme="8"] .name-line.r{background:linear-gradient(90deg,#c9a84c,transparent);}
-[data-theme="8"] .couple-tagline{color:rgba(201,168,76,0.5);letter-spacing:0.4em;font-size:9px;}
-@keyframes tgNameGlow8{0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.5),0 0 40px rgba(201,168,76,0.2);}50%{text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.5);}}
+[data-theme="8"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow7 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#f1cb14;letter-spacing:0.06em;}
+[data-theme="8"] .couple-names em{color:#ffe066;font-style:italic;}
+[data-theme="8"] .name-diamond{background:linear-gradient(135deg,#f1cb14,#e8450a);}
+[data-theme="8"] .name-line.l{background:linear-gradient(90deg,transparent,#f1cb14);}
+[data-theme="8"] .name-line.r{background:linear-gradient(90deg,#f1cb14,transparent);}
+[data-theme="8"] .couple-tagline{color:rgba(241,203,20,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow7{0%,100%{text-shadow:0 0 20px rgba(241,203,20,0.5),0 0 40px rgba(241,203,20,0.2);}50%{text-shadow:0 0 40px rgba(241,203,20,0.9),0 0 80px rgba(241,203,20,0.5);}}
 
 /* ════════════════════════════════════
-   THEME 9: KALYANAM BY TG WEDDING FILMS
+   THEME 8: WESTERN LUXURY BY TG WEDDING FILMS
 ════════════════════════════════════ */
-[data-theme="9"]{--bg:#061208;--bg2:#0c1e0e;--card:#132818;--accent:#ffc61c;--accent2:#ffe566;--glow:rgba(255,198,28,0.4);--text:#f0fff4;--text2:#7ab88a;--text3:#3d6644;--border:rgba(255,198,28,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(255,198,28,0.8) 0%,rgba(74,158,92,0.3) 40%,transparent 70%);--particle-color:#ffc61c;}
-[data-theme="9"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208;}
+[data-theme="9"]{--bg:#07060a;--bg2:#0f0d14;--card:#161220;--accent:#c9a84c;--accent2:#e8cc7a;--glow:rgba(201,168,76,0.35);--text:#f5ead4;--text2:#9a8468;--text3:#52463a;--border:rgba(201,168,76,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(201,168,76,0.7) 0%,rgba(201,168,76,0.1) 50%,transparent 70%);--particle-color:#c9a84c;}
+[data-theme="9"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(201,168,76,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(201,168,76,0.05) 0%,transparent 60%),#07060a;}
 [data-theme="9"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
 [data-theme="9"] .swipe-card::before{display:none!important;}
 [data-theme="9"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
 [data-theme="9"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
 [data-theme="9"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
 [data-theme="9"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
-[data-theme="9"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow9 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#ffc61c;letter-spacing:0.06em;}
-[data-theme="9"] .couple-names em{color:#ffe566;font-style:italic;}
-[data-theme="9"] .name-diamond{background:linear-gradient(135deg,#ffc61c,#4a9e5c);}
-[data-theme="9"] .name-line.l{background:linear-gradient(90deg,transparent,#ffc61c);}
-[data-theme="9"] .name-line.r{background:linear-gradient(90deg,#ffc61c,transparent);}
-[data-theme="9"] .couple-tagline{color:rgba(255,198,28,0.5);letter-spacing:0.4em;font-size:9px;}
+[data-theme="9"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow8 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#c9a84c;letter-spacing:0.06em;}
+[data-theme="9"] .couple-names em{color:#e8cc7a;font-style:italic;}
+[data-theme="9"] .name-diamond{background:linear-gradient(135deg,#c9a84c,#e8cc7a);}
+[data-theme="9"] .name-line.l{background:linear-gradient(90deg,transparent,#c9a84c);}
+[data-theme="9"] .name-line.r{background:linear-gradient(90deg,#c9a84c,transparent);}
+[data-theme="9"] .couple-tagline{color:rgba(201,168,76,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow8{0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.5),0 0 40px rgba(201,168,76,0.2);}50%{text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.5);}}
+
+/* ════════════════════════════════════
+   THEME 9: KALYANAM BY TG WEDDING FILMS
+════════════════════════════════════ */
+[data-theme="10"]{--bg:#061208;--bg2:#0c1e0e;--card:#132818;--accent:#ffc61c;--accent2:#ffe566;--glow:rgba(255,198,28,0.4);--text:#f0fff4;--text2:#7ab88a;--text3:#3d6644;--border:rgba(255,198,28,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(255,198,28,0.8) 0%,rgba(74,158,92,0.3) 40%,transparent 70%);--particle-color:#ffc61c;}
+[data-theme="10"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208;}
+[data-theme="10"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
+[data-theme="10"] .swipe-card::before{display:none!important;}
+[data-theme="10"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
+[data-theme="10"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
+[data-theme="10"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
+[data-theme="10"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
+[data-theme="10"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow9 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#ffc61c;letter-spacing:0.06em;}
+[data-theme="10"] .couple-names em{color:#ffe566;font-style:italic;}
+[data-theme="10"] .name-diamond{background:linear-gradient(135deg,#ffc61c,#4a9e5c);}
+[data-theme="10"] .name-line.l{background:linear-gradient(90deg,transparent,#ffc61c);}
+[data-theme="10"] .name-line.r{background:linear-gradient(90deg,#ffc61c,transparent);}
+[data-theme="10"] .couple-tagline{color:rgba(255,198,28,0.5);letter-spacing:0.4em;font-size:9px;}
 @keyframes tgNameGlow9{0%,100%{text-shadow:0 0 20px rgba(255,198,28,0.5),0 0 40px rgba(255,198,28,0.2);}50%{text-shadow:0 0 40px rgba(255,198,28,0.9),0 0 80px rgba(255,198,28,0.5);}}
 
 /* ── SHARED TG THEME ANIMATIONS ── */
 @keyframes tgNameReveal{0%{opacity:0;transform:scale(0.7);filter:blur(12px);}60%{filter:blur(0px);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
-[data-theme="7"] .ariya-scroll-hint,[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
-[data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
+[data-theme="8"] .ariya-scroll-hint,[data-theme="9"] .ariya-scroll-hint,[data-theme="10"] .ariya-scroll-hint{display:none;flex-direction:column;align-items:center;gap:6px;margin-top:20px;animation:fadeUp 0.6s ease 0.8s both;}
+[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show,[data-theme="10"] .ariya-scroll-hint.show{display:flex;}
 
 /* ════════════════════════════════════
    THEME 10: TG PREMIUM — CINEMA NOIR
 ════════════════════════════════════ */
 
-[data-theme="10"]{--bg:#000000;--bg2:#0a0a0a;--card:#111111;--accent:#C9A84C;--accent2:#E8CC7A;--accent3:#F5EAD4;--glow:rgba(201,168,76,0.5);--text:#F5EAD4;--text2:#9A8468;--text3:#52463A;--border:rgba(201,168,76,0.15);--section-bg:rgba(255,255,255,0.018);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(201,168,76,0.6) 30%,transparent 65%);--particle-color:#C9A84C;}
-[data-theme="10"] .bg-layer{background:#000000;}
+[data-theme="11"]{--bg:#000000;--bg2:#0a0a0a;--card:#111111;--accent:#C9A84C;--accent2:#E8CC7A;--accent3:#F5EAD4;--glow:rgba(201,168,76,0.5);--text:#F5EAD4;--text2:#9A8468;--text3:#52463A;--border:rgba(201,168,76,0.15);--section-bg:rgba(255,255,255,0.018);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(201,168,76,0.6) 30%,transparent 65%);--particle-color:#C9A84C;}
+[data-theme="11"] .bg-layer{background:#000000;}
 
 /* Film grain overlay */
-[data-theme="10"] .hero::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");background-size:256px 256px;animation:filmGrain 0.08s steps(1) infinite;}
+[data-theme="11"] .hero::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");background-size:256px 256px;animation:filmGrain 0.08s steps(1) infinite;}
 @keyframes filmGrain{0%{background-position:0 0;}10%{background-position:-5% -10%;}20%{background-position:-15% 5%;}30%{background-position:7% -25%;}40%{background-position:-5% 25%;}50%{background-position:-15% 10%;}60%{background-position:15% 0;}70%{background-position:0 15%;}80%{background-position:3% 35%;}90%{background-position:-10% 10%;}100%{background-position:0 0;}}
 
 /* Hide standard swipe for theme 10 */
-[data-theme="10"] .swipe-cards,[data-theme="10"] #cardLeft,[data-theme="10"] #cardRight,[data-theme="10"] #divider,[data-theme="10"] #swipeHint,[data-theme="10"] #coupleReveal,[data-theme="10"] #waxSealWrap{display:none!important;visibility:hidden!important;}
+[data-theme="11"] .swipe-cards,[data-theme="11"] #cardLeft,[data-theme="11"] #cardRight,[data-theme="11"] #divider,[data-theme="11"] #swipeHint,[data-theme="11"] #coupleReveal,[data-theme="11"] #waxSealWrap{display:none!important;visibility:hidden!important;}
 
 /* Cinema stage */
 .cinema-stage{display:none;position:fixed;inset:0;z-index:5;align-items:center;justify-content:center;flex-direction:column;}
-[data-theme="10"] .cinema-stage{display:flex;}
+[data-theme="11"] .cinema-stage{display:flex;}
 
 /* Gold sweep line */
 .cinema-sweep{position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--accent,#C9A84C) 40%,rgba(255,255,255,0.9) 50%,var(--accent,#C9A84C) 60%,transparent 100%);z-index:6;opacity:0;}
@@ -586,50 +652,50 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .cinema-topbar-text{font-family:var(--font-ui);font-size:7.5px;letter-spacing:0.5em;text-transform:uppercase;color:rgba(201,168,76,0.4);white-space:nowrap;}
 
 /* Name reveal */
-[data-theme="10"] .couple-name-block{position:fixed!important;top:32%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:20!important;text-align:center;width:90%;pointer-events:none;display:none;opacity:0;}
-[data-theme="10"] .couple-name-block.show{display:block;}
-[data-theme="10"] .couple-name-block .couple-names{font-family:var(--font-display)!important;font-size:clamp(28px,7.5vw,58px)!important;font-style:italic!important;color:var(--accent)!important;letter-spacing:0.04em!important;text-shadow:0 0 40px rgba(201,168,76,0.8),0 0 80px rgba(201,168,76,0.4),0 0 120px rgba(201,168,76,0.2)!important;animation:cinemaNameReveal 1.4s cubic-bezier(0.23,1,0.32,1) both,cinemaNameGlow 3s ease-in-out infinite 1.5s!important;}
+[data-theme="11"] .couple-name-block{position:fixed!important;top:32%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:20!important;text-align:center;width:90%;pointer-events:none;display:none;opacity:0;}
+[data-theme="11"] .couple-name-block.show{display:block;}
+[data-theme="11"] .couple-name-block .couple-names{font-family:var(--font-display)!important;font-size:clamp(28px,7.5vw,58px)!important;font-style:italic!important;color:var(--accent)!important;letter-spacing:0.04em!important;text-shadow:0 0 40px rgba(201,168,76,0.8),0 0 80px rgba(201,168,76,0.4),0 0 120px rgba(201,168,76,0.2)!important;animation:cinemaNameReveal 1.4s cubic-bezier(0.23,1,0.32,1) both,cinemaNameGlow 3s ease-in-out infinite 1.5s!important;}
 @keyframes cinemaNameReveal{0%{opacity:0;transform:scale(0.85);filter:blur(16px) brightness(2);letter-spacing:0.15em;}60%{filter:blur(0px) brightness(1);}100%{opacity:1;transform:scale(1);filter:blur(0px) brightness(1);letter-spacing:0.04em;}}
 @keyframes cinemaNameGlow{0%,100%{text-shadow:0 0 30px rgba(201,168,76,0.6),0 0 60px rgba(201,168,76,0.3);}50%{text-shadow:0 0 50px rgba(201,168,76,1),0 0 100px rgba(201,168,76,0.6),0 0 150px rgba(201,168,76,0.3);}}
-[data-theme="10"] .name-line{background:linear-gradient(90deg,transparent,rgba(201,168,76,0.7),transparent)!important;animation:nameLineReveal 1s ease 0.8s both!important;}
+[data-theme="11"] .name-line{background:linear-gradient(90deg,transparent,rgba(201,168,76,0.7),transparent)!important;animation:nameLineReveal 1s ease 0.8s both!important;}
 @keyframes nameLineReveal{from{width:0;opacity:0;}to{width:40px;opacity:1;}}
-[data-theme="10"] .name-diamond{background:radial-gradient(circle,var(--accent2),var(--accent))!important;box-shadow:0 0 12px var(--accent)!important;}
-[data-theme="10"] .couple-tagline{color:rgba(201,168,76,0.45)!important;letter-spacing:0.45em!important;font-size:8px!important;animation:fadeIn 0.8s ease 1.2s both!important;}
+[data-theme="11"] .name-diamond{background:radial-gradient(circle,var(--accent2),var(--accent))!important;box-shadow:0 0 12px var(--accent)!important;}
+[data-theme="11"] .couple-tagline{color:rgba(201,168,76,0.45)!important;letter-spacing:0.45em!important;font-size:8px!important;animation:fadeIn 0.8s ease 1.2s both!important;}
 
 /* Flash overlay */
 .cinema-flash{display:none;position:fixed;inset:0;background:white;z-index:30;pointer-events:none;opacity:0;}
-[data-theme="10"] .cinema-flash{display:block;}
+[data-theme="11"] .cinema-flash{display:block;}
 
 /* Scroll hint */
-[data-theme="10"] #ariyaScrollHint{position:fixed!important;bottom:60px!important;left:50%!important;transform:translateX(-50%)!important;z-index:16!important;opacity:0;transition:opacity 0.5s ease;}
-[data-theme="10"] #ariyaScrollHint.show{opacity:1;}
+[data-theme="11"] #ariyaScrollHint{position:fixed!important;bottom:60px!important;left:50%!important;transform:translateX(-50%)!important;z-index:16!important;opacity:0;transition:opacity 0.5s ease;}
+[data-theme="11"] #ariyaScrollHint.show{opacity:1;}
 
 /* Merge glow + bg */
-[data-theme="10"] #mergeGlow{top:42%!important;z-index:25!important;}
-[data-theme="10"] .custom-bg-wrap{filter:brightness(0.3)!important;}
-[data-theme="10"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.5) 40%,rgba(0,0,0,0.9) 70%,#000000 100%);}
-[data-theme="10"] .custom-bg-overlay{background:rgba(0,0,0,0.55);}
+[data-theme="11"] #mergeGlow{top:42%!important;z-index:25!important;}
+[data-theme="11"] .custom-bg-wrap{filter:brightness(0.3)!important;}
+[data-theme="11"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.5) 40%,rgba(0,0,0,0.9) 70%,#000000 100%);}
+[data-theme="11"] .custom-bg-overlay{background:rgba(0,0,0,0.55);}
 
 /* ══════════════════════════════════
    TG THEMES — FINAL DOCK SYSTEM
 ══════════════════════════════════ */
 
 /* Hide standard swipe for TG themes */
-[data-theme="7"] .swipe-cards,
 [data-theme="8"] .swipe-cards,
 [data-theme="9"] .swipe-cards,
-[data-theme="7"] #cardLeft,
-[data-theme="7"] #cardRight,
+[data-theme="10"] .swipe-cards,
 [data-theme="8"] #cardLeft,
 [data-theme="8"] #cardRight,
 [data-theme="9"] #cardLeft,
 [data-theme="9"] #cardRight,
-[data-theme="7"] #divider,
+[data-theme="10"] #cardLeft,
+[data-theme="10"] #cardRight,
 [data-theme="8"] #divider,
 [data-theme="9"] #divider,
-[data-theme="7"] #swipeHint,
+[data-theme="10"] #divider,
 [data-theme="8"] #swipeHint,
-[data-theme="9"] #swipeHint {
+[data-theme="9"] #swipeHint,
+[data-theme="10"] #swipeHint {
   display: none !important;
   visibility: hidden !important;
 }
@@ -647,9 +713,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   overflow: hidden;
 }
 
-[data-theme="7"] .tg-dock,
 [data-theme="8"] .tg-dock,
-[data-theme="9"] .tg-dock {
+[data-theme="9"] .tg-dock,
+[data-theme="10"] .tg-dock {
   display: block;
 }
 
@@ -698,28 +764,28 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 }
 
 /* Theme glows */
-[data-theme="7"] .tg-left img,
-[data-theme="7"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(241,203,20,0.2))
-          drop-shadow(0 8px 16px rgba(0,0,0,0.7));
-}
-
 [data-theme="8"] .tg-left img,
 [data-theme="8"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(201,168,76,0.2))
+  filter: drop-shadow(0 -4px 20px rgba(241,203,20,0.2))
           drop-shadow(0 8px 16px rgba(0,0,0,0.7));
 }
 
 [data-theme="9"] .tg-left img,
 [data-theme="9"] .tg-right img {
+  filter: drop-shadow(0 -4px 20px rgba(201,168,76,0.2))
+          drop-shadow(0 8px 16px rgba(0,0,0,0.7));
+}
+
+[data-theme="10"] .tg-left img,
+[data-theme="10"] .tg-right img {
   filter: drop-shadow(0 -4px 20px rgba(255,198,28,0.2))
           drop-shadow(0 8px 16px rgba(0,0,0,0.7));
 }
 
 /* Overlay for TG theme backgrounds */
-[data-theme="7"] .bg-layer::after,
 [data-theme="8"] .bg-layer::after,
-[data-theme="9"] .bg-layer::after {
+[data-theme="9"] .bg-layer::after,
+[data-theme="10"] .bg-layer::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -728,9 +794,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   z-index: 1;
 }
 
-[data-theme="7"] .custom-bg-wrap,
 [data-theme="8"] .custom-bg-wrap,
-[data-theme="9"] .custom-bg-wrap { filter: brightness(0.55); }
+[data-theme="9"] .custom-bg-wrap,
+[data-theme="10"] .custom-bg-wrap { filter: brightness(0.55); }
 
 /* Swipe instruction */
 .tg-instruction {
@@ -748,9 +814,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   white-space: nowrap;
 }
 
-[data-theme="7"] .tg-instruction,
 [data-theme="8"] .tg-instruction,
-[data-theme="9"] .tg-instruction {
+[data-theme="9"] .tg-instruction,
+[data-theme="10"] .tg-instruction {
   display: flex;
 }
 
@@ -783,9 +849,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 }
 
 /* Couple name block for TG themes */
-[data-theme="7"] .couple-name-block,
 [data-theme="8"] .couple-name-block,
-[data-theme="9"] .couple-name-block {
+[data-theme="9"] .couple-name-block,
+[data-theme="10"] .couple-name-block {
   position: fixed !important;
   top: 32% !important;
   left: 50% !important;
@@ -799,24 +865,24 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   transition: opacity 0.25s ease;
 }
 
-[data-theme="7"] .couple-name-block.tg-visible,
 [data-theme="8"] .couple-name-block.tg-visible,
-[data-theme="9"] .couple-name-block.tg-visible {
+[data-theme="9"] .couple-name-block.tg-visible,
+[data-theme="10"] .couple-name-block.tg-visible {
   display: block;
   opacity: 1;
 }
 
 /* Text shadow on show for TG */
-[data-theme="7"] .couple-name-block.show,
 [data-theme="8"] .couple-name-block.show,
-[data-theme="9"] .couple-name-block.show {
+[data-theme="9"] .couple-name-block.show,
+[data-theme="10"] .couple-name-block.show {
   text-shadow: 0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8) !important;
 }
 
 /* Scroll hint for TG */
-[data-theme="7"] #ariyaScrollHint,
 [data-theme="8"] #ariyaScrollHint,
-[data-theme="9"] #ariyaScrollHint {
+[data-theme="9"] #ariyaScrollHint,
+[data-theme="10"] #ariyaScrollHint {
   position: fixed !important;
   bottom: 56dvh !important;
   left: 50% !important;
@@ -826,27 +892,27 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   transition: opacity 0.6s ease;
 }
 
-[data-theme="7"] #ariyaScrollHint.tg-visible,
 [data-theme="8"] #ariyaScrollHint.tg-visible,
-[data-theme="9"] #ariyaScrollHint.tg-visible {
+[data-theme="9"] #ariyaScrollHint.tg-visible,
+[data-theme="10"] #ariyaScrollHint.tg-visible {
   opacity: 1;
 }
 
 /* Merge glow position */
-[data-theme="7"] #mergeGlow,
 [data-theme="8"] #mergeGlow,
-[data-theme="9"] #mergeGlow {
+[data-theme="9"] #mergeGlow,
+[data-theme="10"] #mergeGlow {
   top: 32% !important;
   z-index: 20 !important;
 }
 
 /* Background completely static for TG */
-[data-theme="7"] .custom-bg-wrap,
 [data-theme="8"] .custom-bg-wrap,
 [data-theme="9"] .custom-bg-wrap,
-[data-theme="7"] .custom-bg-image,
+[data-theme="10"] .custom-bg-wrap,
 [data-theme="8"] .custom-bg-image,
-[data-theme="9"] .custom-bg-image {
+[data-theme="9"] .custom-bg-image,
+[data-theme="10"] .custom-bg-image {
   transform: none !important;
   background-attachment: scroll !important;
   will-change: opacity !important;
@@ -907,6 +973,33 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <!-- HERO -->
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
+
+    <!-- PAPER GARDEN (theme 7) hero -->
+    <div class="pg-hero" id="pgHero">
+      <div class="pg-sticky-wrap" id="pgStickyWrap">
+        <img class="pg-bg-image" id="pgBgImage" src="" alt="">
+        <canvas id="pgCanvas"></canvas>
+        <div class="pg-tap-hint" id="pgTapHint">
+          <div class="pg-tap-ring r1"></div>
+          <div class="pg-tap-ring r2"></div>
+          <div class="pg-tap-dot"></div>
+        </div>
+        <div class="pg-names-layer" id="pgNamesLayer">
+          <div class="name-deco">
+            <div class="name-line l"></div><div class="name-diamond"></div><div class="name-line r"></div>
+          </div>
+          <div class="pg-couple-names" id="pgCoupleNames"></div>
+          <div class="pg-tagline">Together Forever</div>
+        </div>
+        <div class="pg-nudge-hint" id="pgNudgeHint">
+          <div class="pg-nudge-track"><div class="pg-nudge-chevron"></div></div>
+          <span>Scroll to Continue</span>
+        </div>
+        <div class="pg-torn-bottom">
+          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,60 L0,28 C40,20 60,38 100,32 C140,26 155,14 200,18 C245,22 260,40 310,36 C360,32 375,10 430,14 C485,18 500,38 560,34 C620,30 635,8 700,12 C765,16 780,36 840,32 C900,28 915,6 980,10 C1045,14 1060,34 1120,30 C1180,26 1195,4 1260,8 C1325,12 1360,32 1440,28 L1440,60 Z" fill="#FAF8F5"/></svg>
+        </div>
+      </div>
+    </div>
 
     <!-- OLIVE CREAM (theme 6) hero - sticky persist, no position:fixed anywhere -->
     <div class="olive-hero" id="oliveHero">
@@ -1012,6 +1105,25 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <div class="orn-div"><svg viewBox="0 0 24 24"><path d="M12 2C6 8 2 10 2 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.5-.7-2.8-1.7-3.8C9.8 8.8 11.1 6.2 12 4c.9 2.2 2.2 4.8 3.7 6.2C14.7 11.2 14 12.5 14 14c0 2.2 1.8 4 4 4s4-1.8 4-4c0-4-4-6-10-12z"/></svg></div>
 
   <!-- FAMILY -->
+  <!-- PAPER GARDEN (theme 7) — event timeline -->
+  <section class="pg-timeline-section sr" id="pgTimelineSection">
+    <div class="pg-timeline-eyebrow">The Celebration</div>
+    <div class="pg-timeline" id="pgTimeline">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- PAPER GARDEN (theme 7) — static mid-page photo -->
+  <div class="pg-photo-section" id="pgPhotoSection">
+    <div class="pg-photo-torn-top">
+      <svg viewBox="0 0 1440 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L0,30 C50,38 80,18 140,24 C200,30 220,48 290,42 C360,36 380,12 450,18 C520,24 540,44 620,38 C700,32 720,8 800,14 C880,20 900,42 980,36 C1060,30 1080,6 1160,12 C1240,18 1280,40 1360,34 L1440,28 L1440,0 Z" fill="#FAF8F5"/></svg>
+    </div>
+    <img class="pg-photo-img" id="pgPhotoImg" src="" alt="">
+    <div class="pg-photo-torn-bottom">
+      <svg viewBox="0 0 1440 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,50 L0,22 C60,16 90,36 160,30 C230,24 250,4 330,10 C410,16 430,38 510,32 C590,26 610,2 700,8 C790,14 810,36 890,30 C970,24 990,0 1080,6 C1170,12 1200,34 1280,28 C1360,22 1400,4 1440,10 L1440,50 Z" fill="#FAF8F5"/></svg>
+    </div>
+  </div>
+
   <section class="section sr" id="familySection">
     <span class="section-eyebrow">With the Blessings of</span>
     <div class="family-grid">
@@ -1326,20 +1438,22 @@ function render(d) {
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
-  if (d.background_image_url && parseInt(document.documentElement.getAttribute('data-theme')) !== 6) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![6,7].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
     const cr = document.getElementById('coupleReveal');
     if (cr) cr.style.display = 'none';
   }
-  if ([7, 8, 9].includes(parseInt(d.template_id))) {
+  if ([8, 9, 10].includes(parseInt(d.template_id))) {
     initTGSwipe(d);
   }
-  if (parseInt(d.template_id) === 10) {
+  if (parseInt(d.template_id) === 11) {
     initCinema(d);
   }
   initOliveReveal(d);
   renderOliveCalendar(d.wedding_date);
+  initPaperGardenReveal(d);
+  initPaperGardenTimeline(d);
 }
 
 function setImg(id, url) {
@@ -1657,7 +1771,7 @@ function initSwipe() {
 // TG WEDDING FILMS — FINAL SWIPE SYSTEM
 // ══════════════════════════════════════
 
-const TG_THEMES = [7, 8, 9];
+const TG_THEMES = [8, 9, 10];
 
 function isTGTheme() {
   return TG_THEMES.includes(
@@ -2356,6 +2470,249 @@ function renderOliveCalendar(weddingDateStr) {
     html += '<div class="olive-cal-day' + markedClass + '">' + d + '</div>';
   }
   gridEl.innerHTML = html;
+}
+
+// ══════════════════════════════════════
+// PAPER GARDEN (theme 7) — TAP REVEAL + TIMELINE
+// ══════════════════════════════════════
+function isPaperGardenTheme() {
+  return parseInt(document.documentElement.getAttribute('data-theme')) === 7;
+}
+
+function initPaperGardenReveal(data) {
+  if (!isPaperGardenTheme()) return;
+
+  const hero     = document.getElementById('pgHero');
+  const stickyWrap = document.getElementById('pgStickyWrap');
+  const bgImage  = document.getElementById('pgBgImage');
+  const canvas   = document.getElementById('pgCanvas');
+  const ctx      = canvas.getContext('2d');
+  const namesLayer = document.getElementById('pgNamesLayer');
+  const namesEl  = document.getElementById('pgCoupleNames');
+  const nudgeHint = document.getElementById('pgNudgeHint');
+  const tapHint  = document.getElementById('pgTapHint');
+
+  if (data.background_image_url) bgImage.src = data.background_image_url;
+
+  if (data.couple_name) {
+    const parts = data.couple_name.split('&').map(s => s.trim());
+    namesEl.innerHTML = parts.length === 2
+      ? parts[0] + ' <em>&amp;</em> ' + parts[1]
+      : data.couple_name;
+  }
+
+  // Mid-page static photo
+  if (data.swipe_image_a_url) {
+    const ph = document.getElementById('pgPhotoSection');
+    const pi = document.getElementById('pgPhotoImg');
+    if (ph && pi) { pi.src = data.swipe_image_a_url; ph.style.display = 'block'; }
+  }
+
+  let revealed = false;
+  let userScrolled = false;
+
+  function sizeCanvas() {
+    const rect = stickyWrap.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    drawOverlay();
+  }
+
+  function drawOverlay() {
+    const w = canvas.width, h = canvas.height;
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#FAF8F5');
+    grad.addColorStop(0.5, '#F2EFE9');
+    grad.addColorStop(1, '#EAE6DF');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(91,123,111,0.04)';
+    for (let i = 0; i < 180; i++) {
+      ctx.beginPath();
+      ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.2 + 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'destination-out';
+  }
+
+  window.addEventListener('resize', sizeCanvas, { passive: true });
+  bgImage.onload = sizeCanvas;
+  requestAnimationFrame(sizeCanvas);
+
+  function getPoint(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+  }
+
+  function triggerReveal(x, y) {
+    if (revealed) return;
+    revealed = true;
+    if (tapHint) tapHint.classList.add('hide');
+    pgSmokeDissipate(ctx, canvas, x, y, function() {
+      bgImage.style.transition = 'transform 8s ease-out';
+      bgImage.style.transform = 'scale(1.06)';
+      setTimeout(() => { namesLayer.style.opacity = '1'; }, 400);
+      setTimeout(startNudgeLoop, 1400);
+    });
+  }
+
+  function handleTap(e) {
+    const p = getPoint(e);
+    triggerReveal(p.x, p.y);
+  }
+  canvas.addEventListener('mousedown', handleTap);
+  canvas.addEventListener('touchstart', handleTap, { passive: true });
+
+  document.body.style.overflow = 'hidden';
+  function unlockScroll() { document.body.style.overflow = ''; }
+  function preRevealScroll(e) {
+    if (revealed) return;
+    if (e.cancelable) e.preventDefault();
+    const rect = stickyWrap.getBoundingClientRect();
+    triggerReveal(rect.width / 2, rect.height / 2);
+    unlockScroll();
+  }
+  window.addEventListener('wheel', preRevealScroll, { passive: false });
+  window.addEventListener('touchmove', preRevealScroll, { passive: false });
+  const pgUnlockCheck = setInterval(() => { if (revealed) { unlockScroll(); clearInterval(pgUnlockCheck); } }, 200);
+
+  // ── Nudge loop ──
+  let nudgeRafId = null;
+  function markScrolled() {
+    if (userScrolled) return;
+    userScrolled = true;
+    nudgeHint.classList.remove('show');
+    if (nudgeRafId) cancelAnimationFrame(nudgeRafId);
+    stickyWrap.style.transform = '';
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('wheel', onScroll);
+    window.removeEventListener('touchmove', onScroll);
+  }
+  function onScroll() { markScrolled(); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('wheel', onScroll, { passive: true });
+  window.addEventListener('touchmove', onScroll, { passive: true });
+
+  function startNudgeLoop() {
+    if (userScrolled) return;
+    nudgeHint.classList.add('show');
+    let cycle = 0;
+    const cycleDuration = 2600, pauseDuration = 1800;
+    function loop(now) {
+      if (userScrolled) return;
+      if (cycle === 0) cycle = now;
+      const elapsed = (now - cycle) % (cycleDuration + pauseDuration);
+      if (elapsed < cycleDuration) {
+        stickyWrap.style.transform = 'translateY(-' + (Math.sin(elapsed / cycleDuration * Math.PI) * 36) + 'px)';
+      } else {
+        stickyWrap.style.transform = 'translateY(0px)';
+      }
+      nudgeRafId = requestAnimationFrame(loop);
+    }
+    nudgeRafId = requestAnimationFrame(loop);
+  }
+}
+
+// Shared smoke-dissipate used by Paper Garden
+// (avoids duplicating the full animation code)
+function pgSmokeDissipate(ctx, canvas, originX, originY, onComplete) {
+  const w = canvas.width, h = canvas.height;
+  const puffs = [];
+  const PUFF_COUNT = 26;
+  const smokeColors = ['rgba(250,248,245,', 'rgba(91,123,111,', 'rgba(242,239,233,', 'rgba(200,221,216,'];
+  for (let i = 0; i < PUFF_COUNT; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = Math.random() * Math.max(w, h) * 0.65;
+    puffs.push({
+      x: originX + Math.cos(angle) * dist * 0.15,
+      y: originY + Math.sin(angle) * dist * 0.15,
+      targetX: originX + Math.cos(angle) * dist,
+      targetY: originY + Math.sin(angle) * dist,
+      radius: 50 + Math.random() * 110,
+      delay:  Math.random() * 450,
+      color:  smokeColors[i % smokeColors.length],
+      wobble: Math.random() * Math.PI * 2
+    });
+  }
+  const start = performance.now();
+  const duration = 1900;
+  function frame(now) {
+    const elapsed = now - start;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    let allDone = true;
+    puffs.forEach(p => {
+      const t = Math.max(0, Math.min(1, (elapsed - p.delay) / duration));
+      if (t < 1) allDone = false;
+      const eased  = 1 - Math.pow(1 - t, 2.2);
+      const curX   = p.x + (p.targetX - p.x) * eased + Math.sin(elapsed / 300 + p.wobble) * 6;
+      const curY   = p.y + (p.targetY - p.y) * eased + Math.cos(elapsed / 260 + p.wobble) * 6;
+      const curR   = p.radius * (0.4 + eased * 1.4);
+      const alpha  = Math.sin(t * Math.PI) * 0.9 + (t > 0.7 ? (1 - t) * 2 : 0);
+      const grad   = ctx.createRadialGradient(curX, curY, 0, curX, curY, curR);
+      grad.addColorStop(0, p.color + Math.min(1, Math.max(0, alpha)) + ')');
+      grad.addColorStop(1, p.color + '0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(curX, curY, curR, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+    if (!allDone) { requestAnimationFrame(frame); }
+    else { ctx.clearRect(0, 0, w, h); if (onComplete) onComplete(); }
+  }
+  requestAnimationFrame(frame);
+}
+
+// Paper Garden — event timeline
+const PG_TIMELINE_EVENTS = [
+  { icon: 'church',    time: '', title: 'Ceremony',   venue: '' },
+  { icon: 'ring',      time: '', title: 'Reception',  venue: '' },
+  { icon: 'champagne', time: '', title: 'Cocktails',  venue: '' },
+  { icon: 'dinner',    time: '', title: 'Dinner',     venue: '' },
+  { icon: 'party',     time: '', title: 'Celebration',venue: '' },
+];
+
+const PG_ICONS = {
+  church:    '<svg viewBox="0 0 24 24"><path d="M12 2v4M10 4h4M6 22V10l6-4 6 4v12M9 22v-5a3 3 0 016 0v5"/></svg>',
+  ring:      '<svg viewBox="0 0 24 24"><circle cx="12" cy="14" r="6"/><path d="M9 8l3-4 3 4"/></svg>',
+  champagne: '<svg viewBox="0 0 24 24"><path d="M8 2l4 10M16 2l-4 10m0 0v10m-3 0h6"/></svg>',
+  dinner:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 6V2M8 6c0-2 1-4 4-4s4 2 4 4"/></svg>',
+  party:     '<svg viewBox="0 0 24 24"><path d="M5.8 11.3L2 22l10.7-3.79M4 3h.01M22 8h.01M15 2h.01M22 20h.01M15.04 6.95l-4.2 4.2M3.5 12.5l4-4M20 4l-6.5 6.5"/></svg>',
+};
+
+function initPaperGardenTimeline(data) {
+  if (!isPaperGardenTheme()) return;
+  const section = document.getElementById('pgTimelineSection');
+  const container = document.getElementById('pgTimeline');
+  if (!section || !container) return;
+
+  const events = [];
+  if (data.ceremony_time || data.event_venue) {
+    events.push({ icon: 'church', time: data.ceremony_time || '', title: 'Ceremony', venue: data.event_venue || '' });
+  }
+  if (data.reception_time || data.reception_venue) {
+    events.push({ icon: 'champagne', time: data.reception_time || '', title: 'Reception', venue: data.reception_venue || '' });
+  }
+  if (!events.length) {
+    // Fallback: show ceremony from wedding_date
+    events.push({ icon: 'church', time: '', title: 'Ceremony', venue: data.event_venue || '' });
+    events.push({ icon: 'champagne', time: '', title: 'Reception', venue: '' });
+    events.push({ icon: 'dinner', time: '', title: 'Dinner', venue: '' });
+    events.push({ icon: 'party', time: '', title: 'Celebration', venue: '' });
+  }
+
+  container.innerHTML = events.map(ev => `
+    <div class="pg-tl-item">
+      <div class="pg-tl-icon">${PG_ICONS[ev.icon] || PG_ICONS.party}</div>
+      <div class="pg-tl-body">
+        ${ev.time ? `<div class="pg-tl-time">${ev.time}</div>` : ''}
+        <div class="pg-tl-title">${ev.title}</div>
+        ${ev.venue ? `<div class="pg-tl-venue">${ev.venue}</div>` : ''}
+      </div>
+    </div>`).join('');
+  section.style.display = 'block';
 }
 
 /* ── THEME 10: CINEMA NOIR REVEAL ── */
