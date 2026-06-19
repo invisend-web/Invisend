@@ -718,6 +718,7 @@ select.form-input{cursor:pointer}
             <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#120800,#D4AF37)"></div><div class="theme-opt-name" style="color:#D4AF37">Ariya Sinhala</div><div class="theme-opt-sub" style="color:#D4AF37;opacity:0.6">Kandyan</div></div>
             <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FBF7EC,#8A9B6E)"></div><div class="theme-opt-name">Olive Cream</div><div class="theme-opt-sub">Botanical &amp; Light</div></div>
             <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FAF8F5,#5B7B6F)"></div><div class="theme-opt-name">Paper Garden</div><div class="theme-opt-sub">Clean &amp; Botanical</div></div>
+            <div class="theme-opt" data-val="12" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a1a1a,#F5F0E8)"></div><div class="theme-opt-name">Vintage Ticket</div><div class="theme-opt-sub">B&amp;W Film</div></div>
           </div>
         </div>
         <!-- TG Exclusive -->
@@ -1067,8 +1068,8 @@ function updateStats() {
   const totalViews = allInvitations.reduce((sum, inv) => sum + (inv.view_count || 0), 0);
   document.getElementById('statTotalViews').textContent = totalViews.toLocaleString();
 }
-const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Olive Cream', 7: 'Paper Garden', 8: 'Udarata Sinhala · TG', 9: 'Western Luxury · TG', 10: 'Kalyanam · TG', 11: 'TG Premium' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#8A9B6E', 7: '#5B7B6F', 8: '#f1cb14', 9: '#c9a84c', 10: '#ffc61c', 11: '#C9A84C' };
+const themeNames = { 1: 'Western Luxury', 2: 'Udarata Sinhala', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Olive Cream', 7: 'Paper Garden', 8: 'Udarata Sinhala · TG', 9: 'Western Luxury · TG', 10: 'Kalyanam · TG', 11: 'TG Premium', 12: 'Vintage Ticket' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#8A9B6E', 7: '#5B7B6F', 8: '#f1cb14', 9: '#c9a84c', 10: '#ffc61c', 11: '#C9A84C', 12: '#2a2a2a' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
