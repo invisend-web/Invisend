@@ -224,6 +224,40 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-cal-day{font-family:var(--font-ui);font-size:12px;color:var(--text2);text-align:center;padding:6px 0;border-radius:50%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
 .olive-cal-day.empty{visibility:hidden}
 .olive-cal-day.marked{background:var(--accent2);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(201,163,104,0.4)}
+/* ══════════════════════════════════════
+   VINTAGE TICKET (theme 12)
+   ══════════════════════════════════════ */
+[data-theme="12"]{--bg:#1a1a1a;--bg2:#111;--card:#F5F0E8;--accent:#8B7355;--accent2:#6B5335;--text:#1a1a1a;--text2:#8B7355;--text3:#B09070;--border:rgba(139,115,85,0.2);--section-bg:rgba(139,115,85,0.05);}
+[data-theme="12"] .hero{padding-top:0 !important;min-height:100vh;min-height:100dvh}
+[data-theme="12"] .hero-tag{display:none !important}
+[data-theme="12"] .arena,[data-theme="12"] .couple-name-block,[data-theme="12"] .scroll-down-hint{display:none !important}
+[data-theme="12"] .vt-hero{display:block}
+.vt-hero{display:none;position:relative;width:100%;min-height:100vh;overflow:hidden;background:#111}
+@supports (min-height:100dvh){.vt-hero{min-height:100dvh}}
+.vt-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.12);display:block}
+.vt-grain{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0.32;mix-blend-mode:overlay}
+.vt-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.68) 100%);z-index:2;pointer-events:none}
+.vt-card-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;padding:20px}
+.vt-ticket{width:min(310px,86vw);position:relative;filter:drop-shadow(0 20px 60px rgba(0,0,0,0.7))}
+.vt-perf-top,.vt-perf-bot{display:block;width:100%;height:14px;flex-shrink:0}
+.vt-perf-top{background:radial-gradient(circle at 50% 0%,transparent 10px,#F5F0E8 10px) left/22px 100% repeat-x}
+.vt-perf-bot{background:radial-gradient(circle at 50% 100%,transparent 10px,#F5F0E8 10px) left/22px 100% repeat-x}
+.vt-ticket-body{background:#F5F0E8;padding:28px 26px 24px}
+.vt-eyebrow{font-family:Georgia,serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:#8B7355;text-align:center;margin-bottom:16px}
+.vt-date-code{font-family:Georgia,serif;font-size:54px;font-style:italic;text-align:center;color:#1a1a1a;line-height:1;letter-spacing:-0.02em;margin-bottom:2px}
+.vt-month-name{font-family:Georgia,serif;font-size:10px;letter-spacing:0.55em;text-transform:uppercase;text-align:center;color:#1a1a1a;padding-bottom:18px;margin-bottom:16px;border-bottom:1px dashed rgba(0,0,0,0.18)}
+.vt-cal-month-label{font-family:Georgia,serif;font-size:8.5px;letter-spacing:0.28em;text-transform:uppercase;text-align:center;color:#8B7355;margin-bottom:9px}
+.vt-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.vt-cal-dow{font-family:Georgia,serif;font-size:7px;letter-spacing:0.08em;text-transform:uppercase;text-align:center;color:#B09070;padding:2px 0 5px}
+.vt-cal-day{font-family:Georgia,serif;font-size:11px;text-align:center;color:#1a1a1a;padding:4px 0;position:relative;line-height:1}
+.vt-cal-day.empty{visibility:hidden}
+.vt-cal-day.vt-today{color:#F5F0E8}
+.vt-cal-day.vt-today::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#1a1a1a;z-index:-1}
+.vt-dots{display:flex;justify-content:center;gap:5px;margin:14px 0}
+.vt-dots span{width:3px;height:3px;border-radius:50%;background:#8B7355;opacity:0.5}
+.vt-names{font-family:Georgia,serif;font-size:15px;font-style:italic;text-align:center;color:#1a1a1a;padding-top:14px;border-top:1px dashed rgba(0,0,0,0.18)}
+.vt-names em{font-style:normal;color:#8B7355}
+.vt-venue-label{font-family:Georgia,serif;font-size:7.5px;letter-spacing:0.28em;text-transform:uppercase;text-align:center;color:#8B7355;margin-top:7px;opacity:0.85}
 /* HERO */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 0 48px;position:relative;overflow:hidden}
 /* Prevent Chrome Android URL bar layout jump */
@@ -1003,6 +1037,32 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       </div>
     </div>
 
+    <!-- VINTAGE TICKET (theme 12) hero -->
+    <div class="vt-hero" id="vtHero">
+      <img class="vt-bg" id="vtBgImage" src="" alt="">
+      <svg class="vt-grain" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <filter id="vtNoise"><feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+        <rect width="100%" height="100%" filter="url(#vtNoise)"/>
+      </svg>
+      <div class="vt-vignette"></div>
+      <div class="vt-card-wrap">
+        <div class="vt-ticket">
+          <span class="vt-perf-top"></span>
+          <div class="vt-ticket-body">
+            <div class="vt-eyebrow">Wedding Invitation</div>
+            <div class="vt-date-code" id="vtDateCode">—</div>
+            <div class="vt-month-name" id="vtMonthName">—</div>
+            <div class="vt-cal-month-label" id="vtCalMonthLabel"></div>
+            <div class="vt-cal-grid" id="vtCalGrid"></div>
+            <div class="vt-dots"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="vt-names" id="vtNames">—</div>
+            <div class="vt-venue-label" id="vtVenueLabel"></div>
+          </div>
+          <span class="vt-perf-bot"></span>
+        </div>
+      </div>
+    </div>
+
     <!-- OLIVE CREAM (theme 6) hero - sticky persist, no position:fixed anywhere -->
     <div class="olive-hero" id="oliveHero">
       <div class="olive-sticky-wrap" id="oliveStickyWrap">
@@ -1383,6 +1443,9 @@ function handleThemeSpecificUI(themeId) {
     if (stage) stage.style.display = 'flex';
     window._disableSwipe = true;
   }
+  if (themeId === 12) {
+    window._disableSwipe = true;
+  }
 }
 function preloadCriticalImages(data) {
   return new Promise((resolve) => {
@@ -1438,7 +1501,7 @@ function render(d) {
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
-  if (d.background_image_url && ![6,7].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![6,7,12].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
     const cr = document.getElementById('coupleReveal');
@@ -1454,6 +1517,7 @@ function render(d) {
   renderOliveCalendar(d.wedding_date);
   initPaperGardenReveal(d);
   initPaperGardenTimeline(d);
+  if (parseInt(d.template_id) === 12) initVintageTicket(d);
 }
 
 function setImg(id, url) {
@@ -2713,6 +2777,37 @@ function initPaperGardenTimeline(data) {
       </div>
     </div>`).join('');
   section.style.display = 'block';
+}
+
+/* ── THEME 12: VINTAGE TICKET ── */
+function initVintageTicket(d) {
+  const bg = document.getElementById('vtBgImage');
+  const src = d.swipe_image_a_url || d.swipe_image_b_url || d.couple_photo_url || '';
+  if (bg && src) bg.src = src;
+  if (d.wedding_date) {
+    const dt = new Date(d.wedding_date + 'T00:00:00');
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const dcEl = document.getElementById('vtDateCode'); if (dcEl) dcEl.textContent = dd + '.' + mm;
+    const mnEl = document.getElementById('vtMonthName'); if (mnEl) mnEl.textContent = dt.toLocaleDateString('en-US', { month: 'long' }).toUpperCase() + '.';
+    buildVtCalendar(dt);
+  }
+  if (d.couple_name) { const el = document.getElementById('vtNames'); if (el) el.innerHTML = d.couple_name.replace(' & ', ' <em>&amp;</em> '); }
+  if (d.venue) { const el = document.getElementById('vtVenueLabel'); if (el) el.textContent = d.venue; }
+}
+function buildVtCalendar(dt) {
+  const yr = dt.getFullYear(), mo = dt.getMonth(), wday = dt.getDate();
+  const lbl = document.getElementById('vtCalMonthLabel');
+  if (lbl) lbl.textContent = dt.toLocaleDateString('en-US', { month: 'long' }).toUpperCase() + ' ' + yr;
+  const grid = document.getElementById('vtCalGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(function(l) { const c = document.createElement('div'); c.className = 'vt-cal-dow'; c.textContent = l; grid.appendChild(c); });
+  const fd = new Date(yr, mo, 1).getDay();
+  const off = fd === 0 ? 6 : fd - 1;
+  const dim = new Date(yr, mo + 1, 0).getDate();
+  for (let i = 0; i < off; i++) { const c = document.createElement('div'); c.className = 'vt-cal-day empty'; c.textContent = '·'; grid.appendChild(c); }
+  for (let day = 1; day <= dim; day++) { const c = document.createElement('div'); c.className = 'vt-cal-day' + (day === wday ? ' vt-today' : ''); c.textContent = day; grid.appendChild(c); }
 }
 
 /* ── THEME 10: CINEMA NOIR REVEAL ── */
