@@ -236,20 +236,27 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .vt-grain{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0.32;mix-blend-mode:overlay}
 .vt-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.68) 100%);z-index:2;pointer-events:none}
 .vt-card-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;padding:20px}
-.vt-ticket{width:min(310px,86vw);position:relative;filter:drop-shadow(0 20px 60px rgba(0,0,0,0.7))}
-.vt-perf-top,.vt-perf-bot{display:block;width:100%;height:14px;flex-shrink:0}
-.vt-perf-top{background:radial-gradient(circle at 50% 0%,transparent 10px,#F5F0E8 10px) left/22px 100% repeat-x}
-.vt-perf-bot{background:radial-gradient(circle at 50% 100%,transparent 10px,#F5F0E8 10px) left/22px 100% repeat-x}
-.vt-ticket-body{background:#F5F0E8;padding:28px 26px 24px}
+.vt-ticket{width:min(310px,86vw);position:relative;filter:drop-shadow(0 20px 60px rgba(0,0,0,0.7));cursor:pointer;-webkit-tap-highlight-color:transparent}
+.vt-ticket.vt-opened{cursor:default}
+.vt-perf-top,.vt-perf-bot{display:block;width:100%;line-height:0;flex-shrink:0}
+.vt-ticket-body{background-color:#F2EBD9;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82 0.6' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.11'/%3E%3C/svg%3E");background-size:200px 200px;padding:28px 26px 24px}
 .vt-eyebrow{font-family:Georgia,serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:#8B7355;text-align:center;margin-bottom:16px}
 .vt-date-code{font-family:Georgia,serif;font-size:54px;font-style:italic;text-align:center;color:#1a1a1a;line-height:1;letter-spacing:-0.02em;margin-bottom:2px}
-.vt-month-name{font-family:Georgia,serif;font-size:10px;letter-spacing:0.55em;text-transform:uppercase;text-align:center;color:#1a1a1a;padding-bottom:18px;margin-bottom:16px;border-bottom:1px dashed rgba(0,0,0,0.18)}
-.vt-cal-month-label{font-family:Georgia,serif;font-size:8.5px;letter-spacing:0.28em;text-transform:uppercase;text-align:center;color:#8B7355;margin-bottom:9px}
-.vt-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.vt-month-name{font-family:Georgia,serif;font-size:10px;letter-spacing:0.55em;text-transform:uppercase;text-align:center;color:#1a1a1a;padding-bottom:18px;margin-bottom:14px;border-bottom:1px dashed rgba(0,0,0,0.18)}
+.vt-cal-reveal{position:relative}
+.vt-tap-hint-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0 12px;transition:opacity 0.25s ease,height 0.3s ease,padding 0.3s ease;overflow:hidden}
+.vt-tap-hint-row span{font-family:Georgia,serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:#B09070}
+.vt-tap-ring-sm{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(139,115,85,0.55);animation:vtRingPulse 2.2s ease-out infinite;flex-shrink:0}
+.vt-tap-ring-sm.r2{animation-delay:1.1s}
+@keyframes vtRingPulse{0%{transform:scale(0.6);opacity:0.85}100%{transform:scale(1.6);opacity:0}}
+.vt-cal-month-label{font-family:Georgia,serif;font-size:8.5px;letter-spacing:0.28em;text-transform:uppercase;text-align:center;color:#8B7355;margin-bottom:9px;opacity:0;transform:translateY(5px);transition:opacity 0.4s ease 0.05s,transform 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.05s}
+.vt-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;opacity:0;transform:translateY(6px);transition:opacity 0.45s ease 0.12s,transform 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.12s}
+.vt-ticket.vt-opened .vt-cal-month-label,.vt-ticket.vt-opened .vt-cal-grid{opacity:1;transform:translateY(0)}
+.vt-ticket.vt-opened .vt-tap-hint-row{opacity:0;height:0;padding:0;pointer-events:none}
 .vt-cal-dow{font-family:Georgia,serif;font-size:7px;letter-spacing:0.08em;text-transform:uppercase;text-align:center;color:#B09070;padding:2px 0 5px}
 .vt-cal-day{font-family:Georgia,serif;font-size:11px;text-align:center;color:#1a1a1a;padding:4px 0;position:relative;line-height:1}
 .vt-cal-day.empty{visibility:hidden}
-.vt-cal-day.vt-today{color:#F5F0E8}
+.vt-cal-day.vt-today{color:#F2EBD9}
 .vt-cal-day.vt-today::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#1a1a1a;z-index:-1}
 .vt-dots{display:flex;justify-content:center;gap:5px;margin:14px 0}
 .vt-dots span{width:3px;height:3px;border-radius:50%;background:#8B7355;opacity:0.5}
@@ -1044,19 +1051,26 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       </svg>
       <div class="vt-vignette"></div>
       <div class="vt-card-wrap">
-        <div class="vt-ticket">
-          <span class="vt-perf-top"></span>
+        <div class="vt-ticket" id="vtTicket">
+          <svg class="vt-perf-top" viewBox="0 0 310 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,16 L0,8 L11,0 L22,8 L33,0 L44,8 L55,0 L66,8 L77,0 L88,8 L99,0 L110,8 L121,0 L132,8 L143,0 L154,8 L165,0 L176,8 L187,0 L198,8 L209,0 L220,8 L231,0 L242,8 L253,0 L264,8 L275,0 L286,8 L297,0 L308,8 L310,8 L310,16 Z" fill="#F2EBD9"/></svg>
           <div class="vt-ticket-body">
             <div class="vt-eyebrow">Wedding Invitation</div>
             <div class="vt-date-code" id="vtDateCode">—</div>
             <div class="vt-month-name" id="vtMonthName">—</div>
-            <div class="vt-cal-month-label" id="vtCalMonthLabel"></div>
-            <div class="vt-cal-grid" id="vtCalGrid"></div>
+            <div class="vt-cal-reveal">
+              <div class="vt-tap-hint-row">
+                <div class="vt-tap-ring-sm r1"></div>
+                <span>Tap to reveal</span>
+                <div class="vt-tap-ring-sm r2"></div>
+              </div>
+              <div class="vt-cal-month-label" id="vtCalMonthLabel"></div>
+              <div class="vt-cal-grid" id="vtCalGrid"></div>
+            </div>
             <div class="vt-dots"><span></span><span></span><span></span><span></span><span></span></div>
             <div class="vt-names" id="vtNames">—</div>
             <div class="vt-venue-label" id="vtVenueLabel"></div>
           </div>
-          <span class="vt-perf-bot"></span>
+          <svg class="vt-perf-bot" viewBox="0 0 310 16" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L310,0 L310,8 L299,16 L288,8 L277,16 L266,8 L255,16 L244,8 L233,16 L222,8 L211,16 L200,8 L189,16 L178,8 L167,16 L156,8 L145,16 L134,8 L123,16 L112,8 L101,16 L90,8 L79,16 L68,8 L57,16 L46,8 L35,16 L24,8 L13,16 L2,8 L0,8 Z" fill="#F2EBD9"/></svg>
         </div>
       </div>
     </div>
@@ -2785,15 +2799,25 @@ function initVintageTicket(d) {
   const src = d.swipe_image_a_url || d.swipe_image_b_url || d.couple_photo_url || '';
   if (bg && src) bg.src = src;
   if (d.wedding_date) {
-    const dt = new Date(d.wedding_date + 'T00:00:00');
-    const dd = String(dt.getDate()).padStart(2, '0');
-    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    // Extract YYYY-MM-DD safely regardless of whether it's a date-only or datetime string
+    const parts = String(d.wedding_date).substring(0, 10).split('-');
+    const yr = parseInt(parts[0], 10), mo = parseInt(parts[1], 10) - 1, dy = parseInt(parts[2], 10);
+    const dt = new Date(yr, mo, dy);
+    const dd = String(dy).padStart(2, '0');
+    const mm = String(mo + 1).padStart(2, '0');
     const dcEl = document.getElementById('vtDateCode'); if (dcEl) dcEl.textContent = dd + '.' + mm;
     const mnEl = document.getElementById('vtMonthName'); if (mnEl) mnEl.textContent = dt.toLocaleDateString('en-US', { month: 'long' }).toUpperCase() + '.';
     buildVtCalendar(dt);
   }
   if (d.couple_name) { const el = document.getElementById('vtNames'); if (el) el.innerHTML = d.couple_name.replace(' & ', ' <em>&amp;</em> '); }
   if (d.venue) { const el = document.getElementById('vtVenueLabel'); if (el) el.textContent = d.venue; }
+  const ticket = document.getElementById('vtTicket');
+  if (ticket) {
+    ticket.addEventListener('click', function vtReveal() {
+      ticket.classList.add('vt-opened');
+      ticket.removeEventListener('click', vtReveal);
+    });
+  }
 }
 function buildVtCalendar(dt) {
   const yr = dt.getFullYear(), mo = dt.getMonth(), wday = dt.getDate();
