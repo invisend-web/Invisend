@@ -302,6 +302,24 @@ select.form-input{cursor:pointer}
   .rsvp-stat:last-child{border-right:none}
   .rsvp-stat-val{font-size:20px}
   .rsvp-stat-label{font-size:9.5px;line-height:1.2}
+  /* RSVP table → card list */
+  .rsvp-table-wrap{overflow-x:visible !important}
+  .rsvp-table{display:block}
+  .rsvp-table thead{display:none}
+  .rsvp-table tbody{display:block;padding:8px 12px}
+  .rsvp-table tr{display:block;padding:12px 14px;margin-bottom:8px;border-radius:10px;background:var(--glass);border:1px solid var(--gb)}
+  .rsvp-table td{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border:none;font-size:13px;color:var(--text)}
+  .rsvp-table td[data-label]::before{content:attr(data-label);color:var(--text3);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0;margin-right:12px;padding-top:2px;white-space:nowrap}
+}
+/* ─── SWIPE CAROUSEL (mobile) ─── */
+@media(max-width:900px){
+  #swipeViewport{overflow:hidden}
+  #swipeTrack{display:flex;width:300%;will-change:transform}
+  #swipeTrack.sw-anim{transition:transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94)}
+  #swipeTrack > div{flex:0 0 33.3333%;min-width:0;display:block !important;box-sizing:border-box}
+  /* iOS-style back button */
+  .rsvp-back-btn{background:none !important;border:none !important;box-shadow:none !important;color:var(--blue) !important;font-size:15px !important;padding:2px 0 !important;gap:3px !important;font-weight:400 !important}
+  .rsvp-back-btn svg{width:20px !important;height:20px !important}
 }
 /* ─── MOBILE BOTTOM NAV ─── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bg2);border-top:1px solid var(--border);height:calc(56px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -587,6 +605,7 @@ select.form-input{cursor:pointer}
 
     <div class="content">
 
+      <div id="swipeViewport"><div id="swipeTrack">
       <!-- INVITATIONS -->
       <div id="sectionInvitations">
         <div class="stats-row">
@@ -637,8 +656,8 @@ select.form-input{cursor:pointer}
           <div class="rsvp-panel">
             <div class="rsvp-list-header">
               <div style="display:flex;align-items:center;gap:10px">
-                <button class="btn-ghost" onclick="showRSVPList()" style="font-size:12px;padding:5px 10px">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                <button class="btn-ghost rsvp-back-btn" onclick="showRSVPList()" style="font-size:12px;padding:5px 10px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                   Back
                 </button>
                 <div class="table-title" id="rsvpDetailTitle">RSVP Results</div>
@@ -669,7 +688,7 @@ select.form-input{cursor:pointer}
                 </button>
               </div>
               <div class="tbl-summary-wrap" id="tblSummaryWrap"></div>
-              <div style="overflow-x:auto">
+              <div class="rsvp-table-wrap" style="overflow-x:auto">
                 <table class="rsvp-table">
                   <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
                   <tbody id="rsvpTableBody"></tbody>
@@ -696,6 +715,7 @@ select.form-input{cursor:pointer}
           </div>
         </div>
       </div>
+      </div></div><!-- /swipeTrack /swipeViewport -->
 
       <!-- STORAGE VAULT -->
       <div id="sectionVault" style="display:none">
@@ -1081,6 +1101,7 @@ let preshootUrls = new Array(10).fill('');
 let preshootCacheBust = new Array(10).fill(0);
 let currentRsvpData = [];
 let currentRsvpSlug = '';
+var _swipeIdx = 0;
 
 // ─── SESSION CHECK ───
 const AUTHORIZED_EMAIL = 'info.invisend@gmail.com';
@@ -1257,6 +1278,15 @@ function showSection(name, el) {
   if (name === 'rsvp') populateRSVPSelect();
   if (name === 'bin') loadBin();
   if (name === 'vault') { document.getElementById('vaultResults').style.display = 'none'; document.getElementById('scanBtn').textContent = ''; document.getElementById('scanBtn').innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Scan Now'; document.getElementById('scanBtn').disabled = false; }
+  if (window.innerWidth <= 900) {
+    var vpEl = document.getElementById('swipeViewport');
+    if (vpEl) {
+      var swipeNames = ['invitations','rsvp','testimonials'];
+      var sIdx = swipeNames.indexOf(name);
+      if (sIdx !== -1) { vpEl.style.display = ''; setSwipePos(sIdx, true); }
+      else { vpEl.style.display = 'none'; }
+    }
+  }
   closeSidebar();
   syncMobNav(name);
 }
@@ -1264,6 +1294,16 @@ function showSection(name, el) {
 // ─── SIDEBAR ───
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+
+// ─── SWIPE POSITION ───
+function setSwipePos(idx, animate) {
+  _swipeIdx = idx;
+  var track = document.getElementById('swipeTrack');
+  if (!track) return;
+  if (animate) track.classList.add('sw-anim');
+  else track.classList.remove('sw-anim');
+  track.style.transform = 'translateX(' + (-idx * 33.3333) + '%)';
+}
 
 // ─── PRESHOOT UI ───
 function buildPreshootGrid() {
@@ -1780,12 +1820,12 @@ async function loadRSVPForInv(slug) {
       body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3);font-size:13px">No responses yet</td></tr>`;
     } else {
       body.innerHTML = currentRsvpData.map(r => `<tr>
-        <td style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td>
-        <td>${esc(r.phone || '—')}</td>
-        <td><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td>
-        <td id="tblnum_${r.id}">${tblNumHTML(r)}</td>
-        <td id="tblnote_${r.id}">${tblNoteHTML(r)}</td>
-        <td>${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+        <td data-label="Guest" style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td>
+        <td data-label="Phone">${esc(r.phone || '—')}</td>
+        <td data-label="Status"><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td>
+        <td data-label="Table" id="tblnum_${r.id}">${tblNumHTML(r)}</td>
+        <td data-label="Note" id="tblnote_${r.id}">${tblNoteHTML(r)}</td>
+        <td data-label="Date">${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
       </tr>`).join('');
     }
     document.getElementById('rsvpContent').style.display = 'block';
@@ -2723,33 +2763,63 @@ function closeMoreSheet() {
 // Swipe between the 3 main tabs on mobile
 (function initMobSwipe() {
   var SWIPE_TABS = ['invitations', 'rsvp', 'testimonials'];
-  var tx = 0, ty = 0, vertLocked = false;
+  var tx = 0, ty = 0, started = false, vertLocked = false;
   var el = document.querySelector('.content');
   if (!el) return;
+
   el.addEventListener('touchstart', function(e) {
+    if (window.innerWidth > 900) return;
     tx = e.touches[0].clientX;
     ty = e.touches[0].clientY;
+    started = true;
     vertLocked = false;
+    var track = document.getElementById('swipeTrack');
+    if (track) track.classList.remove('sw-anim');
   }, { passive: true });
+
   el.addEventListener('touchmove', function(e) {
-    if (vertLocked) return;
+    if (!started || window.innerWidth > 900 || vertLocked) return;
     var dx = e.touches[0].clientX - tx;
     var dy = e.touches[0].clientY - ty;
-    if (Math.abs(dy) > Math.abs(dx)) vertLocked = true;
-  }, { passive: true });
+    if (Math.abs(dy) > Math.abs(dx) + 4) { vertLocked = true; return; }
+    if (Math.abs(dx) < 6) return;
+    var vp = document.getElementById('swipeViewport');
+    if (!vp || vp.style.display === 'none') return;
+    var track = document.getElementById('swipeTrack');
+    if (!track) return;
+    e.preventDefault();
+    var resistedDx = (_swipeIdx === 0 && dx > 0) || (_swipeIdx === SWIPE_TABS.length - 1 && dx < 0) ? dx * 0.22 : dx;
+    track.style.transform = 'translateX(' + (-_swipeIdx * 33.3333 + (resistedDx / window.innerWidth) * 33.3333) + '%)';
+  }, { passive: false });
+
   el.addEventListener('touchend', function(e) {
-    if (vertLocked || window.innerWidth > 900) return;
+    if (!started || window.innerWidth > 900) { started = false; return; }
+    started = false;
+    var vp = document.getElementById('swipeViewport');
+    if (!vp || vp.style.display === 'none' || vertLocked) { setSwipePos(_swipeIdx, true); return; }
     var dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) < 65) return;
-    var active = document.querySelector('.mob-nav-tab.active');
-    if (!active) return;
-    var cur = active.id.replace('mobTab-', '');
-    var idx = SWIPE_TABS.indexOf(cur);
-    if (idx === -1) return;
-    var next = dx < 0 ? idx + 1 : idx - 1;
-    if (next < 0 || next >= SWIPE_TABS.length) return;
-    var name = SWIPE_TABS[next];
-    showSection(name, document.getElementById('nav-' + name));
+    var prev = _swipeIdx;
+    var next = prev;
+    if (Math.abs(dx) >= 60) {
+      next = dx < 0 ? prev + 1 : prev - 1;
+      next = Math.max(0, Math.min(SWIPE_TABS.length - 1, next));
+    }
+    setSwipePos(next, true);
+    if (next !== prev) {
+      var name = SWIPE_TABS[next];
+      document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+      var navEl = document.getElementById('nav-' + name);
+      if (navEl) navEl.classList.add('active');
+      var titles = { invitations:'Invitations', rsvp:'RSVP Results', testimonials:'Testimonials' };
+      document.getElementById('topbarTitle').textContent = titles[name];
+      var btn = document.getElementById('topCreateBtn');
+      if (name === 'invitations') { btn.style.display = ''; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span class="btn-primary-text">New Invitation</span>'; btn.onclick = openCreateModal; }
+      else if (name === 'testimonials') { btn.style.display = ''; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span class="btn-primary-text">Add Testimonial</span>'; btn.onclick = openTestimonialModal; }
+      else { btn.style.display = 'none'; }
+      if (name === 'rsvp') populateRSVPSelect();
+      if (name === 'testimonials') loadTestimonials();
+      syncMobNav(name);
+    }
   }, { passive: true });
 })();
 </script>
