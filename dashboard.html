@@ -106,7 +106,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .content{padding:28px;flex:1}
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
-.stat-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.stat-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow:hidden}
 .stat-label{font-size:11.5px;color:var(--text3)}
 .stat-value{font-size:26px;font-weight:600;line-height:1}
 .stat-sub{font-size:11.5px;color:var(--text3)}
@@ -287,11 +287,11 @@ select.form-input{cursor:pointer}
   .sidebar.open{transform:none}
   .sidebar-overlay.show{display:block}
   .main{margin-left:0}
-  .stats-row{grid-template-columns:1fr 1fr}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .menu-toggle{display:flex}
 }
 @media(max-width:600px){
-  .stats-row{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .form-grid,.form-grid.cols-3{grid-template-columns:1fr}
   .content{padding:16px}
   .topbar{padding:0 16px}
@@ -437,7 +437,10 @@ select.form-input{cursor:pointer}
   .form-input{font-size:16px !important;min-height:44px}
   .inv-table-wrap{display:none}
   .inv-card-list{display:block;margin-top:12px}
-  .stats-row{grid-template-columns:1fr 1fr !important}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  /* Prevent any child element from causing horizontal bleed */
+  #sectionInvitations{overflow-x:hidden;max-width:100%}
+  .stats-row{overflow:hidden}
   /* Last stat card spans both columns so 5 cards don't leave odd orphan */
   #sectionInvitations .stat-card:last-child{grid-column:1/-1}
   /* Filter tabs: horizontally scrollable pills */
