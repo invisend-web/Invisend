@@ -209,6 +209,15 @@ select.form-input{cursor:pointer}
 /* RSVP */
 .rsvp-panel{background:var(--glass);border:1px solid var(--gb);border-radius:16px;margin-top:0;overflow:hidden}
 .rsvp-list-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.rsvp-inv-item{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;-webkit-tap-highlight-color:transparent}
+.rsvp-inv-item:last-child{border-bottom:none}
+.rsvp-inv-item:hover,.rsvp-inv-item:active{background:var(--gh)}
+.rsvp-inv-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px}
+.rsvp-inv-slug{font-size:11.5px;color:var(--text3)}
+.rsvp-inv-chev{color:var(--text3);flex-shrink:0}
+.rsvp-inv-empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:13px}
+.rsvp-search-wrap{padding:12px 16px;border-bottom:1px solid var(--border)}
+.rsvp-search-wrap .search-input{width:100%;max-width:380px}
 .rsvp-summary{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
 .rsvp-stat{padding:20px;text-align:center;border-right:1px solid var(--border)}
 .rsvp-stat:last-child{border-right:none}
@@ -606,30 +615,35 @@ select.form-input{cursor:pointer}
 
       <!-- RSVP -->
       <div id="sectionRSVP" style="display:none">
-        <div class="rsvp-panel">
-          <div class="rsvp-list-header">
-            <div class="table-title">RSVP Results</div>
-            <select class="form-input" style="width:260px" id="rsvpInvSelect" onchange="loadRSVPForInv(this.value)">
-              <option value="">Choose invitation...</option>
-            </select>
-          </div>
-          <div id="rsvpContent" style="display:none">
-            <div class="rsvp-summary">
-              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--green)" id="rsvpYesCount">0</div><div class="rsvp-stat-label">Attending</div></div>
-              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--red)" id="rsvpNoCount">0</div><div class="rsvp-stat-label">Not Attending</div></div>
-              <div class="rsvp-stat"><div class="rsvp-stat-val" id="rsvpTotalCount">0</div><div class="rsvp-stat-label">Total Responses</div></div>
-              <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--yellow)" id="rsvpGuestCount">0</div><div class="rsvp-stat-label">Total Guests</div></div>
+
+        <!-- LIST VIEW (master) -->
+        <div id="rsvpListView">
+          <div class="rsvp-panel">
+            <div class="rsvp-list-header">
+              <div class="table-title">RSVP Results</div>
             </div>
-            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-              <span style="font-size:13px;color:var(--text2)">Guest Responses</span>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <button class="btn-ghost" id="tblSummaryBtn" onclick="toggleTableSummary()" style="font-size:12px">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
-                  View Table Summary
+            <div class="rsvp-search-wrap">
+              <input class="search-input" id="rsvpSearch" type="search" placeholder="Search by couple name or slug…" oninput="filterRSVPList(this.value)">
+            </div>
+            <div id="rsvpInvList"><div class="rsvp-inv-empty">Loading…</div></div>
+          </div>
+        </div>
+
+        <!-- DETAIL VIEW (drill-down) -->
+        <div id="rsvpDetailView" style="display:none">
+          <div class="rsvp-panel">
+            <div class="rsvp-list-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <button class="btn-ghost" onclick="showRSVPList()" style="font-size:12px;padding:5px 10px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                  Back
                 </button>
-                <button class="btn-ghost" onclick="copyTableLookupLink()" style="font-size:12px">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
-                  Copy Table Lookup Link
+                <div class="table-title" id="rsvpDetailTitle">RSVP Results</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="btn-ghost" onclick="shareRSVPLink()" style="font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                  Share RSVP Link
                 </button>
                 <button class="btn-ghost" onclick="openRSVPRealtime()" style="font-size:12px">
                   <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -637,15 +651,31 @@ select.form-input{cursor:pointer}
                 </button>
               </div>
             </div>
-            <div class="tbl-summary-wrap" id="tblSummaryWrap"></div>
-            <div style="overflow-x:auto">
-              <table class="rsvp-table">
-                <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
-                <tbody id="rsvpTableBody"></tbody>
-              </table>
+            <div id="rsvpContent" style="display:none">
+              <div class="rsvp-summary">
+                <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--green)" id="rsvpYesCount">0</div><div class="rsvp-stat-label">Attending</div></div>
+                <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--red)" id="rsvpNoCount">0</div><div class="rsvp-stat-label">Not Attending</div></div>
+                <div class="rsvp-stat"><div class="rsvp-stat-val" id="rsvpTotalCount">0</div><div class="rsvp-stat-label">Total Responses</div></div>
+                <div class="rsvp-stat"><div class="rsvp-stat-val" style="color:var(--yellow)" id="rsvpGuestCount">0</div><div class="rsvp-stat-label">Total Guests</div></div>
+              </div>
+              <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+                <span style="font-size:13px;color:var(--text2)">Guest Responses</span>
+                <button class="btn-ghost" id="tblSummaryBtn" onclick="toggleTableSummary()" style="font-size:12px">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
+                  View Table Summary
+                </button>
+              </div>
+              <div class="tbl-summary-wrap" id="tblSummaryWrap"></div>
+              <div style="overflow-x:auto">
+                <table class="rsvp-table">
+                  <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
+                  <tbody id="rsvpTableBody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- TESTIMONIALS -->
@@ -1047,6 +1077,7 @@ let editingTestId = null;
 let preshootUrls = new Array(10).fill('');
 let preshootCacheBust = new Array(10).fill(0);
 let currentRsvpData = [];
+let currentRsvpSlug = '';
 
 // ─── SESSION CHECK ───
 const AUTHORIZED_EMAIL = 'info.invisend@gmail.com';
@@ -1677,14 +1708,54 @@ function previewInvitation(slug) {
 
 // ─── RSVP ───
 function populateRSVPSelect() {
-  const sel = document.getElementById('rsvpInvSelect');
-  sel.innerHTML = '<option value="">Choose invitation...</option>';
-  allInvitations.forEach(inv => { const o = document.createElement('option'); o.value = inv.slug; o.textContent = inv.couple_name || inv.slug; sel.appendChild(o); });
+  // reset to list view whenever RSVP section is (re)entered
+  const dv = document.getElementById('rsvpDetailView');
+  const lv = document.getElementById('rsvpListView');
+  if (dv) dv.style.display = 'none';
+  if (lv) lv.style.display = '';
+  renderRSVPList(document.getElementById('rsvpSearch')?.value || '');
+}
+function renderRSVPList(filter) {
+  const q = (filter || '').toLowerCase().trim();
+  const items = q
+    ? allInvitations.filter(inv => (inv.couple_name || '').toLowerCase().includes(q) || (inv.slug || '').toLowerCase().includes(q))
+    : allInvitations;
+  const list = document.getElementById('rsvpInvList');
+  if (!list) return;
+  if (!items.length) {
+    list.innerHTML = '<div class="rsvp-inv-empty">' + (q ? 'No invitations match your search' : 'No invitations yet') + '</div>';
+    return;
+  }
+  list.innerHTML = items.map(inv => {
+    const name = esc(inv.couple_name || inv.slug);
+    const slug = esc(inv.slug);
+    return `<div class="rsvp-inv-item" onclick="openRSVPDetail('${slug}','${name}')">
+      <div>
+        <div class="rsvp-inv-name">${name}</div>
+        <div class="rsvp-inv-slug">/${slug}</div>
+      </div>
+      <svg class="rsvp-inv-chev" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+    </div>`;
+  }).join('');
+}
+function filterRSVPList(q) { renderRSVPList(q); }
+function openRSVPDetail(slug, name) {
+  currentRsvpSlug = slug;
+  document.getElementById('rsvpDetailTitle').textContent = name || slug;
+  document.getElementById('rsvpListView').style.display = 'none';
+  document.getElementById('rsvpDetailView').style.display = '';
+  loadRSVPForInv(slug);
+}
+function showRSVPList() {
+  currentRsvpSlug = '';
+  document.getElementById('rsvpDetailView').style.display = 'none';
+  document.getElementById('rsvpListView').style.display = '';
+  document.getElementById('rsvpContent').style.display = 'none';
 }
 function openRSVPForSlug(slug) {
   showSection('rsvp', document.getElementById('nav-rsvp'));
-  document.getElementById('rsvpInvSelect').value = slug;
-  loadRSVPForInv(slug);
+  const inv = allInvitations.find(i => i.slug === slug);
+  openRSVPDetail(slug, inv?.couple_name || slug);
 }
 async function loadRSVPForInv(slug) {
   if (!slug) { document.getElementById('rsvpContent').style.display = 'none'; return; }
@@ -1720,7 +1791,16 @@ async function loadRSVPForInv(slug) {
   } catch (e) { showToast('Failed to load RSVPs', 'error'); }
   hideLoading();
 }
-function openRSVPRealtime() { const slug = document.getElementById('rsvpInvSelect').value; if (slug) window.open(`rsvp-live.html?slug=${slug}`, '_blank'); }
+function openRSVPRealtime() { if (currentRsvpSlug) window.open(`rsvp-live.html?slug=${currentRsvpSlug}`, '_blank'); }
+function shareRSVPLink() {
+  if (!currentRsvpSlug) return;
+  const url = location.origin + '/rsvp-live.html?slug=' + encodeURIComponent(currentRsvpSlug);
+  navigator.clipboard.writeText(url).then(() => showToast('Live RSVP link copied — share with the couple', 'success')).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = url; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    showToast('Live RSVP link copied', 'success');
+  });
+}
 
 // ─── TABLE ASSIGNMENT ───
 function tblNumHTML(r) {
@@ -1832,17 +1912,6 @@ function renderTableSummary() {
   if (!sorted.length && !unassigned.length) html += `<div style="color:var(--text3);font-size:13px;padding:4px 0">No attending guests loaded yet</div>`;
   html += '</div>';
   wrap.innerHTML = html;
-}
-
-function copyTableLookupLink() {
-  const slug = document.getElementById('rsvpInvSelect').value;
-  if (!slug) { showToast('Please select an invitation first', 'error'); return; }
-  const url = `${location.origin}/table-lookup.html?slug=${slug}`;
-  navigator.clipboard.writeText(url).then(() => showToast('Table lookup link copied — share with guests', 'success')).catch(() => {
-    const el = document.createElement('textarea');
-    el.value = url; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-    showToast('Table lookup link copied — share with guests', 'success');
-  });
 }
 
 // ─── TESTIMONIALS ───
