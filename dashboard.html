@@ -319,6 +319,35 @@ select.form-input{cursor:pointer}
 .music-wave-bars span:nth-child(4){height:18px;animation-delay:0.18s}
 .music-wave-bars span:nth-child(5){height:10px;animation-delay:0s}
 @keyframes waveDash{0%,100%{transform:scaleY(0.5);opacity:0.6}50%{transform:scaleY(1);opacity:1}}
+/* ─── MEDIA LIBRARY PICKER ─── */
+.upload-field-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.upload-field-header .form-label{margin-bottom:0}
+.btn-use-existing{background:none;border:none;color:var(--blue);font-family:var(--font);font-size:11.5px;font-weight:500;cursor:pointer;padding:3px 8px;border-radius:6px;transition:background 0.15s;letter-spacing:0.01em;white-space:nowrap}
+.btn-use-existing:hover{background:rgba(10,132,255,0.08)}
+.media-lib-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:flex-end;justify-content:center}
+.media-lib-overlay.show{display:flex}
+.media-lib-sheet{background:var(--bg2);border:1px solid var(--gb);border-top-left-radius:20px;border-top-right-radius:20px;width:min(560px,100%);max-height:75dvh;display:flex;flex-direction:column;animation:slideUp 0.28s cubic-bezier(0.32,0.72,0,1)}
+.media-lib-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.media-lib-title{font-size:15px;font-weight:600;color:var(--text);letter-spacing:0.01em}
+.media-lib-close{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;border-radius:6px;font-family:var(--font);transition:color 0.15s}
+.media-lib-close:hover{color:var(--text)}
+.media-lib-scroll{overflow-y:auto;flex:1;padding:12px 16px}
+.media-lib-sep{font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:8px 4px 6px;font-family:var(--font)}
+.media-lib-empty{text-align:center;padding:36px 16px;color:var(--text3);font-size:13px}
+.media-lib-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background 0.13s,border-color 0.13s;border:1.5px solid transparent;margin-bottom:4px}
+.media-lib-item:hover{background:var(--glass);border-color:var(--gb)}
+.media-lib-item.ml-selected{border-color:var(--blue);background:rgba(10,132,255,0.06)}
+.media-lib-thumb{width:54px;height:54px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--glass);border:1px solid var(--gb);display:block}
+.media-lib-icon{width:54px;height:54px;border-radius:8px;flex-shrink:0;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;color:var(--text3)}
+.media-lib-meta{flex:1;min-width:0}
+.media-lib-name{font-size:12.5px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.media-lib-date{font-size:11px;color:var(--text3)}
+.media-lib-inuse{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--green);background:rgba(52,199,89,0.1);border:1px solid rgba(52,199,89,0.22);border-radius:20px;padding:1px 7px;margin-top:4px}
+.media-lib-play{flex-shrink:0;background:none;border:none;color:var(--blue);cursor:pointer;padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.13s}
+.media-lib-play:hover{background:rgba(10,132,255,0.1)}
+.media-lib-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:center;flex-shrink:0}
+.media-lib-view-all{background:none;border:none;color:var(--blue);font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;padding:7px 16px;border-radius:8px;transition:background 0.15s}
+.media-lib-view-all:hover{background:rgba(10,132,255,0.08)}
 /* ─── MOBILE CARD LIST ─── */
 .inv-card-list{display:none;margin-top:4px}
 .inv-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:16px;margin-bottom:10px;animation:toastIn 0.25s var(--ease)}
@@ -457,6 +486,18 @@ select.form-input{cursor:pointer}
         <button class="btn-ghost" onclick="keepEditing()">Keep Editing</button>
         <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Discard</button>
       </div>
+    </div>
+  </div>
+</div>
+<div class="media-lib-overlay" id="mediaLibOverlay" onclick="if(event.target===this)closeMediaLib()">
+  <div class="media-lib-sheet">
+    <div class="media-lib-header">
+      <div class="media-lib-title" id="mediaLibTitle">Choose File</div>
+      <button class="media-lib-close" onclick="closeMediaLib()">&#x2715;</button>
+    </div>
+    <div class="media-lib-scroll" id="mediaLibList"></div>
+    <div class="media-lib-footer" id="mediaLibFooter">
+      <button class="media-lib-view-all" id="mediaLibViewAll" onclick="mediaLibViewAll()">View all files</button>
     </div>
   </div>
 </div>
@@ -770,8 +811,8 @@ select.form-input{cursor:pointer}
         <div class="form-group"><label class="form-label">Swipe Image B (Groom)</label><div class="upload-area" id="uploadB"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'swipeB','uploadB','previewSwipeB')"><img class="upload-preview" id="previewSwipeB"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Groom Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><input type="hidden" id="fSwipeB"></div>
         <div class="form-group"><label class="form-label">Couple Photo (Reveal)</label><div class="upload-area" id="uploadCouple"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'couple','uploadCouple','previewCouple')"><img class="upload-preview" id="previewCouple"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Couple Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 3:4 portrait · min 800×1067px · faces in upper half</div></div><input type="hidden" id="fCouplePhoto"></div>
       </div>
-      <div class="form-group" style="margin-top:12px"><label class="form-label">Background Music (MP3)</label><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mpeg,audio/mp3,.mp3" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div><div class="upload-hint">MP3 format · max recommended 5MB · 128kbps or higher</div></div><input type="hidden" id="fMusicUrl"></div>
-      <div class="form-group full" style="margin-top:12px"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="interceptUploadForCrop(this,'background','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div><div class="upload-hint">Best: 9:16 or 16:9 · min 1080px wide · avoid busy center</div></div><input type="hidden" id="fBgImage"></div>
+      <div class="form-group" style="margin-top:12px"><div class="upload-field-header"><label class="form-label">Background Music (MP3)</label><button type="button" class="btn-use-existing" onclick="openMediaLib('music')">Use Existing</button></div><div class="upload-area" id="uploadMusic"><input type="file" accept="audio/mpeg,audio/mp3,.mp3" onchange="handleUpload(this,'music','uploadMusic',null)"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="upload-label" id="musicLabel">Upload MP3</div><div class="upload-sub">MP3 audio file</div><div class="upload-hint">MP3 format · max recommended 5MB · 128kbps or higher</div></div><input type="hidden" id="fMusicUrl"></div>
+      <div class="form-group full" style="margin-top:12px"><div class="upload-field-header"><label class="form-label">Custom Background Image <span style="color:var(--text3);font-weight:400;font-style:italic">(Optional)</span></label><button type="button" class="btn-use-existing" onclick="openMediaLib('background')">Use Existing</button></div><div class="upload-area" id="uploadBgImage"><input type="file" accept="image/jpeg,image/jpg,image/webp,image/*" onchange="interceptUploadForCrop(this,'background','uploadBgImage','previewBgImage')"><img class="upload-preview" id="previewBgImage"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label" id="bgImageLabel">Upload Background</div><div class="upload-sub">Portrait or landscape · min 1080px wide · JPG / WEBP</div><div class="upload-hint">Best: 9:16 or 16:9 · min 1080px wide · avoid busy center</div></div><input type="hidden" id="fBgImage"></div>
     </div>
 
     <!-- PRE-SHOOT SECTION -->
@@ -1355,7 +1396,8 @@ async function handleUpload(input, type, areaId, previewId) {
     const path = `${type}/${Date.now()}.${ext}`;
     // Mark old file orphaned and delete from storage
     const oldUrl = type === 'music' ? document.getElementById('fMusicUrl')?.value : null;
-    if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
+    if (oldUrl && !_reusedUrls.has(oldUrl)) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
+    _reusedUrls.delete(oldUrl);
     await storageUpload(bucket, path, file);
     const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
     const url = u.publicUrl;
@@ -1410,9 +1452,112 @@ function clearUploadArea(areaId, type) {
   if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) deleteStorageFile(u); document.getElementById('fSwipeA').value = ''; }
   else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) deleteStorageFile(u); document.getElementById('fSwipeB').value = ''; }
   else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) deleteStorageFile(u); document.getElementById('fCouplePhoto').value = ''; }
-  else if (type === 'music') { const u = document.getElementById('fMusicUrl')?.value; if (u) deleteStorageFile(u); document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
-  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u) deleteStorageFile(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
+  else if (type === 'music') { const u = document.getElementById('fMusicUrl')?.value; if (u && !_reusedUrls.has(u)) deleteStorageFile(u); _reusedUrls.delete(u); document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
+  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u && !_reusedUrls.has(u)) deleteStorageFile(u); _reusedUrls.delete(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
   area.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el => el.style.removeProperty('display'));
+}
+
+// ─── MEDIA LIBRARY PICKER ───
+const _reusedUrls = new Set();
+let _mediaLibType = null, _mediaLibFiles = [], _mediaLibShowAll = false, _mediaLibAudio = null;
+
+async function openMediaLib(type) {
+  _mediaLibType = type;
+  _mediaLibShowAll = false;
+  if (_mediaLibAudio) { _mediaLibAudio.pause(); _mediaLibAudio = null; }
+  document.getElementById('mediaLibTitle').textContent = type === 'music' ? 'Choose Music' : 'Choose Background Image';
+  document.getElementById('mediaLibList').innerHTML = '<div class="media-lib-empty">Loading…</div>';
+  document.getElementById('mediaLibViewAll').textContent = 'View all files';
+  document.getElementById('mediaLibFooter').style.display = 'none';
+  document.getElementById('mediaLibOverlay').classList.add('show');
+  try {
+    const res = await fetch('/api/get-media-library?type=' + type);
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Request failed');
+    _mediaLibFiles = json.files || [];
+    renderMediaLib();
+  } catch(e) {
+    document.getElementById('mediaLibList').innerHTML = '<div class="media-lib-empty">Failed to load: ' + esc(e.message) + '</div>';
+  }
+}
+function renderMediaLib() {
+  const list = document.getElementById('mediaLibList');
+  if (!_mediaLibFiles.length) {
+    list.innerHTML = '<div class="media-lib-empty">No files uploaded yet for this type.</div>';
+    document.getElementById('mediaLibFooter').style.display = 'none';
+    return;
+  }
+  const shown = _mediaLibShowAll ? _mediaLibFiles : _mediaLibFiles.slice(0, 3);
+  const currentUrl = _mediaLibType === 'music' ? document.getElementById('fMusicUrl').value : document.getElementById('fBgImage').value;
+  list.innerHTML = '';
+  if (!_mediaLibShowAll && _mediaLibFiles.length > 3) {
+    const sep = document.createElement('div'); sep.className = 'media-lib-sep'; sep.textContent = 'RECENT'; list.appendChild(sep);
+  }
+  shown.forEach(function(f) {
+    const item = document.createElement('div');
+    item.className = 'media-lib-item' + (f.url === currentUrl ? ' ml-selected' : '');
+    const date = f.uploaded_at ? new Date(f.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    let mediaEl = '';
+    if (_mediaLibType === 'background') {
+      mediaEl = '<img class="media-lib-thumb" src="' + f.url + '" alt="" loading="lazy">';
+    } else {
+      mediaEl = '<div class="media-lib-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>';
+    }
+    const badge = f.in_use ? '<div class="media-lib-inuse">&#9679; In Use</div>' : '';
+    let playBtn = '';
+    if (_mediaLibType === 'music') {
+      playBtn = '<button class="media-lib-play" title="Preview" onclick="event.stopPropagation();previewMediaAudio(\'' + f.url.replace(/'/g, "\\'") + '\',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>';
+    }
+    item.innerHTML = mediaEl + '<div class="media-lib-meta"><div class="media-lib-name">' + esc(f.label) + '</div><div class="media-lib-date">' + date + '</div>' + badge + '</div>' + playBtn;
+    item.onclick = function() { selectMediaFile(f.url); };
+    list.appendChild(item);
+  });
+  const footer = document.getElementById('mediaLibFooter');
+  const btn = document.getElementById('mediaLibViewAll');
+  if (!_mediaLibShowAll && _mediaLibFiles.length > 3) {
+    footer.style.display = 'flex';
+    btn.textContent = 'View all ' + _mediaLibFiles.length + ' files';
+  } else {
+    footer.style.display = 'none';
+  }
+}
+function mediaLibViewAll() { _mediaLibShowAll = true; renderMediaLib(); }
+function closeMediaLib() {
+  document.getElementById('mediaLibOverlay').classList.remove('show');
+  if (_mediaLibAudio) { _mediaLibAudio.pause(); _mediaLibAudio = null; }
+  _mediaLibType = null;
+}
+function selectMediaFile(url) {
+  if (!_mediaLibType) return;
+  _reusedUrls.add(url);
+  if (_mediaLibType === 'music') {
+    document.getElementById('fMusicUrl').value = url;
+    document.getElementById('musicLabel').textContent = 'Music uploaded ✓';
+    markUploadArea('uploadMusic', 'music', url.split('/').pop());
+  } else {
+    document.getElementById('fBgImage').value = url;
+    document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓';
+    const prev = document.getElementById('previewBgImage');
+    if (prev) { prev.src = url; prev.style.display = 'block'; }
+    markUploadArea('uploadBgImage', 'background', '');
+  }
+  markFormDirty();
+  closeMediaLib();
+  showToast('File selected', 'success');
+}
+function previewMediaAudio(url, btn) {
+  const playIcon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  const pauseIcon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+  if (_mediaLibAudio && !_mediaLibAudio.paused) {
+    _mediaLibAudio.pause();
+    document.querySelectorAll('.media-lib-play').forEach(function(b) { b.innerHTML = playIcon; });
+    if (_mediaLibAudio._url === url) { _mediaLibAudio = null; return; }
+  }
+  _mediaLibAudio = new Audio(url);
+  _mediaLibAudio._url = url;
+  _mediaLibAudio.play().catch(function(){});
+  btn.innerHTML = pauseIcon;
+  _mediaLibAudio.onended = function() { btn.innerHTML = playIcon; _mediaLibAudio = null; };
 }
 
 // ─── SAVE INVITATION ───
@@ -2108,7 +2253,8 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
     try {
       const hiddenId = type === 'swipeA' ? 'fSwipeA' : type === 'swipeB' ? 'fSwipeB' : type === 'couple' ? 'fCouplePhoto' : type === 'background' ? 'fBgImage' : null;
       const oldUrl = hiddenId ? document.getElementById(hiddenId)?.value : null;
-      if (oldUrl) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
+      if (oldUrl && !_reusedUrls.has(oldUrl)) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
+      _reusedUrls.delete(oldUrl);
       const ext = croppedFile.type === 'image/png' ? 'png' : 'jpg';
       const path = `${type}/${Date.now()}.${ext}`;
       await storageUpload('images', path, croppedFile);
