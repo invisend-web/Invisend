@@ -291,6 +291,24 @@ select.form-input{cursor:pointer}
   .rsvp-summary{grid-template-columns:1fr}
   .rsvp-stat{border-right:none;border-bottom:1px solid var(--border)}
 }
+/* ─── MOBILE BOTTOM NAV ─── */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bg2);border-top:1px solid var(--border);height:calc(56px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.mob-nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:8px 4px 0;color:var(--text3);transition:color 0.18s;-webkit-tap-highlight-color:transparent;user-select:none;height:56px;border:none;background:none;font-family:var(--font)}
+.mob-nav-tab svg{width:22px;height:22px;fill:currentColor;flex-shrink:0}
+.mob-nav-tab span{font-size:10px;font-weight:500;letter-spacing:0.01em;line-height:1}
+.mob-nav-tab.active{color:var(--blue)}
+.mob-more-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.mob-more-overlay.show{display:block}
+.mob-more-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);border-top-left-radius:20px;border-top-right-radius:20px;padding:12px 0 calc(8px + env(safe-area-inset-bottom,0px));animation:slideUp 0.28s cubic-bezier(0.32,0.72,0,1)}
+.mob-more-handle{width:36px;height:4px;background:var(--gb);border-radius:2px;margin:0 auto 14px}
+.mob-more-item{display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;color:var(--text);font-size:15px;transition:background 0.15s;-webkit-tap-highlight-color:transparent}
+.mob-more-item:active{background:var(--gh)}
+.mob-more-item svg{width:20px;height:20px;fill:currentColor;color:var(--text2);flex-shrink:0}
+.mob-bin-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:20px;padding:1px 7px;margin-left:auto}
+@media(max-width:900px){
+  .mob-nav{display:flex}
+  .content{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+}
 /* ─── AUTO SLUG ─── */
 .slug-input-wrap{display:flex;align-items:center;gap:8px}
 .auto-slug-btn{flex-shrink:0;display:none;align-items:center;gap:4px;height:28px;padding:0 12px;background:var(--blue);border:none;border-radius:50px;color:#fff;font-family:var(--font);font-size:10px;letter-spacing:0.08em;cursor:pointer;transition:opacity 0.2s,transform 0.2s;white-space:nowrap}
@@ -1206,6 +1224,7 @@ function showSection(name, el) {
   if (name === 'bin') loadBin();
   if (name === 'vault') { document.getElementById('vaultResults').style.display = 'none'; document.getElementById('scanBtn').textContent = ''; document.getElementById('scanBtn').innerHTML = '<svg viewBox="0 0 24 24" fill="#fff" width="14" height="14"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Scan Now'; document.getElementById('scanBtn').disabled = false; }
   closeSidebar();
+  syncMobNav(name);
 }
 
 // ─── SIDEBAR ───
@@ -2375,8 +2394,9 @@ async function loadBinBadge() {
     if (!res.ok) return;
     const { count } = await res.json();
     const badge = document.getElementById('binBadge');
-    if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
-    else { badge.style.display = 'none'; }
+    const mobBadge = document.getElementById('binBadgeMob');
+    if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; if (mobBadge) { mobBadge.textContent = count; mobBadge.style.display = ''; } }
+    else { badge.style.display = 'none'; if (mobBadge) mobBadge.style.display = 'none'; }
   } catch(e) {}
 }
 
@@ -2608,6 +2628,94 @@ async function moveToBinSelected(type) {
   } catch(e) { showToast('Failed: ' + e.message, 'error'); }
   hideLoading();
 }
+
+// ─── MOBILE BOTTOM NAV ───
+function syncMobNav(name) {
+  document.querySelectorAll('.mob-nav-tab').forEach(function(t) { t.classList.remove('active'); });
+  const tab = document.getElementById('mobTab-' + name);
+  if (tab) {
+    tab.classList.add('active');
+  } else {
+    // vault or bin live under "More"
+    const more = document.getElementById('mobTab-more');
+    if (more) more.classList.add('active');
+  }
+}
+function openMoreSheet() {
+  document.getElementById('mobMoreOverlay').classList.add('show');
+}
+function closeMoreSheet() {
+  document.getElementById('mobMoreOverlay').classList.remove('show');
+}
+
+// Swipe between the 3 main tabs on mobile
+(function initMobSwipe() {
+  var SWIPE_TABS = ['invitations', 'rsvp', 'testimonials'];
+  var tx = 0, ty = 0, vertLocked = false;
+  var el = document.querySelector('.content');
+  if (!el) return;
+  el.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
+    vertLocked = false;
+  }, { passive: true });
+  el.addEventListener('touchmove', function(e) {
+    if (vertLocked) return;
+    var dx = e.touches[0].clientX - tx;
+    var dy = e.touches[0].clientY - ty;
+    if (Math.abs(dy) > Math.abs(dx)) vertLocked = true;
+  }, { passive: true });
+  el.addEventListener('touchend', function(e) {
+    if (vertLocked || window.innerWidth > 900) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) < 65) return;
+    var active = document.querySelector('.mob-nav-tab.active');
+    if (!active) return;
+    var cur = active.id.replace('mobTab-', '');
+    var idx = SWIPE_TABS.indexOf(cur);
+    if (idx === -1) return;
+    var next = dx < 0 ? idx + 1 : idx - 1;
+    if (next < 0 || next >= SWIPE_TABS.length) return;
+    var name = SWIPE_TABS[next];
+    showSection(name, document.getElementById('nav-' + name));
+  }, { passive: true });
+})();
 </script>
+
+<!-- ─── MOBILE BOTTOM NAV ─── -->
+<nav class="mob-nav" id="mobNav" aria-label="Main navigation">
+  <button class="mob-nav-tab active" id="mobTab-invitations" onclick="showSection('invitations',document.getElementById('nav-invitations'))">
+    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    <span>Invitations</span>
+  </button>
+  <button class="mob-nav-tab" id="mobTab-rsvp" onclick="showSection('rsvp',document.getElementById('nav-rsvp'))">
+    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+    <span>RSVP</span>
+  </button>
+  <button class="mob-nav-tab" id="mobTab-testimonials" onclick="showSection('testimonials',document.getElementById('nav-testimonials'))">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 14v-2.47l6.88-6.88c.2-.2.51-.2.71 0l1.77 1.77c.2.2.2.51 0 .71L8.47 14H6zm14 0H9.5l2-2H20v2z"/></svg>
+    <span>Reviews</span>
+  </button>
+  <button class="mob-nav-tab" id="mobTab-more" onclick="openMoreSheet()">
+    <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+    <span>More</span>
+  </button>
+</nav>
+
+<!-- MORE BOTTOM SHEET -->
+<div class="mob-more-overlay" id="mobMoreOverlay" onclick="if(event.target===this)closeMoreSheet()">
+  <div class="mob-more-sheet">
+    <div class="mob-more-handle"></div>
+    <div class="mob-more-item" onclick="closeMoreSheet();showSection('vault',document.getElementById('nav-vault'))">
+      <svg viewBox="0 0 24 24"><path d="M4 1h16a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1zm0 8h16a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4a1 1 0 011-1zm0 8h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2a1 1 0 011-1z"/></svg>
+      Storage Vault
+    </div>
+    <div class="mob-more-item" onclick="closeMoreSheet();showSection('bin',document.getElementById('nav-bin'))">
+      <svg viewBox="0 0 24 24"><path d="M15 4V3H9v1H4v2h1l1 13a2 2 0 002 2h8a2 2 0 002-2l1-13h1V4h-5zm-5 12H8.5l-.5-10h2v10zm4 0h-2V8h2v8zm2.5-10l-.5 10H14V8h2.5z"/></svg>
+      Recycle Bin
+      <span class="mob-bin-badge" id="binBadgeMob" style="display:none"></span>
+    </div>
+  </div>
+</div>
 </body>
 </html>
