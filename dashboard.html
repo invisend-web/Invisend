@@ -297,8 +297,11 @@ select.form-input{cursor:pointer}
   .topbar{padding:0 16px}
   .modal{padding:20px}
   .preshoot-upload-grid{grid-template-columns:repeat(3,1fr)}
-  .rsvp-summary{grid-template-columns:1fr}
-  .rsvp-stat{border-right:none;border-bottom:1px solid var(--border)}
+  .rsvp-summary{grid-template-columns:repeat(4,1fr)}
+  .rsvp-stat{border-right:1px solid var(--border);border-bottom:none;padding:12px 6px}
+  .rsvp-stat:last-child{border-right:none}
+  .rsvp-stat-val{font-size:20px}
+  .rsvp-stat-label{font-size:9.5px;line-height:1.2}
 }
 /* ─── MOBILE BOTTOM NAV ─── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--bg2);border-top:1px solid var(--border);height:calc(56px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
