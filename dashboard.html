@@ -104,7 +104,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
 .btn-ghost{display:flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--gb);border-radius:8px;padding:7px 14px;color:var(--text2);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.2s}
 .btn-ghost:hover{background:var(--gh);color:var(--text)}
-.content{padding:28px;flex:1}
+.content{padding:28px;flex:1;width:100%;box-sizing:border-box}
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:24px}
 .stat-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow:hidden}
@@ -324,10 +324,10 @@ select.form-input{cursor:pointer}
   .stat-sub{font-size:10px !important}
 }
 /* ─── SWIPE VIEWPORT (always contain) ─── */
-#swipeViewport{overflow:hidden;max-width:100%}
+#swipeViewport{overflow:hidden;width:100%;max-width:100%;transform:translateZ(0)}
 /* ─── SWIPE CAROUSEL (mobile) ─── */
 @media(max-width:900px){
-  #swipeTrack{display:flex;width:300%;will-change:transform}
+  #swipeTrack{display:flex;width:300%}
   #swipeTrack.sw-anim{transition:transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94)}
   #swipeTrack > div{flex:0 0 33.3333%;min-width:0;display:block !important;box-sizing:border-box}
   /* iOS-style back button */
