@@ -66,6 +66,7 @@ CREATE POLICY "Anon full access storage_files"
   --text:#f5f5f7;--text2:#a1a1b0;--text3:#6e6e80;--border:rgba(255,255,255,0.06);
   --font:'Inter',sans-serif;--ease:cubic-bezier(0.25,1,0.5,1);
 }
+html{overflow-x:hidden;max-width:100%}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
 
 /* LOGIN */
@@ -322,9 +323,10 @@ select.form-input{cursor:pointer}
   .stat-label{font-size:10px !important}
   .stat-sub{font-size:10px !important}
 }
+/* ─── SWIPE VIEWPORT (always contain) ─── */
+#swipeViewport{overflow:hidden;max-width:100%}
 /* ─── SWIPE CAROUSEL (mobile) ─── */
 @media(max-width:900px){
-  #swipeViewport{overflow:hidden}
   #swipeTrack{display:flex;width:300%;will-change:transform}
   #swipeTrack.sw-anim{transition:transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94)}
   #swipeTrack > div{flex:0 0 33.3333%;min-width:0;display:block !important;box-sizing:border-box}
