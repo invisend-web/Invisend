@@ -152,9 +152,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .empty-title{font-size:15px;font-weight:500;margin-bottom:6px}
 .empty-sub{font-size:13px;color:var(--text3)}
 /* MODAL */
-.modal-backdrop{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--gb);border-radius:20px;width:min(680px,100%);margin:auto;padding:28px;animation:modalIn 0.3s var(--ease)}
+.modal{background:var(--bg2);border:1px solid var(--gb);border-radius:20px;width:min(680px,100%);margin:auto;padding:28px;animation:modalIn 0.3s var(--ease);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
 @keyframes modalIn{from{opacity:0;transform:scale(0.96) translateY(10px)}to{opacity:1;transform:none}}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .modal-title{font-size:18px;font-weight:600}
@@ -471,10 +471,18 @@ select.form-input{cursor:pointer}
   #topCreateBtn{width:36px;height:36px;border-radius:50%;padding:0 !important;min-width:0;justify-content:center;gap:0}
   /* ─── STICKY SAVE BAR ─── */
   #invModal.modal-backdrop{z-index:105}
+  #cropModal.modal-backdrop{z-index:115}
+  #dangerModal.modal-backdrop{z-index:115}
   #invModal .modal-footer{position:sticky;bottom:0;background:var(--bg2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);margin-top:0;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:stretch;gap:10px}
   #invModal .modal-footer .btn-primary{flex:1;justify-content:center;min-height:48px;font-size:15px}
   #invModal .modal-footer .btn-ghost{min-height:48px}
   .inv-save-spacer{height:calc(76px + env(safe-area-inset-bottom,0px))}
+  /* ─── CROP MODAL LAYERING (Android Chrome stacking context fix) ─── */
+  #cropModal.modal-backdrop{isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
+  /* ─── CROP MODAL LAYOUT (keep footer buttons always visible) ─── */
+  #cropModal .modal{display:flex;flex-direction:column;max-height:92dvh;overflow:hidden}
+  #cropModal .modal-footer{flex-shrink:0;position:sticky;bottom:0;background:var(--bg2);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2}
+  #cropModal [style*="max-height:400px"]{max-height:45dvh !important;flex:1;min-height:0}
 }
 @media(min-width:769px){.modal-drag-handle{display:none}}
 /* ─── TABLE ASSIGNMENT ─── */
@@ -550,7 +558,8 @@ select.form-input{cursor:pointer}
 .bin-perm-delete-btn:hover{background:rgba(255,69,58,0.25)}
 .bin-perm-delete-btn svg{width:13px;height:13px;fill:currentColor}
 /* ─── CARD CONTEXT MENU ─── */
-.album-card{-webkit-touch-callout:none;user-select:none}
+.album-card{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.album-card img{-webkit-user-drag:none;pointer-events:none}
 #cardCtxMenu{display:none;position:fixed;z-index:300;background:rgba(20,20,20,0.9);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,0.5);min-width:210px;overflow:hidden;padding:6px 0}
 #cardCtxMenu.open{display:block;animation:ctxMenuIn 200ms ease}
 @keyframes ctxMenuIn{from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -1341,6 +1350,7 @@ function attachCardHandlers() {
         if (_moved) return;
         _longFired = true;
         if (navigator.vibrate) navigator.vibrate(80);
+        triggerRipple(card, {clientX: _startX, clientY: _startY});
         showCardCtxMenu(card);
       }, 600);
     }, { passive: true });
@@ -1353,7 +1363,6 @@ function attachCardHandlers() {
       clearTimeout(_timer);
       if (!_moved && !_longFired) {
         e.preventDefault();
-        triggerRipple(card, e.changedTouches[0]);
         previewInvitation(card.dataset.slug);
       }
     }, { passive: false });
@@ -1714,19 +1723,48 @@ function editInvitation(id) {
 function selectTheme(el) { document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('active')); el.classList.add('active'); selectedTheme = parseInt(el.dataset.val); markFormDirty(); }
 
 // ─── STORAGE UPLOAD (via service role signed URL — bypasses RLS) ───
-async function storageUpload(bucket, path, file) {
+async function storageUpload(bucket, path, file, areaId) {
   const base64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result.split(',')[1]);
     reader.onerror = () => reject(new Error('Failed to read file'));
     reader.readAsDataURL(file);
   });
-  const res = await fetch('/api/upload-file', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ bucket, path, base64, mimeType: file.type || 'application/octet-stream' })
-  });
-  if (!res.ok) throw new Error((await res.json()).error || 'Upload failed');
+  let progressBar = null, uploadLabel = null, origLabelText = null;
+  if (areaId) {
+    const area = document.getElementById(areaId);
+    if (area) {
+      progressBar = document.createElement('div');
+      progressBar.style.cssText = 'position:absolute;bottom:0;left:0;height:3px;background:var(--blue);width:0%;transition:width 0.2s ease;z-index:2;pointer-events:none';
+      area.appendChild(progressBar);
+      uploadLabel = area.querySelector('.upload-label');
+      if (uploadLabel) { origLabelText = uploadLabel.textContent; uploadLabel.textContent = 'Uploading 0%...'; }
+    }
+  }
+  try {
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload-file');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.upload.onprogress = function(e) {
+        if (!e.lengthComputable || !progressBar) return;
+        const pct = Math.round((e.loaded / e.total) * 100);
+        progressBar.style.width = pct + '%';
+        if (uploadLabel) uploadLabel.textContent = 'Uploading ' + pct + '%...';
+      };
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) { resolve(); return; }
+        let msg = 'Upload failed';
+        try { msg = JSON.parse(xhr.responseText).error || msg; } catch(e) {}
+        reject(new Error(msg));
+      };
+      xhr.onerror = function() { reject(new Error('Upload failed')); };
+      xhr.send(JSON.stringify({ bucket, path, base64, mimeType: file.type || 'application/octet-stream' }));
+    });
+  } finally {
+    if (progressBar) progressBar.remove();
+    if (uploadLabel && origLabelText !== null) uploadLabel.textContent = origLabelText;
+  }
 }
 
 // ─── FILE TRACKING ───
@@ -1774,7 +1812,6 @@ async function handleUpload(input, type, areaId, previewId) {
       showToast('Music file is too large. Please use a file under 10MB', 'error'); input.value = ''; return;
     }
   }
-  showLoading();
   try {
     const ext = file.name.split('.').pop();
     const bucket = type === 'music' ? 'music' : 'images';
@@ -1783,7 +1820,7 @@ async function handleUpload(input, type, areaId, previewId) {
     const oldUrl = type === 'music' ? document.getElementById('fMusicUrl')?.value : null;
     if (oldUrl && !_reusedUrls.has(oldUrl)) { markFileOrphaned(oldUrl); deleteStorageFile(oldUrl); }
     _reusedUrls.delete(oldUrl);
-    await storageUpload(bucket, path, file);
+    await storageUpload(bucket, path, file, areaId);
     const { data: u } = sb.storage.from(bucket).getPublicUrl(path);
     const url = u.publicUrl;
     if (type === 'music') { document.getElementById('fMusicUrl').value = url; document.getElementById('musicLabel').textContent = 'Music uploaded ✓'; }
@@ -1792,7 +1829,6 @@ async function handleUpload(input, type, areaId, previewId) {
     trackFileUpload(path, bucket, url, type, 'invitations', editingId || 'new');
     showToast('Uploaded successfully', 'success');
   } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
-  hideLoading();
 }
 function markUploadArea(areaId, type, fileName) {
   const area = document.getElementById(areaId); if (!area) return;
