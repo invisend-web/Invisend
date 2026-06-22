@@ -4,7 +4,27 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(git push *)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git commit *)",
+      "Bash(git merge *)",
+      "Bash(sed -i '' 's/const TG_THEMES = \\\\[7, 8, 9\\\\]/const TG_THEMES = [8, 9, 10]/' /Users/dilshan/Downloads/files01/invisend_final/invitation.html)",
+      "Bash(sed -i '' 's/if \\(\\\\[7, 8, 9\\\\].includes/if \\([8, 9, 10].includes/' /Users/dilshan/Downloads/files01/invisend_final/invitation.html)",
+      "Bash(sed -i '' 's/parseInt\\(d.template_id\\) === 10/parseInt\\(d.template_id\\) === 11/' /Users/dilshan/Downloads/files01/invisend_final/invitation.html)",
+      "Bash(grep -n \"box-sizing:border-box\\\\|\\\\*{box-sizing\\\\|\\\\*,\\\\*::\" /Users/dilshan/Downloads/files01/invisend_final/dashboard.html)",
+      "Bash(grep -n \"min-width:[0-9]\\\\+px\\\\|width:[0-9]\\\\{3,\\\\}px\" /Users/dilshan/Downloads/files01/invisend_final/dashboard.html)",
+      "Bash(node -e ' *)",
+      "Bash(grep -n \"min-width:[0-9]\\\\+px\\\\|width:[0-9]\\\\{3,\\\\}px\\\\|min-width:[0-9]\\\\+px\" /Users/dilshan/Downloads/files01/invisend_final/dashboard.html)",
+      "Bash(grep -n \"width:[0-9]\\\\{3,\\\\}px\\\\|min-width:[0-9]\\\\{3,\\\\}px\" /Users/dilshan/Downloads/files01/invisend_final/dashboard.html)",
+      "Bash(awk 'NR>=550 && NR<=600 || NR>=2850 && NR<=2895' /Users/dilshan/Downloads/files01/invisend_final/dashboard.html)",
+      "Bash(git -C /Users/dilshan/Downloads/files01/invisend_final diff dashboard.html)",
+      "Bash(git -C /Users/dilshan/Downloads/files01/invisend_final add dashboard.html)",
+      "Bash(git -C /Users/dilshan/Downloads/files01/invisend_final commit -m ' *)",
+      "Bash(git -C /Users/dilshan/Downloads/files01/invisend_final checkout main)",
+      "Bash(git -C /Users/dilshan/Downloads/files01/invisend_final checkout develop)"
     ]
   }
 }

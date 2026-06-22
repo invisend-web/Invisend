@@ -1880,6 +1880,15 @@ async function saveInvitation() {
   const slug = (document.getElementById('fSlug').value.trim().toLowerCase().replace(/\s+/g, '-'));
   const couple_name = document.getElementById('fCoupleName').value.trim();
   if (!couple_name || !slug) { showToast('Couple name and slug are required', 'error'); return; }
+  if (editingId) {
+    const existing = allInvitations.find(i => i.id === editingId);
+    if (existing) {
+      const newMusic = document.getElementById('fMusicUrl').value || null;
+      const newBg    = document.getElementById('fBgImage').value || null;
+      if (existing.music_url && existing.music_url !== newMusic && !_reusedUrls.has(existing.music_url)) markFileOrphaned(existing.music_url);
+      if (existing.background_image_url && existing.background_image_url !== newBg && !_reusedUrls.has(existing.background_image_url)) markFileOrphaned(existing.background_image_url);
+    }
+  }
   const payload = {
     couple_name, slug, template_id: selectedTheme,
     status: document.getElementById('fStatus').value,
