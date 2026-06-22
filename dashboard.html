@@ -469,6 +469,12 @@ select.form-input{cursor:pointer}
   .topbar-title{font-size:15px}
   .btn-primary-text{display:none}
   #topCreateBtn{width:36px;height:36px;border-radius:50%;padding:0 !important;min-width:0;justify-content:center;gap:0}
+  /* ─── STICKY SAVE BAR ─── */
+  #invModal.modal-backdrop{z-index:105}
+  #invModal .modal-footer{position:sticky;bottom:0;background:var(--bg2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);margin-top:0;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:stretch;gap:10px}
+  #invModal .modal-footer .btn-primary{flex:1;justify-content:center;min-height:48px;font-size:15px}
+  #invModal .modal-footer .btn-ghost{min-height:48px}
+  .inv-save-spacer{height:calc(76px + env(safe-area-inset-bottom,0px))}
 }
 @media(min-width:769px){.modal-drag-handle{display:none}}
 /* ─── TABLE ASSIGNMENT ─── */
@@ -948,6 +954,7 @@ select.form-input{cursor:pointer}
       </div>
     </div>
 
+    <div class="inv-save-spacer"></div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" id="saveBtn" onclick="saveInvitation()">
