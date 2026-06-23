@@ -617,6 +617,19 @@ select.form-input{cursor:pointer}
     </div>
   </div>
 </div>
+<div class="exit-confirm-overlay" id="leaveConfirmOverlay">
+  <div class="exit-confirm-card">
+    <div class="exit-confirm-title">Leave InviSend?</div>
+    <div class="exit-confirm-sub">You'll be taken back to the previous page.</div>
+    <div class="exit-confirm-btns">
+      <div class="exit-confirm-btns-row">
+        <button class="btn-ghost" onclick="stayOnDashboard()">Stay</button>
+        <button class="exit-confirm-discard" onclick="confirmLeaveDashboard()">Leave</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="media-lib-overlay" id="mediaLibOverlay" onclick="if(event.target===this)closeMediaLib()">
   <div class="media-lib-sheet">
     <div class="media-lib-header">
@@ -1551,6 +1564,7 @@ function openCreateModal() {
   document.getElementById('modalTitle').textContent = 'New Invitation';
   formDirty = false;
   clearForm(); document.getElementById('invModal').classList.add('open');
+  history.pushState({ page: 'invModal' }, ''); _invModalStateActive = true;
   checkDraftBanner(null);
 }
 function closeModal() { _doCloseModal(); }
@@ -1626,6 +1640,7 @@ function editInvitation(id) {
   formDirty = false;
   document.querySelectorAll('.btn-media-pool').forEach(function(btn) { btn.style.display = ''; });
   document.getElementById('invModal').classList.add('open');
+  history.pushState({ page: 'invModal' }, ''); _invModalStateActive = true;
   checkDraftBanner(id);
 }
 
@@ -2345,7 +2360,46 @@ function markFormDirty() { formDirty = true; }
 function keepEditing() { document.getElementById('exitConfirmOverlay').classList.remove('show'); }
 function exitWithoutSaving() { document.getElementById('exitConfirmOverlay').classList.remove('show'); _doCloseModal(); }
 async function saveAndClose() { document.getElementById('exitConfirmOverlay').classList.remove('show'); await saveInvitation(); }
-function _doCloseModal() { formDirty = false; document.getElementById('invModal').classList.remove('open'); }
+function _doCloseModal() {
+  formDirty = false;
+  document.getElementById('invModal').classList.remove('open');
+  if (_invModalStateActive) { _invModalStateActive = false; _skipNextPopstate = true; history.back(); }
+}
+
+// ─── BACK / POPSTATE NAVIGATION GUARD ───
+let _invModalStateActive = false;
+let _skipNextPopstate = false;
+let _leavingDashboard = false;
+
+history.pushState({ page: 'dashboard' }, '');
+
+window.addEventListener('popstate', function() {
+  if (_skipNextPopstate) { _skipNextPopstate = false; return; }
+  if (_leavingDashboard) { _leavingDashboard = false; history.back(); return; }
+
+  const isInvOpen = document.getElementById('invModal').classList.contains('open');
+
+  if (isInvOpen) {
+    if (formDirty) {
+      history.pushState({ page: 'invModal' }, '');
+      document.getElementById('exitConfirmOverlay').classList.add('show');
+    } else {
+      _invModalStateActive = false;
+      _doCloseModal();
+      showSection('rsvp', document.getElementById('nav-rsvp'));
+    }
+  } else {
+    history.pushState({ page: 'dashboard' }, '');
+    document.getElementById('leaveConfirmOverlay').classList.add('show');
+  }
+});
+
+function stayOnDashboard() { document.getElementById('leaveConfirmOverlay').classList.remove('show'); }
+function confirmLeaveDashboard() {
+  document.getElementById('leaveConfirmOverlay').classList.remove('show');
+  _leavingDashboard = true;
+  history.back();
+}
 
 // ─── DRAFT (sessionStorage, no DB) ───
 const DRAFT_KEY = 'invisend_inv_draft';
