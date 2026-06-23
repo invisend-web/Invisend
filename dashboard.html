@@ -2386,10 +2386,7 @@ window.addEventListener('popstate', function() {
     } else {
       _invModalStateActive = false;
       _doCloseModal();
-      const rsvpEl = window.innerWidth <= 768
-        ? document.getElementById('mobTab-rsvp')
-        : document.getElementById('nav-rsvp');
-      showSection('rsvp', rsvpEl);
+      document.getElementById('mobTab-rsvp')?.click();
     }
   } else {
     history.pushState({ page: 'dashboard' }, '');
