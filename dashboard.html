@@ -273,6 +273,8 @@ select.form-input{cursor:pointer}
 .exit-confirm-draft:hover{background:rgba(10,132,255,0.18);border-color:rgba(10,132,255,0.6)}
 .exit-confirm-discard{flex:1;padding:10px 18px;border:none;border-radius:10px;background:var(--red);color:#fff;font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;transition:opacity 0.15s}
 .exit-confirm-discard:hover{opacity:0.85}
+.exit-confirm-save{width:100%;padding:11px 18px;border:none;border-radius:10px;background:var(--green);color:#fff;font-family:var(--font);font-size:13.5px;font-weight:500;cursor:pointer;transition:opacity 0.15s;margin-bottom:0}
+.exit-confirm-save:hover{opacity:0.88}
 .draft-banner{display:none;align-items:center;justify-content:space-between;gap:12px;background:rgba(10,132,255,0.08);border:1px solid rgba(10,132,255,0.22);border-radius:10px;padding:11px 14px;margin-bottom:18px}
 .draft-banner-text{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--blue)}
 .draft-banner-text svg{flex-shrink:0}
@@ -597,16 +599,20 @@ select.form-input{cursor:pointer}
 <div class="toast-wrap" id="toastWrap"></div>
 <div class="exit-confirm-overlay" id="exitConfirmOverlay">
   <div class="exit-confirm-card">
-    <div class="exit-confirm-title">Leave without saving?</div>
-    <div class="exit-confirm-sub">Save a draft to continue later,<br>or discard your changes.</div>
+    <div class="exit-confirm-title">Unsaved Changes</div>
+    <div class="exit-confirm-sub">What would you like to do with your changes?</div>
     <div class="exit-confirm-btns">
+      <button class="exit-confirm-save" onclick="saveAndClose()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px;margin-right:5px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Save &amp; Close
+      </button>
       <button class="exit-confirm-draft" onclick="saveDraft()">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px;margin-right:5px"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
         Save as Draft
       </button>
       <div class="exit-confirm-btns-row">
-        <button class="btn-ghost" onclick="keepEditing()">Keep Editing</button>
-        <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Discard</button>
+        <button class="btn-ghost" onclick="keepEditing()">Continue Editing</button>
+        <button class="exit-confirm-discard" onclick="exitWithoutSaving()">Close Without Saving</button>
       </div>
     </div>
   </div>
@@ -1289,7 +1295,8 @@ function renderMobileCards(invs) {
     return;
   }
   list.innerHTML = invs.map(inv => {
-    const dateStr = inv.wedding_date ? new Date(inv.wedding_date).toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const weddingDateStr = inv.wedding_date ? new Date(inv.wedding_date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : null;
+    const createdStr = new Date(inv.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
     const thumbStyle = inv.preshoot_photo_1 ? ` style="background-image:url('${esc(inv.preshoot_photo_1)}')"` : '';
     return `<div class="album-card" data-id="${inv.id}" data-slug="${esc(inv.slug)}" data-status="${inv.status||'live'}" data-name="${esc(inv.couple_name||'')}" onclick="openAlbumActions(this)">
       <div class="album-thumb"${thumbStyle}>
@@ -1297,9 +1304,8 @@ function renderMobileCards(invs) {
         <div class="album-thumb-grad"></div>
         <div class="album-caption">
           <div class="album-couple">${esc(inv.couple_name || '—')}</div>
-          <div class="album-meta">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>${dateStr}&nbsp;·&nbsp;<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span id="mobRsvpCount_${esc(inv.slug)}">—</span>
-          </div>
+          ${weddingDateStr ? `<div class="album-meta"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Wedding · ${weddingDateStr}</div>` : ''}
+          <div class="album-meta"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.95-2.05L6.7 18.3C8.32 19.95 10.54 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>Added · ${createdStr}</div>
         </div>
         <span class="sbadge ${inv.status || 'live'} album-sbadge">${inv.status || 'live'}</span>
       </div>
@@ -2455,6 +2461,7 @@ let formDirty = false;
 function markFormDirty() { formDirty = true; }
 function keepEditing() { document.getElementById('exitConfirmOverlay').classList.remove('show'); }
 function exitWithoutSaving() { document.getElementById('exitConfirmOverlay').classList.remove('show'); _doCloseModal(); }
+async function saveAndClose() { document.getElementById('exitConfirmOverlay').classList.remove('show'); await saveInvitation(); }
 function _doCloseModal() { formDirty = false; document.getElementById('invModal').classList.remove('open'); }
 
 // ─── DRAFT (sessionStorage, no DB) ───
