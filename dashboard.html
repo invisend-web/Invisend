@@ -485,8 +485,8 @@ select.form-input{cursor:pointer}
   #cropModal.modal-backdrop{isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
   /* ─── CROP MODAL LAYOUT (keep footer buttons always visible) ─── */
   #cropModal .modal{display:flex;flex-direction:column;max-height:92dvh;overflow:hidden}
-  #cropModal .modal-footer{flex-shrink:0;position:sticky;bottom:0;background:var(--bg2);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2}
-  #cropModal [style*="max-height:400px"]{max-height:45dvh !important;flex:1;min-height:0}
+  #cropModal .modal-footer{flex-shrink:0;position:sticky;bottom:0;background:var(--bg2);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:10}
+  #cropModal [style*="max-height:400px"]{max-height:38dvh !important;flex:1;min-height:0}
 }
 @media(min-width:769px){.modal-drag-handle{display:none}}
 /* ─── TABLE ASSIGNMENT ─── */
