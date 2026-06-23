@@ -196,10 +196,10 @@ select.form-input{cursor:pointer}
 .slot-recrop:hover{background:rgba(0,0,0,0.8)}
 .slot-pool{position:absolute;bottom:4px;right:4px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:#fff;cursor:pointer;transition:background 0.2s;z-index:2}
 .slot-pool:hover{background:rgba(10,132,255,0.7)}
-/* ─── PRESHOOT DRAG ─── */
-.preshoot-slot.ps-pressing{transform:scale(0.94);border-color:var(--blue) !important;border-style:solid !important;transition:transform 0.15s,border-color 0.15s}
-.preshoot-slot.ps-src{opacity:0.18;pointer-events:none}
-.ps-ghost{position:fixed;pointer-events:none;z-index:9999;border-radius:8px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.7),0 4px 12px rgba(0,0,0,0.4);transform:scale(1.07);will-change:left,top}
+.slot-arrow-left,.slot-arrow-right{position:absolute;top:4px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:#fff;cursor:pointer;transition:background 0.2s;z-index:3}
+.slot-arrow-left{left:calc(50% - 23px)}
+.slot-arrow-right{left:calc(50% + 1px)}
+.slot-arrow-left:hover,.slot-arrow-right:hover{background:rgba(0,0,0,0.8)}
 /* THEME SELECTOR */
 .theme-selector{display:flex;flex-direction:column;gap:18px;}
 .theme-group-label{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
@@ -477,10 +477,10 @@ select.form-input{cursor:pointer}
   #invModal.modal-backdrop{z-index:105}
   #cropModal.modal-backdrop{z-index:115}
   #dangerModal.modal-backdrop{z-index:115}
-  #invModal .modal-footer{position:sticky;bottom:0;background:var(--bg2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);margin-top:0;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:stretch;gap:10px}
+  #invModal .modal-footer{position:sticky;bottom:0;background:var(--bg2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);margin-top:0;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:stretch;gap:10px;z-index:10}
   #invModal .modal-footer .btn-primary{flex:1;justify-content:center;min-height:48px;font-size:15px}
   #invModal .modal-footer .btn-ghost{min-height:48px}
-  .inv-save-spacer{height:calc(76px + env(safe-area-inset-bottom,0px))}
+  .inv-save-spacer{height:calc(90px + env(safe-area-inset-bottom,0px))}
   /* ─── CROP MODAL LAYERING (Android Chrome stacking context fix) ─── */
   #cropModal.modal-backdrop{isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
   /* ─── CROP MODAL LAYOUT (keep footer buttons always visible) ─── */
@@ -1176,8 +1176,6 @@ function applyInvFilters() {
 let editingTestId = null;
 let preshootUrls = new Array(10).fill('');
 let preshootCacheBust = new Array(10).fill(0);
-var _psDragSrc=-1,_psDragCurFI=-1,_psDragFilledIdxs=[],_psDragActive=false,_psDragTimer=null;
-var _psGhost=null,_psInitPos=[],_psStartPt={x:0,y:0},_psPreDragUrls=[],_psMoveH=null,_psUpH=null;
 let currentRsvpData = [];
 let currentRsvpSlug = '';
 var _swipeIdx = 0;
@@ -1487,16 +1485,18 @@ function setSwipePos(idx, animate) {
 // ─── PRESHOOT UI ───
 function buildPreshootGrid() {
   const grid = document.getElementById('preshootGrid');
+  const lastFilledIdx = preshootUrls.reduce((last, u, i) => u ? i : last, -1);
   grid.innerHTML = preshootUrls.map((url, i) => `
     <div class="preshoot-slot" id="preshootSlot${i}">
       <input type="file" accept="image/*" onchange="handlePreshootUpload(this,${i})">
       ${url ? `<img src="${url}${url.includes('?') ? '&' : '?'}cb=${preshootCacheBust[i] || 0}" alt="">` : ''}
+      ${url && i > 0 ? `<button class="slot-arrow-left" onclick="event.preventDefault();event.stopPropagation();movePreshootPhoto(${i},-1)" title="Move left"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>` : ''}
+      ${url && i < lastFilledIdx ? `<button class="slot-arrow-right" onclick="event.preventDefault();event.stopPropagation();movePreshootPhoto(${i},1)" title="Move right"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>` : ''}
       ${url ? `<button class="slot-recrop" onclick="openRecropPreshoot(${i},event)" title="Adjust crop"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/></svg></button>` : ''}
       ${url ? `<button class="slot-remove" onclick="removePreshootPhoto(${i},event)">&#x2715;</button>` : ''}
       ${!url ? `<div class="slot-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><div class="slot-num">${i + 1}</div>` : ''}
       ${editingId ? `<button class="slot-pool" onclick="event.preventDefault();event.stopPropagation();openMediaPool('preshoot',${i},null,'image')" title="Pick from media pool"><svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg></button>` : ''}
     </div>`).join('');
-  initPreshootDrag();
 }
 function togglePreshoot(on) { document.getElementById('preshootFields').style.display = on ? '' : 'none'; if (on) buildPreshootGrid(); }
 async function handlePreshootUpload(input, idx) {
@@ -1520,132 +1520,15 @@ async function handlePreshootUpload(input, idx) {
   });
 }
 function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) deleteStorageFile(u); preshootUrls[idx] = ''; buildPreshootGrid(); }
-// ─── PRESHOOT DRAG-TO-REORDER ───
-function initPreshootDrag() {
-  document.querySelectorAll('#preshootGrid .preshoot-slot').forEach(function(el, idx) {
-    if (el._psPDH) el.removeEventListener('pointerdown', el._psPDH);
-    if (!preshootUrls[idx]) return;
-    var h = function(e) { onPsPD(e, idx); };
-    el._psPDH = h;
-    el.addEventListener('pointerdown', h);
-  });
-}
-function onPsPD(e, idx) {
-  if (e.pointerType === 'mouse' && e.button !== 0) return;
-  if (e.target.closest && e.target.closest('button,input')) return;
-  e.stopPropagation();
-  _psStartPt = {x: e.clientX, y: e.clientY};
-  _psDragSrc = idx; _psDragCurFI = -1; _psDragActive = false;
-  var pid = e.pointerId;
-  var srcEl = document.getElementById('preshootSlot' + idx);
-  if (srcEl) srcEl.classList.add('ps-pressing');
-  if (_psMoveH) document.removeEventListener('pointermove', _psMoveH);
-  if (_psUpH) document.removeEventListener('pointerup', _psUpH);
-  _psMoveH = function(e2) {
-    if (!_psDragActive) {
-      var dx = e2.clientX - _psStartPt.x, dy = e2.clientY - _psStartPt.y;
-      if (Math.sqrt(dx * dx + dy * dy) > 9 && _psDragTimer) {
-        clearTimeout(_psDragTimer); _psDragTimer = null;
-        if (srcEl) srcEl.classList.remove('ps-pressing');
-        _psDragSrc = -1;
-      }
-      return;
-    }
-    updatePsDrag(e2.clientX, e2.clientY);
-  };
-  _psUpH = function() { finishPsDrag(); };
-  document.addEventListener('pointermove', _psMoveH);
-  document.addEventListener('pointerup', _psUpH);
-  _psDragTimer = setTimeout(function() {
-    _psDragTimer = null;
-    if (_psDragSrc !== idx) return;
-    if (srcEl) try { srcEl.setPointerCapture(pid); } catch (_) {}
-    document.body.style.touchAction = 'none';
-    activatePsDrag(idx);
-  }, 450);
-}
-function activatePsDrag(srcIdx) {
-  _psDragActive = true;
-  _psPreDragUrls = preshootUrls.slice();
-  var slots = document.querySelectorAll('#preshootGrid .preshoot-slot');
-  _psInitPos = Array.from(slots).map(function(el) {
-    var r = el.getBoundingClientRect();
-    return {left: r.left, top: r.top, w: r.width, h: r.height};
-  });
-  _psDragFilledIdxs = preshootUrls.map(function(u, i) { return u ? i : -1; }).filter(function(i) { return i >= 0; });
-  var srcFI = _psDragFilledIdxs.indexOf(srcIdx);
-  _psDragCurFI = srcFI >= 0 ? srcFI : 0;
-  var srcEl = document.getElementById('preshootSlot' + srcIdx);
-  if (srcEl) { srcEl.classList.remove('ps-pressing'); srcEl.classList.add('ps-src'); }
-  var pos = _psInitPos[srcIdx];
-  _psGhost = document.createElement('div');
-  _psGhost.className = 'ps-ghost';
-  _psGhost.style.cssText = 'left:' + pos.left + 'px;top:' + pos.top + 'px;width:' + pos.w + 'px;height:' + pos.h + 'px';
-  var img = document.createElement('img');
-  img.src = preshootUrls[srcIdx];
-  img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:8px';
-  _psGhost.appendChild(img);
-  document.body.appendChild(_psGhost);
-}
-function updatePsDrag(cx, cy) {
-  if (!_psGhost || !_psDragActive) return;
-  var pos = _psInitPos[_psDragSrc];
-  _psGhost.style.left = (pos.left + (cx - _psStartPt.x)) + 'px';
-  _psGhost.style.top  = (pos.top  + (cy - _psStartPt.y)) + 'px';
-  var srcFI = _psDragFilledIdxs.indexOf(_psDragSrc);
-  var bestFI = _psDragCurFI, bestD = Infinity;
-  _psDragFilledIdxs.forEach(function(slotIdx, fi) {
-    if (slotIdx === _psDragSrc) return;
-    var p = _psInitPos[slotIdx]; if (!p) return;
-    var d = Math.sqrt(Math.pow(cx - (p.left + p.w / 2), 2) + Math.pow(cy - (p.top + p.h / 2), 2));
-    if (d < bestD) { bestD = d; bestFI = fi; }
-  });
-  if (bestFI !== _psDragCurFI) { _psDragCurFI = bestFI; applyPsShift(srcFI, bestFI); }
-}
-function applyPsShift(srcFI, curFI) {
-  document.querySelectorAll('#preshootGrid .preshoot-slot').forEach(function(el, physIdx) {
-    if (physIdx === _psDragSrc) return;
-    var fi = _psDragFilledIdxs.indexOf(physIdx);
-    if (fi < 0) { el.style.transform = ''; el.style.transition = ''; return; }
-    var newFI = fi;
-    if (srcFI < curFI && fi > srcFI && fi <= curFI) newFI = fi - 1;
-    else if (srcFI > curFI && fi >= curFI && fi < srcFI) newFI = fi + 1;
-    var target = _psDragFilledIdxs[newFI];
-    if (target === undefined || target === physIdx) {
-      el.style.transition = 'transform 0.2s'; el.style.transform = '';
-    } else {
-      var from = _psInitPos[physIdx], to = _psInitPos[target];
-      el.style.transition = 'transform 0.2s';
-      el.style.transform = 'translate(' + (to.left - from.left) + 'px,' + (to.top - from.top) + 'px)';
-    }
-  });
-}
-function finishPsDrag() {
-  if (_psMoveH) { document.removeEventListener('pointermove', _psMoveH); _psMoveH = null; }
-  if (_psUpH)   { document.removeEventListener('pointerup',   _psUpH);   _psUpH = null; }
-  if (_psDragTimer) { clearTimeout(_psDragTimer); _psDragTimer = null; }
-  document.body.style.touchAction = '';
-  if (_psGhost) { _psGhost.remove(); _psGhost = null; }
-  if (!_psDragActive) {
-    var el = document.getElementById('preshootSlot' + _psDragSrc);
-    if (el) el.classList.remove('ps-pressing');
-    _psDragSrc = -1; return;
-  }
-  _psDragActive = false;
-  var srcFI  = _psDragFilledIdxs.indexOf(_psDragSrc);
-  var destFI = _psDragCurFI;
-  var changed = srcFI >= 0 && destFI >= 0 && srcFI !== destFI;
-  if (changed) {
-    var filled = _psDragFilledIdxs.map(function(i) { return preshootUrls[i]; });
-    var url = filled.splice(srcFI, 1)[0];
-    filled.splice(destFI, 0, url);
-    preshootUrls = filled.concat(preshootUrls.filter(function(u) { return !u; }));
-  }
-  _psDragSrc = -1; _psDragCurFI = -1;
+function movePreshootPhoto(idx, dir) {
+  var target = idx + dir;
+  if (target < 0 || target >= preshootUrls.length) return;
+  var tmp = preshootUrls[idx]; preshootUrls[idx] = preshootUrls[target]; preshootUrls[target] = tmp;
   buildPreshootGrid();
-  if (changed && editingId) savePreshootOrder();
+  if (editingId) savePreshootOrder();
 }
 async function savePreshootOrder() {
+  var snapshot = preshootUrls.slice();
   var pl = {};
   for (var i = 0; i < 10; i++) pl['preshoot_photo_' + (i + 1)] = preshootUrls[i] || null;
   try {
@@ -1657,7 +1540,7 @@ async function savePreshootOrder() {
     showToast('Order updated', 'success');
   } catch (e) {
     showToast('Could not save order', 'error');
-    preshootUrls = _psPreDragUrls.slice();
+    preshootUrls = snapshot;
     buildPreshootGrid();
   }
 }
