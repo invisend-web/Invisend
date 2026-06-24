@@ -1549,7 +1549,7 @@ async function handlePreshootUpload(input, idx) {
     hideLoading();
   });
 }
-function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) deleteWithOriginal(u); preshootUrls[idx] = ''; buildPreshootGrid(); }
+function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) { unprotectOriginal(u); deleteStorageFile(u); } preshootUrls[idx] = ''; buildPreshootGrid(); }
 function movePreshootPhoto(idx, dir) {
   var target = idx + dir;
   if (target < 0 || target >= preshootUrls.length) return;
@@ -1741,16 +1741,19 @@ async function deleteStorageFile(url) {
   if (!url) return;
   deleteStorageFiles([url]);
 }
-async function deleteWithOriginal(url) {
-  if (!url) return;
+async function unprotectOriginal(croppedUrl) {
+  if (!croppedUrl) return;
   try {
     const { data } = await sb.from('storage_files')
       .select('original_url')
-      .eq('public_url', url)
+      .eq('public_url', croppedUrl)
       .single();
-    if (data?.original_url) deleteStorageFile(data.original_url);
+    if (data?.original_url) {
+      await sb.from('storage_files')
+        .update({ file_type: 'image', is_orphaned: true })
+        .eq('public_url', data.original_url);
+    }
   } catch(e) {}
-  deleteStorageFile(url);
 }
 
 // ─── UPLOAD ───
@@ -1824,11 +1827,11 @@ function clearUploadArea(areaId, type) {
   area.querySelector('.upload-status-lbl')?.remove();
   area.querySelector('.music-wave-bars')?.remove();
   const prev = area.querySelector('.upload-preview'); if (prev) { prev.src=''; prev.style.display='none'; }
-  if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) deleteWithOriginal(u); document.getElementById('fSwipeA').value = ''; }
-  else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) deleteWithOriginal(u); document.getElementById('fSwipeB').value = ''; }
-  else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) deleteWithOriginal(u); document.getElementById('fCouplePhoto').value = ''; }
+  if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeA').value = ''; }
+  else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeB').value = ''; }
+  else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fCouplePhoto').value = ''; }
   else if (type === 'music') { const u = document.getElementById('fMusicUrl')?.value; if (u && !_reusedUrls.has(u)) deleteStorageFile(u); _reusedUrls.delete(u); document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
-  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u && !_reusedUrls.has(u)) deleteStorageFile(u); _reusedUrls.delete(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
+  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u && !_reusedUrls.has(u)) { unprotectOriginal(u); deleteStorageFile(u); } _reusedUrls.delete(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
   area.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el => el.style.removeProperty('display'));
 }
 
