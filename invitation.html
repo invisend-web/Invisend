@@ -523,8 +523,22 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .countdown-unit-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
 .countdown-sep{font-family:var(--font-display);font-size:20px;color:var(--accent);opacity:0.4;padding-bottom:12px}
 .cal-btn-wrap{margin-top:18px;text-align:center}
-.cal-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:50px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text2);font-family:var(--font-ui);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;transition:background 0.2s,border-color 0.2s,color 0.2s;cursor:pointer}
-.cal-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);color:var(--text)}
+.cal-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:50px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text2);font-family:var(--font-ui);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;transition:background 0.2s,border-color 0.2s,color 0.2s;cursor:pointer;animation:calPulse 2.5s ease-in-out infinite}
+.cal-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);color:var(--text);animation:none}
+@keyframes calPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(255,255,255,0.12)}}
+@keyframes calPulse1{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(201,168,76,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(201,168,76,0.35)}}
+@keyframes calPulse2{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(241,203,20,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(241,203,20,0.4)}}
+@keyframes calPulse3{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,198,28,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(255,198,28,0.4)}}
+@keyframes calPulse4{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(216,181,122,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(216,181,122,0.35)}}
+@keyframes calPulse5{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,175,55,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(212,175,55,0.45)}}
+@keyframes calPulse6{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(107,120,73,0)}50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(107,120,73,0.3)}}
+[data-theme="1"] .cal-btn{animation:calPulse1 2.5s ease-in-out infinite}
+[data-theme="2"] .cal-btn{animation:calPulse2 2.5s ease-in-out infinite}
+[data-theme="3"] .cal-btn{animation:calPulse3 2.5s ease-in-out infinite}
+[data-theme="4"] .cal-btn{animation:calPulse4 2.5s ease-in-out infinite}
+[data-theme="5"] .cal-btn{animation:calPulse5 2.5s ease-in-out infinite}
+[data-theme="6"] .cal-btn{animation:calPulse6 2.5s ease-in-out infinite}
+[data-theme="1"] .cal-btn:hover,[data-theme="2"] .cal-btn:hover,[data-theme="3"] .cal-btn:hover,[data-theme="4"] .cal-btn:hover,[data-theme="5"] .cal-btn:hover,[data-theme="6"] .cal-btn:hover{animation:none}
 .cal-btn svg{flex-shrink:0;opacity:0.7}
 /* SECTION-SPECIFIC ANIMATIONS */
 .sr-left{opacity:0;transform:translateX(-20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
