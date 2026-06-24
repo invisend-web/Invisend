@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS public.storage_files (
   referenced_by   text,
   reference_id    text,
   is_orphaned     boolean DEFAULT false,
+  original_url    text,
   uploaded_at     timestamp with time zone DEFAULT now()
 );
 
@@ -1060,6 +1061,7 @@ select.form-input{cursor:pointer}
     </div>
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
       <button class="crop-ratio-btn active" onclick="setCropRatio(9,16,this)" data-ratio="9:16">9:16 Portrait</button>
+      <button class="crop-ratio-btn" onclick="setCropRatio(4,5,this)" data-ratio="4:5">4:5 · Preshoot</button>
       <button class="crop-ratio-btn" onclick="setCropRatio(3,4,this)" data-ratio="3:4">3:4 Portrait</button>
       <button class="crop-ratio-btn" onclick="setCropRatio(1,1,this)" data-ratio="1:1">Square</button>
       <button class="crop-ratio-btn" onclick="setCropRatio(16,9,this)" data-ratio="16:9">16:9 Wide</button>
@@ -1515,6 +1517,21 @@ function togglePreshoot(on) { document.getElementById('preshootFields').style.di
 async function handlePreshootUpload(input, idx) {
   const file = input.files[0]; if (!file) return;
   input.value = '';
+  const origExt = file.name.split('.').pop() || (file.type === 'image/png' ? 'png' : 'jpg');
+  const origPath = `originals/preshoot/${Date.now()}_orig.${origExt}`;
+  showLoading();
+  let originalPublicUrl = null;
+  try {
+    await storageUpload('images', origPath, file);
+    const { data: origU } = sb.storage.from('images').getPublicUrl(origPath);
+    originalPublicUrl = origU.publicUrl;
+    await trackFileUpload(origPath, 'images', originalPublicUrl, 'original', 'invitations', editingId || 'new', null);
+  } catch(e) {
+    hideLoading();
+    showToast('Upload failed: ' + e.message, 'error');
+    return;
+  }
+  hideLoading();
   openCropModal(file, 'preshoot', async (croppedFile) => {
     showLoading();
     try {
@@ -1525,7 +1542,7 @@ async function handlePreshootUpload(input, idx) {
       await storageUpload('images', path, croppedFile);
       const { data: u } = sb.storage.from('images').getPublicUrl(path);
       preshootUrls[idx] = u.publicUrl;
-      trackFileUpload(path, 'images', u.publicUrl, 'preshoot_photo_' + (idx + 1), 'invitations', editingId || 'new');
+      await trackFileUpload(path, 'images', u.publicUrl, 'preshoot_photo_' + (idx + 1), 'invitations', editingId || 'new', originalPublicUrl);
       buildPreshootGrid();
       showToast('Photo cropped and uploaded', 'success');
     } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
@@ -1692,9 +1709,11 @@ async function storageUpload(bucket, path, file, areaId) {
 }
 
 // ─── FILE TRACKING ───
-async function trackFileUpload(filePath, bucket, publicUrl, fileType, referencedBy, referenceId) {
+async function trackFileUpload(filePath, bucket, publicUrl, fileType, referencedBy, referenceId, originalUrl) {
   try {
-    await sb.from('storage_files').insert({ file_path: filePath, bucket, public_url: publicUrl, file_type: fileType, referenced_by: referencedBy, reference_id: referenceId || 'pending' });
+    const record = { file_path: filePath, bucket, public_url: publicUrl, file_type: fileType, referenced_by: referencedBy, reference_id: referenceId || 'pending' };
+    if (originalUrl !== undefined) record.original_url = originalUrl;
+    await sb.from('storage_files').insert(record);
   } catch(e) {}
 }
 async function markFileOrphaned(oldUrl) {
@@ -2593,8 +2612,13 @@ async function openRecropModal(type, areaId, previewId) {
 
   showLoading();
   try {
-    // Fetch existing image as blob to avoid tainted canvas (CORS)
-    const resp = await fetch(currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'cb=' + Date.now(), { mode: 'cors' });
+    // Resolve original URL so we always re-crop from the full-quality original
+    const cleanUrl = currentUrl.split('?')[0];
+    const { data: sfRow } = await sb.from('storage_files').select('original_url').eq('public_url', cleanUrl).maybeSingle();
+    const urlToRecrop = sfRow?.original_url || currentUrl;
+
+    // Fetch image as blob to avoid tainted canvas (CORS)
+    const resp = await fetch(urlToRecrop.split('?')[0] + '?cb=' + Date.now(), { mode: 'cors' });
     if (!resp.ok) throw new Error('Could not load existing image');
     const blob = await resp.blob();
     const ext = storagePath.split('.').pop() || 'jpg';
@@ -2612,6 +2636,9 @@ async function openRecropModal(type, areaId, previewId) {
         const baseUrl = currentUrl.split('?')[0];
         const cacheBustTs = Date.now();
         const freshUrl = baseUrl + '?v=' + cacheBustTs;
+
+        // Keep original_url pointing to the original in storage_files
+        try { await sb.from('storage_files').update({ original_url: sfRow?.original_url || null }).eq('public_url', baseUrl); } catch(e) {}
 
         document.getElementById(hiddenId).value = freshUrl;
         if (previewId) {
@@ -2647,7 +2674,12 @@ async function openRecropPreshoot(idx, e) {
 
   showLoading();
   try {
-    const resp = await fetch(currentUrl.split('?')[0] + '?cb=' + Date.now(), { mode: 'cors' });
+    // Resolve original URL so we always re-crop from the full-quality original
+    const cleanUrl = currentUrl.split('?')[0];
+    const { data: sfRow } = await sb.from('storage_files').select('original_url').eq('public_url', cleanUrl).maybeSingle();
+    const urlToRecrop = sfRow?.original_url || currentUrl;
+
+    const resp = await fetch(urlToRecrop.split('?')[0] + '?cb=' + Date.now(), { mode: 'cors' });
     if (!resp.ok) throw new Error('Could not load existing image');
     const blob = await resp.blob();
     const ext = storagePath.split('.').pop() || 'jpg';
@@ -2662,6 +2694,10 @@ async function openRecropPreshoot(idx, e) {
         const baseUrl = currentUrl.split('?')[0];
         const cacheBustTs = Date.now();
         const freshUrl = baseUrl + '?v=' + cacheBustTs;
+
+        // Keep original_url pointing to the original in storage_files
+        try { await sb.from('storage_files').update({ original_url: sfRow?.original_url || null }).eq('public_url', baseUrl); } catch(e) {}
+
         // Persist the cache-busting param in the URL
         // saved to the database, so invitation.html
         // fetches the updated image on all devices
@@ -2730,6 +2766,21 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
   const file = input.files[0]; if (!file) return;
   if (type === 'music') { handleUpload(input, type, areaId, previewId); return; }
   input.value = '';
+  const origExt = file.name.split('.').pop() || (file.type === 'image/png' ? 'png' : 'jpg');
+  const origPath = `originals/${type}/${Date.now()}_orig.${origExt}`;
+  showLoading();
+  let originalPublicUrl = null;
+  try {
+    await storageUpload('images', origPath, file);
+    const { data: origU } = sb.storage.from('images').getPublicUrl(origPath);
+    originalPublicUrl = origU.publicUrl;
+    await trackFileUpload(origPath, 'images', originalPublicUrl, 'original', 'invitations', editingId || 'new', null);
+  } catch(e) {
+    hideLoading();
+    showToast('Upload failed: ' + e.message, 'error');
+    return;
+  }
+  hideLoading();
   openCropModal(file, type, async (croppedFile) => {
     showLoading();
     try {
@@ -2746,7 +2797,7 @@ async function interceptUploadForCrop(input, type, areaId, previewId) {
       if (type === 'background') document.getElementById('bgImageLabel').textContent = 'Background uploaded ✓';
       if (previewId) { const p = document.getElementById(previewId); if (p) { p.src = url; p.style.display = 'block'; } }
       markUploadArea(areaId, type === 'background' ? 'backgrounds' : type, croppedFile.name);
-      trackFileUpload(path, 'images', url, type, 'invitations', editingId || 'new');
+      await trackFileUpload(path, 'images', url, type, 'invitations', editingId || 'new', originalPublicUrl);
       showToast('Photo cropped and uploaded', 'success');
     } catch(e) { showToast('Upload failed: ' + e.message, 'error'); }
     hideLoading();
@@ -3021,17 +3072,22 @@ async function scanOrphanedFiles() {
     document.getElementById('orphanDeleteBtn').disabled = true;
     if (!uniqueOrphans.length) { list.innerHTML = '<div class="vault-empty">No orphaned files found — storage is clean</div>'; return; }
     const isImage = url => /\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url);
-    list.innerHTML = uniqueOrphans.map(f => `
+    list.innerHTML = uniqueOrphans.map(f => {
+      const isProtectedOriginal = f.file_type === 'original' && !f.original_url;
+      return `
       <div class="vault-item">
-        <input type="checkbox" class="vault-item-check orphan-check" data-id="${f.id}" data-url="${f.public_url}" data-bucket="${f.bucket}" data-path="${f.file_path}" onchange="updateVaultDeleteBtn('orphan')">
+        ${isProtectedOriginal
+          ? `<span style="font-size:15px;flex-shrink:0;cursor:help" title="Original image — delete the invitation to remove">🔒</span>`
+          : `<input type="checkbox" class="vault-item-check orphan-check" data-id="${f.id}" data-url="${f.public_url}" data-bucket="${f.bucket}" data-path="${f.file_path}" onchange="updateVaultDeleteBtn('orphan')">`}
         ${isImage(f.public_url)
           ? `<img class="vault-item-thumb" src="${f.public_url}" alt="" loading="lazy" onerror="this.style.display='none'">`
           : `<div class="vault-item-thumb-placeholder"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>`}
         <div class="vault-item-info">
-          <div class="vault-item-name">${f.file_type || 'Unknown type'}</div>
+          <div class="vault-item-name">${f.file_type || 'Unknown type'}${isProtectedOriginal ? ' <span style="color:var(--text3);font-size:11px">(protected)</span>' : ''}</div>
           <div class="vault-item-meta">${f.bucket} · ${new Date(f.uploaded_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
     window._orphanFiles = uniqueOrphans;
   } catch(e) { list.innerHTML = '<div class="vault-empty">Scan failed. Please try again.</div>'; }
 }

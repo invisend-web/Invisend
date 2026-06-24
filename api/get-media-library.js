@@ -18,6 +18,7 @@ module.exports = async function handler(req, res) {
       .from('storage_files')
       .select('id, public_url, file_path, file_type, uploaded_at')
       .eq('reference_id', invitationId)
+      .is('original_url', null)
       .order('uploaded_at', { ascending: false });
 
     if (filesErr) return res.status(500).json({ error: filesErr.message });
