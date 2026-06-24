@@ -1549,7 +1549,7 @@ async function handlePreshootUpload(input, idx) {
     hideLoading();
   });
 }
-function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) { unprotectOriginal(u); deleteStorageFile(u); } preshootUrls[idx] = ''; buildPreshootGrid(); }
+async function removePreshootPhoto(idx, e) { e.preventDefault(); e.stopPropagation(); const u = preshootUrls[idx]; if (u) { await unprotectOriginal(u); deleteStorageFile(u); } preshootUrls[idx] = ''; buildPreshootGrid(); }
 function movePreshootPhoto(idx, dir) {
   var target = idx + dir;
   if (target < 0 || target >= preshootUrls.length) return;
@@ -1820,18 +1820,18 @@ function markUploadArea(areaId, type, fileName) {
   del.onclick = (e) => { e.preventDefault(); e.stopPropagation(); clearUploadArea(areaId, type); };
   area.appendChild(del);
 }
-function clearUploadArea(areaId, type) {
+async function clearUploadArea(areaId, type) {
   const area = document.getElementById(areaId); if (!area) return;
   area.classList.remove('has-media');
   area.querySelector('.upload-del-btn')?.remove();
   area.querySelector('.upload-status-lbl')?.remove();
   area.querySelector('.music-wave-bars')?.remove();
   const prev = area.querySelector('.upload-preview'); if (prev) { prev.src=''; prev.style.display='none'; }
-  if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeA').value = ''; }
-  else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeB').value = ''; }
-  else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) { unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fCouplePhoto').value = ''; }
+  if (type === 'swipeA') { const u = document.getElementById('fSwipeA')?.value; if (u) { await unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeA').value = ''; }
+  else if (type === 'swipeB') { const u = document.getElementById('fSwipeB')?.value; if (u) { await unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fSwipeB').value = ''; }
+  else if (type === 'couple') { const u = document.getElementById('fCouplePhoto')?.value; if (u) { await unprotectOriginal(u); deleteStorageFile(u); } document.getElementById('fCouplePhoto').value = ''; }
   else if (type === 'music') { const u = document.getElementById('fMusicUrl')?.value; if (u && !_reusedUrls.has(u)) deleteStorageFile(u); _reusedUrls.delete(u); document.getElementById('fMusicUrl').value = ''; document.getElementById('musicLabel').textContent = 'Upload MP3'; }
-  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u && !_reusedUrls.has(u)) { unprotectOriginal(u); deleteStorageFile(u); } _reusedUrls.delete(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
+  else if (type === 'backgrounds') { const u = document.getElementById('fBgImage')?.value; if (u && !_reusedUrls.has(u)) { await unprotectOriginal(u); deleteStorageFile(u); } _reusedUrls.delete(u); document.getElementById('fBgImage').value = ''; document.getElementById('bgImageLabel').textContent = 'Upload Background'; }
   area.querySelectorAll('.upload-icon,.upload-label,.upload-sub,.upload-hint').forEach(el => el.style.removeProperty('display'));
 }
 
