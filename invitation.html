@@ -520,6 +520,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .countdown-num{font-family:var(--font-display);font-size:clamp(22px,5vw,30px);font-weight:600;color:var(--accent);line-height:1;transition:all 0.3s ease;letter-spacing:0.02em}
 .countdown-unit-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3)}
 .countdown-sep{font-family:var(--font-display);font-size:20px;color:var(--accent);opacity:0.4;padding-bottom:12px}
+.cal-btn-wrap{margin-top:18px;text-align:center}
+.cal-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:50px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text2);font-family:var(--font-ui);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;transition:background 0.2s,border-color 0.2s,color 0.2s;cursor:pointer}
+.cal-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);color:var(--text)}
+.cal-btn svg{flex-shrink:0;opacity:0.7}
 /* SECTION-SPECIFIC ANIMATIONS */
 .sr-left{opacity:0;transform:translateX(-20px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
 .sr-left.in{opacity:1;transform:none}
@@ -1234,6 +1238,14 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
           <div class="countdown-unit"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-unit-label">Secs</div></div>
         </div>
       </div>
+      <div class="cal-btn-wrap" id="calBtnWrap" style="display:none">
+        <a class="cal-btn" id="calBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+          </svg>
+          Save the Date
+        </a>
+      </div>
       <div class="olive-calendar-wrap" id="oliveCalendarWrap" style="display:none">
         <div class="olive-cal-month" id="oliveCalMonth"></div>
         <div class="olive-cal-grid" id="oliveCalGrid"></div>
@@ -1521,6 +1533,11 @@ function render(d) {
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }
   else { document.getElementById('locWrap').style.display = 'none'; }
+  const calUrl = buildCalendarUrl(d);
+  if (calUrl) {
+    document.getElementById('calBtn').href = calUrl;
+    document.getElementById('calBtnWrap').style.display = '';
+  }
   if (d.background_image_url && ![6,7,12].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
@@ -2522,6 +2539,20 @@ function initOliveReveal(data) {
     }
     nudgeRafId = requestAnimationFrame(loop);
   }
+}
+
+function buildCalendarUrl(d) {
+  if (!d.wedding_date) return null;
+  const start = new Date(d.wedding_date);
+  const end = new Date(start.getTime() + 12 * 60 * 60 * 1000);
+  function fmt(dt) {
+    return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  }
+  const text = encodeURIComponent((d.couple_name || 'Wedding') + ' Wedding');
+  const dates = fmt(start) + '/' + fmt(end);
+  const location = encodeURIComponent(d.google_maps_url || d.venue || '');
+  const details = encodeURIComponent('You are cordially invited to the wedding celebration of ' + (d.couple_name || 'the couple') + '. Venue: ' + (d.venue || ''));
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + text + '&dates=' + dates + '&location=' + location + '&details=' + details;
 }
 
 function renderOliveCalendar(weddingDateStr) {
