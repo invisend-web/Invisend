@@ -2469,6 +2469,7 @@ function initOliveReveal(data) {
         requestAnimationFrame(frame);
       } else {
         ctx.clearRect(0, 0, w, h);
+        try { if (navigator.vibrate) navigator.vibrate([30, 20, 15]); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
         setTimeout(() => {
@@ -2704,6 +2705,7 @@ function initPaperGardenReveal(data) {
     revealed = true;
     if (tapHint) tapHint.classList.add('hide');
     pgSmokeDissipate(ctx, canvas, x, y, function() {
+      try { if (navigator.vibrate) navigator.vibrate([30, 20, 15]); } catch(e) {}
       bgImage.style.transition = 'transform 8s ease-out';
       bgImage.style.transform = 'scale(1.06)';
       setTimeout(() => { namesLayer.style.opacity = '1'; }, 400);
@@ -2878,6 +2880,7 @@ function initVintageTicket(d) {
   if (ticket) {
     ticket.addEventListener('click', function vtReveal() {
       ticket.classList.add('vt-opened');
+      try { if (navigator.vibrate) navigator.vibrate([30, 20, 15]); } catch(e) {}
       ticket.removeEventListener('click', vtReveal);
     });
   }
@@ -3140,6 +3143,7 @@ function completeReveal() {
     setTimeout(() => {
       g.style.opacity = '0';
       document.body.style.overflow = '';
+      try { if (navigator.vibrate) navigator.vibrate([30, 20, 15]); } catch(e) {}
       triggerKandyanExplosion();
     }, 400);
     setTimeout(() => {
@@ -3163,6 +3167,7 @@ function completeReveal() {
   } else {
     setTimeout(() => {
       g.style.opacity = '0';
+      try { if (navigator.vibrate) navigator.vibrate([30, 20, 15]); } catch(e) {}
       document.getElementById('coupleReveal').classList.add('show');
       document.body.style.overflow = '';
       setTimeout(() => {
