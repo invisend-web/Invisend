@@ -1559,7 +1559,7 @@ function render(d) {
     document.getElementById('calBtn').href = calUrl;
     document.getElementById('calBtnWrap').style.display = '';
   }
-  if (d.background_image_url && ![6,7,12].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![7,12].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === 5) {
     const cr = document.getElementById('coupleReveal');
@@ -2489,8 +2489,6 @@ function initOliveReveal(data) {
         try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
-        const bgUrl = data.background_image_url || data.couple_photo_url;
-        if (bgUrl) applyBackgroundImage(bgUrl);
         setTimeout(() => {
           namesLayer.style.opacity = '1';
         }, 400);
