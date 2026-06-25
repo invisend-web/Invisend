@@ -1464,11 +1464,13 @@ function handleThemeSpecificUI(themeId) {
       nb.classList.remove('show');
       nb.classList.remove('tg-visible');
     }
+    window._disableSwipe = true;
+  }
+  if (themeId === 8 || themeId === 9) {
     const dock  = document.getElementById('tgDock');
     const instr = document.getElementById('tgInstruction');
     if (dock)  dock.style.display  = 'block';
     if (instr) { instr.style.display = 'flex'; instr.style.opacity = '1'; }
-    window._disableSwipe = true;
   }
 
   if (themeId === 10) {
