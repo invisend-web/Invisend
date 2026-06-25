@@ -2621,7 +2621,7 @@ function initPaperGardenReveal(data) {
   const nudgeHint = document.getElementById('pgNudgeHint');
   const tapHint  = document.getElementById('pgTapHint');
 
-  const heroSrc = data.background_image_url || data.couple_photo_url;
+  const heroSrc = data.background_image_url || data.couple_photo_url || data.preshoot_photo_1;
   if (heroSrc) bgImage.src = heroSrc;
   else bgImage.style.display = 'none';
 
@@ -2671,9 +2671,25 @@ function initPaperGardenReveal(data) {
     ctx.globalCompositeOperation = 'destination-out';
   }
 
-  window.addEventListener('resize', sizeCanvas, { passive: true });
-  bgImage.onload = sizeCanvas;
-  requestAnimationFrame(sizeCanvas);
+  function initAll() {
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas, { passive: true });
+    canvas.addEventListener('mousedown', handleTap);
+    canvas.addEventListener('touchstart', handleTap, { passive: true });
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('wheel', preRevealScroll, { passive: false });
+    window.addEventListener('touchmove', preRevealScroll, { passive: false });
+    const pgUnlockCheck = setInterval(() => { if (revealed) { unlockScroll(); clearInterval(pgUnlockCheck); } }, 200);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('wheel', onScroll, { passive: true });
+    window.addEventListener('touchmove', onScroll, { passive: true });
+  }
+  if (heroSrc) {
+    bgImage.onload = initAll;
+    bgImage.onerror = initAll;
+  } else {
+    initAll();
+  }
 
   function getPoint(e) {
     const rect = canvas.getBoundingClientRect();
@@ -2697,10 +2713,6 @@ function initPaperGardenReveal(data) {
     const p = getPoint(e);
     triggerReveal(p.x, p.y);
   }
-  canvas.addEventListener('mousedown', handleTap);
-  canvas.addEventListener('touchstart', handleTap, { passive: true });
-
-  document.body.style.overflow = 'hidden';
   function unlockScroll() { document.body.style.overflow = ''; }
   function preRevealScroll(e) {
     if (revealed) return;
@@ -2709,9 +2721,6 @@ function initPaperGardenReveal(data) {
     triggerReveal(rect.width / 2, rect.height / 2);
     unlockScroll();
   }
-  window.addEventListener('wheel', preRevealScroll, { passive: false });
-  window.addEventListener('touchmove', preRevealScroll, { passive: false });
-  const pgUnlockCheck = setInterval(() => { if (revealed) { unlockScroll(); clearInterval(pgUnlockCheck); } }, 200);
 
   // ── Nudge loop ──
   let nudgeRafId = null;
@@ -2726,10 +2735,6 @@ function initPaperGardenReveal(data) {
     window.removeEventListener('touchmove', onScroll);
   }
   function onScroll() { markScrolled(); }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('wheel', onScroll, { passive: true });
-  window.addEventListener('touchmove', onScroll, { passive: true });
-
   function startNudgeLoop() {
     if (userScrolled) return;
     nudgeHint.classList.add('show');
