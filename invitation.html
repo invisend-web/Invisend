@@ -2621,11 +2621,9 @@ function initPaperGardenReveal(data) {
   const nudgeHint = document.getElementById('pgNudgeHint');
   const tapHint  = document.getElementById('pgTapHint');
 
-  const heroSrc = data.background_image_url ||
-                  data.swipe_image_a_url ||
-                  data.swipe_image_b_url ||
-                  data.couple_photo_url;
+  const heroSrc = data.background_image_url || data.couple_photo_url;
   if (heroSrc) bgImage.src = heroSrc;
+  else bgImage.style.display = 'none';
 
   if (data.couple_name) {
     const parts = data.couple_name.split('&').map(s => s.trim());
@@ -2637,13 +2635,11 @@ function initPaperGardenReveal(data) {
   // Mid-page static photo
   const ph = document.getElementById('pgPhotoSection');
   const pi = document.getElementById('pgPhotoImg');
-  const photoSrc = data.swipe_image_b_url ||
-                   data.swipe_image_a_url ||
-                   data.couple_photo_url;
+  const photoSrc = data.couple_photo_url || data.preshoot_photo_1;
   if (ph && pi && photoSrc) {
     pi.src = photoSrc;
-    ph.style.display = 'block';
     pi.onerror = function() { ph.style.display = 'none'; };
+    ph.style.display = 'block';
   } else if (ph) {
     ph.style.display = 'none';
   }
