@@ -12,6 +12,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 *{-webkit-tap-highlight-color:transparent !important;tap-highlight-color:transparent;-webkit-touch-callout:none !important;-webkit-user-select:none !important;-moz-user-select:none;user-select:none !important}
 input,textarea,[contenteditable]{-webkit-user-select:text !important;user-select:text !important}
+.ps-img-box img{-webkit-touch-callout:none !important;pointer-events:none}
+.ps-img-box{pointer-events:auto}
+.lightbox-img{-webkit-touch-callout:none !important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 :root{
   --font-display:'Cinzel',serif;
@@ -1022,7 +1025,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <button class="lightbox-close" onclick="closeLightboxDirect()">&#x2715;</button>
   <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1,event)">&#x2039;</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <img class="lightbox-img" id="lightboxImg" src="" alt="" oncontextmenu="return false" draggable="false">
   <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1,event)">&#x203a;</button>
   <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
@@ -1675,7 +1678,7 @@ function loadPreshoot(d) {
     carousel.innerHTML = photos.map((url, i) => `
       <div class="ps-slide" id="psSlide${i}">
         <div class="ps-img-box" onclick="openLightbox(${i})">
-          <img src="${url}" alt="Pre-shoot photo ${i+1}" loading="lazy">
+          <img src="${url}" alt="Pre-shoot photo ${i+1}" loading="lazy" oncontextmenu="return false" draggable="false">
         </div>
       </div>`).join('');
 
@@ -1854,6 +1857,18 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') lightboxNav(-1, { stopPropagation: () => {} });
   if (e.key === 'Escape') closeLightboxDirect();
 });
+(function() {
+  let lbSwipeStartX = 0;
+  const lb = document.getElementById('lightbox');
+  lb.addEventListener('touchstart', e => { lbSwipeStartX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - lbSwipeStartX;
+    if (Math.abs(dx) > 50) {
+      lightboxNav(dx < 0 ? 1 : -1, { stopPropagation: () => {} });
+      e.preventDefault();
+    }
+  });
+})();
 
 // ─── SWIPE DEMO HINT ───
 function scheduleSwipeDemo() {
