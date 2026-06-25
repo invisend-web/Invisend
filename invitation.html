@@ -2489,6 +2489,8 @@ function initOliveReveal(data) {
         try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
+        const bgUrl = data.background_image_url || data.couple_photo_url;
+        if (bgUrl) applyBackgroundImage(bgUrl);
         setTimeout(() => {
           namesLayer.style.opacity = '1';
         }, 400);
