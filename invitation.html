@@ -12,9 +12,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 *{-webkit-tap-highlight-color:transparent !important;tap-highlight-color:transparent;-webkit-touch-callout:none !important;-webkit-user-select:none !important;-moz-user-select:none;user-select:none !important}
 input,textarea,[contenteditable]{-webkit-user-select:text !important;user-select:text !important}
-.ps-img-box img{-webkit-touch-callout:none !important;pointer-events:none}
+img{-webkit-touch-callout:none !important}
+.ps-img-box img{pointer-events:none}
 .ps-img-box{pointer-events:auto}
-.lightbox-img{-webkit-touch-callout:none !important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 :root{
   --font-display:'Cinzel',serif;
@@ -1045,7 +1045,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <!-- PAPER GARDEN (theme 7) hero -->
     <div class="pg-hero" id="pgHero">
       <div class="pg-sticky-wrap" id="pgStickyWrap">
-        <img class="pg-bg-image" id="pgBgImage" src="" alt="">
+        <img class="pg-bg-image" id="pgBgImage" src="" alt="" oncontextmenu="return false" draggable="false">
         <canvas id="pgCanvas"></canvas>
         <div class="pg-tap-hint" id="pgTapHint">
           <div class="pg-tap-ring r1"></div>
@@ -1071,7 +1071,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
     <!-- VINTAGE TICKET (theme 12) hero -->
     <div class="vt-hero" id="vtHero">
-      <img class="vt-bg" id="vtBgImage" src="" alt="">
+      <img class="vt-bg" id="vtBgImage" src="" alt="" oncontextmenu="return false" draggable="false">
       <svg class="vt-grain" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
         <filter id="vtNoise"><feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
         <rect width="100%" height="100%" filter="url(#vtNoise)"/>
@@ -1107,7 +1107,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <!-- OLIVE CREAM (theme 6) hero - sticky persist, no position:fixed anywhere -->
     <div class="olive-hero" id="oliveHero">
       <div class="olive-sticky-wrap" id="oliveStickyWrap">
-        <img class="olive-bg-image" id="oliveBgImage" src="" alt="">
+        <img class="olive-bg-image" id="oliveBgImage" src="" alt="" oncontextmenu="return false" draggable="false">
         <canvas id="oliveCanvas"></canvas>
         <div class="olive-tap-hint" id="oliveTapHint">
           <div class="olive-tap-ring r1"></div>
@@ -1130,13 +1130,13 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
 
     <div class="arena" id="arena">
-      <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt=""></div>
-      <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt=""></div>
+      <div class="swipe-card left" id="cardLeft"><img id="imgA" src="" alt="" oncontextmenu="return false" draggable="false"></div>
+      <div class="swipe-card right" id="cardRight"><img id="imgB" src="" alt="" oncontextmenu="return false" draggable="false"></div>
 
       <div class="swipe-divider" id="divider"></div>
       <div class="merge-glow" id="mergeGlow"></div>
       <div class="couple-reveal" id="coupleReveal">
-        <div class="couple-card"><img id="coupleImg" src="" alt=""></div>
+        <div class="couple-card"><img id="coupleImg" src="" alt="" oncontextmenu="return false" draggable="false"></div>
       </div>
       <div class="swipe-hint" id="swipeHint">
         <svg class="swipe-hand-hint" id="swipeHandHint" width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 12.5V8a1.5 1.5 0 013 0v4.5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/><path d="M11 12V7.5a1.5 1.5 0 013 0V12" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/><path d="M14 12V9a1.5 1.5 0 013 0v3c0 3.5-1.5 6-4.5 6.5H11c-2 0-3-1-4-2.5L6 14" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1167,10 +1167,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <!-- TG WEDDING FILMS DOCK -->
   <div class="tg-dock" id="tgDock">
     <div class="tg-left" id="tgLeft">
-      <img id="tgImgLeft" src="" alt="" draggable="false">
+      <img id="tgImgLeft" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
     <div class="tg-right" id="tgRight">
-      <img id="tgImgRight" src="" alt="" draggable="false">
+      <img id="tgImgRight" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
   </div>
 
@@ -1190,10 +1190,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
     <div class="cinema-portraits" id="cinemaPortraits">
       <div class="cinema-portrait cinema-portrait-left breathe" id="cinemaPortraitLeft">
-        <img id="cinemaImgLeft" src="" alt="" draggable="false">
+        <img id="cinemaImgLeft" src="" alt="" oncontextmenu="return false" draggable="false">
       </div>
       <div class="cinema-portrait cinema-portrait-right breathe" id="cinemaPortraitRight">
-        <img id="cinemaImgRight" src="" alt="" draggable="false">
+        <img id="cinemaImgRight" src="" alt="" oncontextmenu="return false" draggable="false">
       </div>
     </div>
     <div class="cinema-cta" id="cinemaCta" onclick="cinemaReveal()">
@@ -1221,7 +1221,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="pg-photo-torn-top">
       <svg viewBox="0 0 1440 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L0,30 C50,38 80,18 140,24 C200,30 220,48 290,42 C360,36 380,12 450,18 C520,24 540,44 620,38 C700,32 720,8 800,14 C880,20 900,42 980,36 C1060,30 1080,6 1160,12 C1240,18 1280,40 1360,34 L1440,28 L1440,0 Z" fill="#FAF8F5"/></svg>
     </div>
-    <img class="pg-photo-img" id="pgPhotoImg" src="" alt="">
+    <img class="pg-photo-img" id="pgPhotoImg" src="" alt="" oncontextmenu="return false" draggable="false">
     <div class="pg-photo-torn-bottom">
       <svg viewBox="0 0 1440 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,50 L0,22 C60,16 90,36 160,30 C230,24 250,4 330,10 C410,16 430,38 510,32 C590,26 610,2 700,8 C790,14 810,36 890,30 C970,24 990,0 1080,6 C1170,12 1200,34 1280,28 C1360,22 1400,4 1440,10 L1440,50 Z" fill="#FAF8F5"/></svg>
     </div>
