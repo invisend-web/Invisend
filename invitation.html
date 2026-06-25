@@ -1603,6 +1603,12 @@ function applyBackgroundImage(url) {
   wrap.style.display = 'block';
   const img = new Image();
   img.onload = function() {
+    const theme = parseInt(document.documentElement.getAttribute('data-theme'));
+    if (theme === 6) {
+      // Theme 6: stay hidden until smoke reveal completes
+      // olive smokeDissipate will fade it in
+      return;
+    }
     if (bgLayer) { bgLayer.style.transition = 'opacity 0.8s ease'; bgLayer.style.opacity = '0'; }
     image.style.transition = 'opacity 1.2s ease';
     image.style.opacity = '1';
@@ -2489,6 +2495,14 @@ function initOliveReveal(data) {
         try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
+        const bgImage2 = document.getElementById('customBgImage');
+        const bgLayer2 = document.querySelector('.bg-layer');
+        if (bgImage2 && bgImage2.style.backgroundImage) {
+          if (bgLayer2) { bgLayer2.style.transition='opacity 0.8s ease'; bgLayer2.style.opacity='0'; }
+          bgImage2.style.transition = 'opacity 1.5s ease';
+          bgImage2.style.opacity = '1';
+          setTimeout(() => initCustomBgScrollFade(), 1500);
+        }
         setTimeout(() => {
           namesLayer.style.opacity = '1';
         }, 400);
