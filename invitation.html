@@ -2788,6 +2788,26 @@ function initPaperGardenReveal(data) {
     }
     nudgeRafId = requestAnimationFrame(loop);
   }
+  const pgHeroEl = document.getElementById('pgHero');
+  if (pgHeroEl) {
+    function pgScrollFade() {
+      const heroH = pgHeroEl.offsetHeight;
+      const scrollY = window.scrollY;
+      const fadeStart = heroH * 0.3;
+      const fadeEnd = heroH * 0.85;
+      if (scrollY <= fadeStart) {
+        pgHeroEl.style.opacity = '1';
+      } else if (scrollY >= fadeEnd) {
+        pgHeroEl.style.opacity = '0';
+      } else {
+        const t = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+        pgHeroEl.style.opacity = (1 - t).toFixed(3);
+      }
+    }
+    pgHeroEl.style.transition = 'opacity 0.1s ease';
+    window.addEventListener('scroll', pgScrollFade, { passive: true });
+    pgScrollFade();
+  }
 }
 
 // Shared smoke-dissipate used by Paper Garden
