@@ -919,19 +919,19 @@ select.form-input{cursor:pointer}
           <div class="theme-opts-grid">
             <div class="theme-opt active" data-val="1" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#070608 0%,#1a1208 50%,#c9a84c 100%)"></div><div class="theme-opt-name">Luxury Black</div><div class="theme-opt-sub">Dark &amp; Gold</div></div>
             <div class="theme-opt" data-val="2" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#3d0f0f 0%,#6b1a1a 50%,#f1cb14 100%)"></div><div class="theme-opt-name">Premium Brown</div><div class="theme-opt-sub">Sri Lankan</div></div>
-            <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3EC 0%,#ede4d0 50%,#D8B57A 100%)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
-            <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3E7 0%,#e8e0cc 50%,#6B7849 100%)"></div><div class="theme-opt-name">Olive Cream</div><div class="theme-opt-sub">Botanical &amp; Light</div></div>
-            <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FAF8F5 0%,#e8f0ec 50%,#5B7B6F 100%)"></div><div class="theme-opt-name">Paper Garden</div><div class="theme-opt-sub">Clean &amp; Botanical</div></div>
-            <div class="theme-opt" data-val="12" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#c8b89a 100%)"></div><div class="theme-opt-name">Vintage Ticket</div><div class="theme-opt-sub">B&amp;W Film</div></div>
+            <div class="theme-opt" data-val="3" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3EC 0%,#ede4d0 50%,#D8B57A 100%)"></div><div class="theme-opt-name">InviSend Ivory</div><div class="theme-opt-sub">Warm Cream</div></div>
+            <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3E7 0%,#e8e0cc 50%,#6B7849 100%)"></div><div class="theme-opt-name">Olive Cream</div><div class="theme-opt-sub">Botanical &amp; Light</div></div>
+            <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FAF8F5 0%,#e8f0ec 50%,#5B7B6F 100%)"></div><div class="theme-opt-name">Paper Garden</div><div class="theme-opt-sub">Clean &amp; Botanical</div></div>
+            <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#c8b89a 100%)"></div><div class="theme-opt-name">Vintage Ticket</div><div class="theme-opt-sub">B&amp;W Film</div></div>
           </div>
         </div>
         <!-- TG Exclusive -->
         <div>
           <div class="theme-group-label">TG Exclusive <span style="font-size:8px;letter-spacing:0.05em;font-weight:400;opacity:0.7;">— Requires PNG portraits</span></div>
           <div class="theme-opts-grid">
-            <div class="theme-opt" data-val="8" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#160404,#f1cb14)"></div><div class="theme-opt-name" style="color:#f1cb14">Udarata Sinhala</div><div class="tg-label">TG</div></div>
-            <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#07060a,#c9a84c)"></div><div class="theme-opt-name" style="color:#c9a84c">Western Luxury</div><div class="tg-label">TG</div></div>
-            <div class="theme-opt" data-val="10" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#061208,#ffc61c)"></div><div class="theme-opt-name" style="color:#ffc61c">Kalyanam</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#160404,#f1cb14)"></div><div class="theme-opt-name" style="color:#f1cb14">Udarata Sinhala</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="8" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#07060a,#c9a84c)"></div><div class="theme-opt-name" style="color:#c9a84c">Western Luxury</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#061208,#ffc61c)"></div><div class="theme-opt-name" style="color:#ffc61c">Kalyanam</div><div class="tg-label">TG</div></div>
             <div class="theme-opt" data-val="11" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#000000,#C9A84C,#E8CC7A)"></div><div class="theme-opt-name" style="color:#C9A84C">TG Premium</div><div class="tg-premium-badge">Cinema Noir</div></div>
           </div>
         </div>
@@ -1147,7 +1147,7 @@ let allInvitations = [], editingId = null, selectedTheme = 1;
 let currentInvFilter = 'all';
 let currentSearchQuery = '';
 
-const TG_TEMPLATE_IDS = [8, 9, 10, 11];
+const TG_TEMPLATE_IDS = [7, 8, 9];
 
 function setInvFilter(filter, btn) {
   currentInvFilter = filter;
@@ -1258,8 +1258,8 @@ function updateStats() {
   document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
   document.getElementById('statTotalViews').textContent = allInvitations.reduce((s, i) => s + (i.view_count || 0), 0).toLocaleString();
 }
-const themeNames = { 1: 'Luxury Black', 2: 'Premium Brown', 3: 'Kalyanam', 4: 'InviSend Ivory', 5: 'Ariya Sinhala', 6: 'Olive Cream', 7: 'Paper Garden', 8: 'Udarata Sinhala · TG', 9: 'Western Luxury · TG', 10: 'Kalyanam · TG', 11: 'TG Premium', 12: 'Vintage Ticket' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#ffc61c', 4: '#D8B57A', 5: '#D4AF37', 6: '#8A9B6E', 7: '#5B7B6F', 8: '#f1cb14', 9: '#c9a84c', 10: '#ffc61c', 11: '#C9A84C', 12: '#2a2a2a' };
+const themeNames = { 1: 'Luxury Black', 2: 'Premium Brown', 3: 'InviSend Ivory', 4: 'Olive Cream', 5: 'Paper Garden', 6: 'Vintage Ticket', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#D8B57A', 4: '#8A9B6E', 5: '#5B7B6F', 6: '#2a2a2a', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
