@@ -2895,14 +2895,6 @@ function initPaperGardenTimeline(data) {
 function initVintageTicket(d) {
   const bg = document.getElementById('vtBgImage');
   if (bg && d.background_image_url) bg.src = d.background_image_url;
-  const bgUrl = d.background_image_url || d.couple_photo_url;
-  if (bgUrl) {
-    applyBackgroundImage(bgUrl);
-    setTimeout(() => {
-      const ci = document.getElementById('customBgImage');
-      if (ci) ci.style.filter = 'grayscale(100%) contrast(1.12)';
-    }, 100);
-  }
   if (d.wedding_date) {
     const parts = String(d.wedding_date).substring(0, 10).split('-');
     const yr = parseInt(parts[0], 10), mo = parseInt(parts[1], 10) - 1, dy = parseInt(parts[2], 10);
@@ -2921,11 +2913,27 @@ function initVintageTicket(d) {
       ticket.classList.add('vt-opened');
       try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
       ticket.removeEventListener('click', vtReveal);
-      setTimeout(() => {
-        const vtBg = document.getElementById('vtBgImage');
-        if (vtBg) vtBg.style.opacity = '0';
-      }, 300);
     });
+  }
+  const vtHero = document.getElementById('vtHero');
+  if (vtHero) {
+    function vtScrollFade() {
+      const heroH = vtHero.offsetHeight;
+      const scrollY = window.scrollY;
+      const fadeStart = heroH * 0.3;
+      const fadeEnd = heroH * 0.85;
+      if (scrollY <= fadeStart) {
+        vtHero.style.opacity = '1';
+      } else if (scrollY >= fadeEnd) {
+        vtHero.style.opacity = '0';
+      } else {
+        const t = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+        vtHero.style.opacity = (1 - t).toFixed(3);
+      }
+    }
+    vtHero.style.transition = 'opacity 0.1s ease';
+    window.addEventListener('scroll', vtScrollFade, { passive: true });
+    vtScrollFade();
   }
   initVtDust(document.getElementById('vtHero'));
 }
