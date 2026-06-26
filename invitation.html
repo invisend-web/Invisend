@@ -2893,8 +2893,8 @@ function initPaperGardenTimeline(data) {
 
 /* ── THEME 12: VINTAGE TICKET ── */
 function initVintageTicket(d) {
-  const bg = document.getElementById('vtBgImage');
-  if (bg && d.background_image_url) bg.src = d.background_image_url;
+  const bgUrl = d.background_image_url || d.couple_photo_url;
+  if (bgUrl) applyBackgroundImage(bgUrl);
   if (d.wedding_date) {
     const parts = String(d.wedding_date).substring(0, 10).split('-');
     const yr = parseInt(parts[0], 10), mo = parseInt(parts[1], 10) - 1, dy = parseInt(parts[2], 10);
@@ -2913,10 +2913,6 @@ function initVintageTicket(d) {
       ticket.classList.add('vt-opened');
       try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
       ticket.removeEventListener('click', vtReveal);
-      setTimeout(() => {
-        const bgUrl = d.background_image_url || d.couple_photo_url;
-        if (bgUrl) applyBackgroundImage(bgUrl);
-      }, 800);
     });
   }
   initVtDust(document.getElementById('vtHero'));
