@@ -13,18 +13,18 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 :root{
-  --bg:#080808;--bg2:#0F0D0A;--bg3:#141210;
-  --text:#F5F0E8;--text2:#B8AFA0;--text3:#6B6560;
-  --gold:#C9A84C;--gold2:#E8CC7A;
-  --gold-dim:rgba(201,168,76,0.15);
-  --border:rgba(201,168,76,0.12);--border2:rgba(255,255,255,0.06);
+  --bg:#F5EFE0;--bg2:#EDE5D4;--bg3:#E8DFC8;
+  --text:#3D2B1A;--text2:#6B4A2A;--text3:#9B7A5A;
+  --gold:#C47A7A;--gold2:#D4908A;
+  --gold-dim:rgba(196,122,122,0.15);
+  --border:rgba(196,122,122,0.25);--border2:rgba(107,74,42,0.15);
   --ease:cubic-bezier(0.23,1,0.32,1);
 }
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:transparent;transition:all 0.4s var(--ease)}
-nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav.scrolled{background:rgba(245,239,224,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{display:flex;align-items:center;text-decoration:none}
 .nav-logo img{height:36px;width:auto;display:block}
 .nav-links{display:flex;align-items:center;gap:36px}
@@ -32,7 +32,7 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .nav-links a:hover{color:var(--text)}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
 .burger span{width:22px;height:1.5px;background:var(--text2);display:block;transition:all 0.3s}
-.mob-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(8,8,8,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mob-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,239,224,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:32px}
 .mob-nav.open{display:flex}
 .mob-nav a{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;letter-spacing:0.05em;color:var(--text);text-decoration:none;transition:color 0.2s}
 .mob-nav a:hover{color:var(--gold)}
@@ -40,7 +40,7 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 40px 80px;position:relative;overflow:hidden;text-align:center;background:var(--bg)}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(196,122,122,0.08) 0%,transparent 70%);pointer-events:none}
 .hero::after{content:'';position:absolute;inset:0;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;pointer-events:none}
 .hero-eyebrow{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:16px;animation:fadeUp 0.7s var(--ease) 0.1s both;position:relative;z-index:1}
 .hero-rule{width:60px;height:1px;background:var(--gold);margin:0 auto 24px;animation:fadeUp 0.7s var(--ease) 0.2s both;position:relative;z-index:1}
@@ -48,9 +48,9 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .hero-headline em{font-style:italic;color:var(--gold);font-weight:400;display:block}
 .hero-sub{font-family:'Inter',sans-serif;font-size:16px;color:var(--text2);line-height:1.7;max-width:520px;margin:0 auto 36px;animation:fadeUp 0.8s var(--ease) 0.45s both;position:relative;z-index:1}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.8s var(--ease) 0.6s both;position:relative;z-index:1}
-.btn-dark{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.02em;color:#080808;background:var(--gold);border:none;border-radius:4px;padding:14px 32px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
-.btn-dark:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(201,168,76,0.3)}
-.btn-line{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;color:var(--gold);background:transparent;border:1px solid rgba(201,168,76,0.4);border-radius:4px;padding:14px 32px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center}
+.btn-dark{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.02em;color:#F5EFE0;background:var(--gold);border:none;border-radius:4px;padding:14px 32px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.btn-dark:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(196,122,122,0.3)}
+.btn-line{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;color:var(--gold);background:transparent;border:1px solid rgba(196,122,122,0.4);border-radius:4px;padding:14px 32px;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center}
 .btn-line:hover{border-color:var(--gold);background:var(--gold-dim);transform:translateY(-2px)}
 
 /* ORNAMENTS */
@@ -66,7 +66,7 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .how{background:var(--bg2);padding:120px 40px}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:1100px;margin:0 auto}
 .step{background:transparent;border:none;border-top:1px solid var(--border);padding:32px 24px;text-align:left}
-.step-num-big{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:rgba(201,168,76,0.2);line-height:1;margin-bottom:12px;display:block}
+.step-num-big{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:rgba(196,122,122,0.25);line-height:1;margin-bottom:12px;display:block}
 .step-t{font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
 .step-d{font-family:'Inter',sans-serif;font-size:14px;color:var(--text2);line-height:1.7}
 
@@ -79,22 +79,19 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .theme-card{border-radius:8px;padding:32px 28px;border:1px solid var(--border2);background:var(--bg3);transition:transform 0.3s var(--ease),border-color 0.3s,box-shadow 0.3s}
 .theme-card:hover{transform:translateY(-2px);border-color:var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
 .tc-w{background:linear-gradient(135deg,#0a0804,#1a1508);border-color:rgba(201,168,76,0.28)}
-.tc-r{background:linear-gradient(135deg,#3a0808,#4b1010);border-color:rgba(241,203,20,0.28)}
-.tc-v{background:linear-gradient(135deg,#0d2a14,#1a4020);border-color:rgba(255,198,28,0.22)}
-.tc-i{background:linear-gradient(135deg,#f0ebe0,#e8e0d4);border-color:rgba(216,181,122,0.45)}
+.tc-r{background:linear-gradient(135deg,#1c0c06,#2e1a0c);border-color:rgba(196,122,122,0.3)}
+.tc-i{background:linear-gradient(135deg,#f0ebe0,#e8e0d4);border-color:rgba(196,122,122,0.4)}
 .tc-swatch{width:100%;height:48px;border-radius:6px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px}
 .tc-w .tc-swatch{background:linear-gradient(135deg,#1a1508,#2a2010)}
-.tc-r .tc-swatch{background:linear-gradient(135deg,#4b1010,#6b1515)}
-.tc-v .tc-swatch{background:linear-gradient(135deg,#1a4020,#255030)}
+.tc-r .tc-swatch{background:linear-gradient(135deg,#2e1a0c,#3e2818)}
 .tc-i .tc-swatch{background:linear-gradient(135deg,#ede8e0,#e5ddd4)}
 .tc-dot{width:11px;height:11px;border-radius:50%}
 .tc-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:4px}
 .tc-sub{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
 .tc-desc{font-family:'Inter',sans-serif;font-size:13px;color:var(--text2);line-height:1.7}
 .tc-w .tc-name{color:#c9a84c}.tc-w .tc-sub{color:rgba(201,168,76,0.6)}.tc-w .tc-desc{color:#f5ead4}
-.tc-r .tc-name{color:#f1cb14}.tc-r .tc-sub{color:rgba(241,203,20,0.6)}.tc-r .tc-desc{color:#fff5e0}
-.tc-v .tc-name{color:#ffc61c}.tc-v .tc-sub{color:rgba(255,198,28,0.6)}.tc-v .tc-desc{color:#f0fff4}
-.tc-i .tc-name{color:#D8B57A}.tc-i .tc-sub{color:rgba(216,181,122,0.7)}.tc-i .tc-desc{color:#5E4A3A}
+.tc-r .tc-name{color:#C47A7A}.tc-r .tc-sub{color:rgba(196,122,122,0.6)}.tc-r .tc-desc{color:#f5ead4}
+.tc-i .tc-name{color:#C47A7A}.tc-i .tc-sub{color:rgba(196,122,122,0.7)}.tc-i .tc-desc{color:#5E4A3A}
 
 /* WHATSAPP BANNER */
 .wa-banner{background:var(--bg);padding:80px 60px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -110,7 +107,7 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .feat-wrap{background:var(--bg2);padding:120px 40px}
 .feat-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 .feat-phone-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.feat-phone{width:min(280px,60vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(201,168,76,0.2);overflow:hidden;box-shadow:0 0 0 1px rgba(201,168,76,0.2),0 40px 80px rgba(0,0,0,0.6);position:relative}
+.feat-phone{width:min(280px,60vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(196,122,122,0.25);overflow:hidden;box-shadow:0 0 0 1px rgba(196,122,122,0.2),0 40px 80px rgba(0,0,0,0.4);position:relative}
 .feat-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:22px;background:#0a0a0a;border-radius:0 0 14px 14px;z-index:5}
 .feat-phone-screen{width:100%;height:100%;position:relative;overflow:hidden}
 .feat-phone-label{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:500}
@@ -120,8 +117,8 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .feat-phone-clickable:hover{transform:scale(1.02)}
 .feat-phone-preview-img{width:100%;height:100%;object-fit:cover;display:block}
 @keyframes phoneBreathe{
-  0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,0.2),0 40px 80px rgba(0,0,0,0.6),0 0 0 0 rgba(201,168,76,0.0)}
-  50%{box-shadow:0 0 0 1px rgba(201,168,76,0.2),0 40px 80px rgba(0,0,0,0.6),0 0 0 14px rgba(201,168,76,0.06)}
+  0%,100%{box-shadow:0 0 0 1px rgba(196,122,122,0.2),0 40px 80px rgba(0,0,0,0.4),0 0 0 0 rgba(196,122,122,0.0)}
+  50%{box-shadow:0 0 0 1px rgba(196,122,122,0.2),0 40px 80px rgba(0,0,0,0.4),0 0 0 14px rgba(196,122,122,0.06)}
 }
 .feat-phone-tap-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.12);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;pointer-events:none;animation:tapRingPulse 2.2s ease-in-out infinite}
 .feat-phone-tap-ring-inner{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.9);box-shadow:0 0 16px rgba(255,255,255,0.6)}
@@ -133,7 +130,7 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .demo-modal.open{display:flex;background:rgba(10,8,6,0.72);backdrop-filter:blur(18px)}
 .demo-modal-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:background 0.2s}
 .demo-modal-close:hover{background:rgba(255,255,255,0.2)}
-.demo-modal-phone{width:min(360px,88vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(216,181,122,0.35);overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.6);transform:scale(0.85);opacity:0;transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1),opacity 0.35s ease}
+.demo-modal-phone{width:min(360px,88vw);aspect-ratio:9/19.5;background:#0a0a0a;border-radius:42px;border:3px solid rgba(196,122,122,0.35);overflow:hidden;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.6);transform:scale(0.85);opacity:0;transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1),opacity 0.35s ease}
 .demo-modal.open .demo-modal-phone{transform:scale(1);opacity:1}
 .demo-modal-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:22px;background:#0a0a0a;border-radius:0 0 14px 14px;z-index:5}
 .demo-modal-screen{width:100%;height:100%;position:relative}
@@ -167,12 +164,12 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .tbtn:hover{border-color:var(--gold2);color:var(--gold2);transform:scale(1.08)}
 .tbtn svg{width:16px;height:16px;fill:currentColor}
 .tdots{display:flex;gap:7px;align-items:center}
-.tdot{width:6px;height:6px;border-radius:50%;background:rgba(201,168,76,0.2);cursor:pointer;transition:all 0.3s}
+.tdot{width:6px;height:6px;border-radius:50%;background:rgba(196,122,122,0.2);cursor:pointer;transition:all 0.3s}
 .tdot.on{background:var(--gold);transform:scale(1.35)}
 .skel{flex:0 0 calc(33.333% - 14px);min-width:280px;border-radius:8px;overflow:hidden;background:var(--bg3);border:1px solid var(--border2)}
-.skel-img{width:100%;aspect-ratio:4/3;background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,0.03) 50%,var(--bg3) 75%);background-size:200%;animation:shimmer 1.5s infinite}
+.skel-img{width:100%;aspect-ratio:4/3;background:linear-gradient(90deg,var(--bg3) 25%,rgba(107,74,42,0.07) 50%,var(--bg3) 75%);background-size:200%;animation:shimmer 1.5s infinite}
 .skel-body{padding:18px 20px}
-.skel-l{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,0.03) 50%,var(--bg3) 75%);background-size:200%;animation:shimmer 1.5s infinite;margin-bottom:8px}
+.skel-l{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--bg3) 25%,rgba(107,74,42,0.07) 50%,var(--bg3) 75%);background-size:200%;animation:shimmer 1.5s infinite;margin-bottom:8px}
 .skel-l.w60{width:60%}.skel-l.w80{width:80%}
 @keyframes shimmer{to{background-position:-200% 0}}
 
@@ -184,13 +181,13 @@ nav.scrolled{background:rgba(8,8,8,0.85);backdrop-filter:blur(20px);-webkit-back
 .soc-btn svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
 
 /* FOOTER */
-footer{background:#040404;padding:40px 40px 28px;border-top:1px solid var(--border)}
+footer{background:#2A1A0A;padding:40px 40px 28px;border-top:1px solid rgba(196,122,122,0.25)}
 .ft-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
 .ft-logo img{height:32px;width:auto;display:block}
 .ft-links{display:flex;gap:24px;flex-wrap:wrap}
-.ft-links a{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.02em;color:var(--text3);text-decoration:none;transition:color 0.2s}
-.ft-links a:hover{color:var(--text2)}
-.ft-copy{width:100%;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.05em;color:var(--text3);padding-top:20px;border-top:1px solid var(--border);margin-top:20px;text-align:center}
+.ft-links a{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.02em;color:#9B7A5A;text-decoration:none;transition:color 0.2s}
+.ft-links a:hover{color:#D4908A}
+.ft-copy{width:100%;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.05em;color:#7A5A3A;padding-top:20px;border-top:1px solid rgba(196,122,122,0.2);margin-top:20px;text-align:center}
 
 /* REVEAL */
 .rev{opacity:0;transform:translateY(22px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}
@@ -267,7 +264,7 @@ footer{background:#040404;padding:40px 40px 28px;border-top:1px solid var(--bord
   <p class="hero-sub">A cinematic swipe experience. Two portraits glide together, merge in a golden glow, and reveal your couple photo. Beautiful. Emotional. Unforgettable.</p>
   <div class="hero-btns">
     <a href="#features" class="btn-dark">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="#080808"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#F5EFE0"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
       See How It Works
     </a>
     <a href="#themes" class="btn-line">Explore Themes</a>
@@ -312,23 +309,48 @@ footer{background:#040404;padding:40px 40px 28px;border-top:1px solid var(--bord
   <div class="themes">
     <div class="theme-card tc-w rev">
       <div class="tc-swatch"><div class="tc-dot" style="background:#0a0804"></div><div class="tc-dot" style="background:#c9a84c"></div><div class="tc-dot" style="background:#e8cc7a"></div></div>
-      <div class="tc-name">Western Luxury</div><div class="tc-sub">Black &amp; Gold Cinematic</div>
+      <div class="tc-name">Luxury Black</div><div class="tc-sub">Black &amp; Gold Cinematic</div>
       <p class="tc-desc">Obsidian backgrounds, champagne gold, serif typography. A Hollywood premiere for your love story.</p>
     </div>
     <div class="theme-card tc-r rev">
-      <div class="tc-swatch"><div class="tc-dot" style="background:#4b1010"></div><div class="tc-dot" style="background:#f1cb14"></div><div class="tc-dot" style="background:#e8450a"></div></div>
-      <div class="tc-name">Udarata Sinhala</div><div class="tc-sub">Sri Lankan Traditional</div>
-      <p class="tc-desc">Deep crimson and radiant yellow, echoing temple flowers, kandyan ceremony, and celebration.</p>
-    </div>
-    <div class="theme-card tc-v rev">
-      <div class="tc-swatch"><div class="tc-dot" style="background:#1a4020"></div><div class="tc-dot" style="background:#ffc61c"></div><div class="tc-dot" style="background:#4a9e5c"></div></div>
-      <div class="tc-name">Kalyanam</div><div class="tc-sub">Tamil Wedding</div>
-      <p class="tc-desc">Lush forest greens and marigold gold, inspired by banana groves, kolam, and Tamil celebration.</p>
+      <div class="tc-swatch"><div class="tc-dot" style="background:#2e1a0c"></div><div class="tc-dot" style="background:#C47A7A"></div><div class="tc-dot" style="background:#D4908A"></div></div>
+      <div class="tc-name">Premium Brown</div><div class="tc-sub">Warm Brown Luxury</div>
+      <p class="tc-desc">Rich espresso tones and dusty rose, wrapped in warm candlelight. Timeless elegance for the romantic at heart.</p>
     </div>
     <div class="theme-card tc-i rev">
-      <div class="tc-swatch"><div class="tc-dot" style="background:#F7F3EC"></div><div class="tc-dot" style="background:#D8B57A"></div><div class="tc-dot" style="background:#E9C9C2"></div></div>
+      <div class="tc-swatch"><div class="tc-dot" style="background:#F7F3EC"></div><div class="tc-dot" style="background:#C47A7A"></div><div class="tc-dot" style="background:#D4908A"></div></div>
       <div class="tc-name">InviSend Ivory</div><div class="tc-sub">Warm Cream Luxury</div>
-      <p class="tc-desc">Warm ivory, blush rose, and gold. A soft, romantic palette for couples who love light elegance.</p>
+      <p class="tc-desc">Warm ivory, blush rose, and cream. A soft, romantic palette for couples who love light elegance.</p>
+    </div>
+    <div class="theme-card rev" style="background:linear-gradient(135deg,#f0ede0,#e4e2c8);border-color:rgba(100,100,50,0.3)">
+      <div class="tc-swatch" style="background:linear-gradient(135deg,#e4e2c8,#d8d4b0)">
+        <div class="tc-dot" style="background:#f0ede0"></div>
+        <div class="tc-dot" style="background:#7a7838"></div>
+        <div class="tc-dot" style="background:#c8b878"></div>
+      </div>
+      <div class="tc-name" style="color:#5c5a20">Olive Cream</div>
+      <div class="tc-sub" style="color:rgba(92,90,32,0.6)">Muted Botanical</div>
+      <p class="tc-desc" style="color:#4a4828">Sun-bleached olive and warm parchment, evoking a garden wedding in the golden hour haze.</p>
+    </div>
+    <div class="theme-card rev" style="background:linear-gradient(135deg,#f4f0ea,#e8ede0);border-color:rgba(80,110,60,0.3)">
+      <div class="tc-swatch" style="background:linear-gradient(135deg,#e8ede0,#d8e8d0)">
+        <div class="tc-dot" style="background:#f4f0ea"></div>
+        <div class="tc-dot" style="background:#6b8a60"></div>
+        <div class="tc-dot" style="background:#C47A7A"></div>
+      </div>
+      <div class="tc-name" style="color:#486038">Paper Garden</div>
+      <div class="tc-sub" style="color:rgba(72,96,56,0.6)">Floral &amp; Botanical</div>
+      <p class="tc-desc" style="color:#3a4a30">Fresh sage, blush petal, and morning cream. Like vows exchanged beneath a canopy of blooms.</p>
+    </div>
+    <div class="theme-card rev" style="background:linear-gradient(135deg,#f0e4d0,#e4d0b4);border-color:rgba(130,80,40,0.4)">
+      <div class="tc-swatch" style="background:linear-gradient(135deg,#e4d0b4,#d4bc94)">
+        <div class="tc-dot" style="background:#f0e4d0"></div>
+        <div class="tc-dot" style="background:#8a4a28"></div>
+        <div class="tc-dot" style="background:#c9a84c"></div>
+      </div>
+      <div class="tc-name" style="color:#7a4820">Vintage Ticket</div>
+      <div class="tc-sub" style="color:rgba(122,72,32,0.6)">Antique &amp; Nostalgic</div>
+      <p class="tc-desc" style="color:#5a3818">Aged parchment, rust ink, and burnished gold. A love letter from another era, treasured forever.</p>
     </div>
     <div class="theme-card rev" style="background:linear-gradient(145deg,#200808,#3a1010);border-color:rgba(241,203,20,0.28)">
       <div class="tc-swatch" style="background:linear-gradient(135deg,#4b1010,#6e1818)">
@@ -340,7 +362,7 @@ footer{background:#040404;padding:40px 40px 28px;border-top:1px solid var(--bord
       <div class="tc-sub" style="color:#f1cb14;opacity:0.4">TG Wedding Films Edition</div>
       <p class="tc-desc" style="color:#fff5e0">Borderless PNG portraits float cinematically. Names reveal through golden particles. Exclusively crafted for TG Wedding Films.</p>
     </div>
-    <div class="theme-card rev d1" style="background:linear-gradient(145deg,#0a0810,#161220);border-color:rgba(201,168,76,0.3)">
+    <div class="theme-card rev" style="background:linear-gradient(145deg,#0a0810,#161220);border-color:rgba(201,168,76,0.3)">
       <div class="tc-swatch" style="background:linear-gradient(135deg,#161220,#242030)">
         <div class="tc-dot" style="background:#07060a"></div>
         <div class="tc-dot" style="background:#c9a84c"></div>
@@ -350,7 +372,7 @@ footer{background:#040404;padding:40px 40px 28px;border-top:1px solid var(--bord
       <div class="tc-sub" style="color:#c9a84c;opacity:0.4">TG Wedding Films Edition</div>
       <p class="tc-desc" style="color:#f5ead4">Pure cinematic gold. Portraits dissolve into champagne particles revealing names in obsidian elegance. The ultimate luxury experience.</p>
     </div>
-    <div class="theme-card rev d2" style="background:linear-gradient(145deg,#0a1e0e,#132818);border-color:rgba(255,198,28,0.22)">
+    <div class="theme-card rev" style="background:linear-gradient(145deg,#0a1e0e,#132818);border-color:rgba(255,198,28,0.22)">
       <div class="tc-swatch" style="background:linear-gradient(135deg,#1c4020,#285830)">
         <div class="tc-dot" style="background:#1a4020"></div>
         <div class="tc-dot" style="background:#ffc61c"></div>
