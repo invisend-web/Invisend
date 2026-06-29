@@ -11,13 +11,13 @@ module.exports = async function handler(req, res) {
   const { payload, editingId } = req.body;
   if (!payload) return res.status(400).json({ error: 'payload required' });
 
-  let error;
+  let error, data;
   if (editingId) {
     ({ error } = await supabase.from('invitations').update(payload).eq('id', editingId));
   } else {
-    ({ error } = await supabase.from('invitations').insert(payload));
+    ({ error, data } = await supabase.from('invitations').insert(payload).select('id').single());
   }
 
   if (error) return res.status(500).json({ error: error.message });
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, id: data?.id || null });
 };

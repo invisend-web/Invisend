@@ -2043,6 +2043,10 @@ async function saveInvitation() {
       body: JSON.stringify({ payload, editingId })
     });
     if (!res.ok) throw new Error((await res.json()).error || res.statusText);
+    const resJson = await res.json();
+    if (!editingId && resJson.id) {
+      await sb.from('storage_files').update({ reference_id: resJson.id }).eq('reference_id', 'new');
+    }
     showToast(editingId ? 'Invitation updated!' : 'Invitation created!', 'success');
     formDirty = false; clearDraft(); closeModal(); await loadInvitations(); populateRSVPSelect();
   } catch (e) { showToast('Save failed: ' + (e.message || e), 'error'); }
