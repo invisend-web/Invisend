@@ -420,23 +420,16 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .lightbox-counter{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-family:var(--font-ui);font-size:10px;letter-spacing:0.2em;color:rgba(255,255,255,0.55);background:rgba(0,0,0,0.4);padding:4px 14px;border-radius:20px}
 /* ═══════════════════════════════════════════════ */
 
-/* ═══════════════ VINTAGE TICKET NEWSPAPER PRESHOOT ═══════════════ */
+/* ═══════════════ VINTAGE TICKET STACKED CARD PRESHOOT ═══════════════ */
 [data-theme="6"] .preshoot-section{display:none!important}
-[data-theme="6"] .vt-newspaper-section{display:block}
-.vt-newspaper-section{display:none;padding:48px 20px;max-width:480px;margin:0 auto;font-family:Georgia,serif}
-.vt-newspaper-header{text-align:center;border-top:3px double #8B7355;border-bottom:3px double #8B7355;padding:12px 0;margin-bottom:24px}
-.vt-newspaper-eyebrow{font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:#8B7355;margin-bottom:6px}
-.vt-newspaper-title{font-family:Georgia,serif;font-size:24px;font-weight:700;color:#1a1a1a;letter-spacing:0.02em;margin-bottom:4px}
-.vt-newspaper-date{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8B7355}
-.vt-newspaper-grid{display:grid;gap:3px}
-.vt-np-hero{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%) contrast(1.05);cursor:pointer}
-.vt-np-row{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.vt-np-small{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%) contrast(1.05);cursor:pointer}
-.vt-np-tall{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%) contrast(1.05);cursor:pointer}
-.vt-np-row2{display:grid;grid-template-columns:2fr 1fr;gap:3px}
-.vt-np-caption{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#8B7355;text-align:center;padding:8px 0;border-bottom:1px solid rgba(139,115,85,0.3);margin-bottom:16px}
-.vt-np-divider{display:flex;align-items:center;gap:8px;margin:16px 0;color:#8B7355;font-size:9px;letter-spacing:0.2em;text-transform:uppercase}
-.vt-np-divider::before,.vt-np-divider::after{content:'';flex:1;height:1px;background:rgba(139,115,85,0.4)}
+[data-theme="6"] .vt-stack-section{display:block}
+.vt-stack-section{display:none;padding:48px 20px 80px;text-align:center}
+.vt-stack-header{font-family:Georgia,serif;font-size:8px;letter-spacing:0.4em;text-transform:uppercase;color:#8B7355;margin-bottom:32px}
+.vt-stack-wrap{position:relative;width:min(300px,80vw);margin:0 auto;cursor:pointer;user-select:none}
+.vt-stack-card{position:absolute;top:0;left:0;width:100%;aspect-ratio:3/4;border-radius:4px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5);transition:transform 0.05s ease;will-change:transform;touch-action:none}
+.vt-stack-card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:grayscale(15%) contrast(1.08);pointer-events:none;-webkit-touch-callout:none}
+.vt-stack-counter{font-family:Georgia,serif;font-size:11px;letter-spacing:0.2em;color:#8B7355;margin-top:calc(min(300px,80vw) * 1.33 + 24px);padding-top:16px}
+.vt-stack-hint{font-family:Georgia,serif;font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:#B09070;margin-top:8px;opacity:0.7}
 /* ═══════════════════════════════════════════════ */
 
 /* RSVP */
@@ -1270,14 +1263,12 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div id="videoBlock"></div>
   </section>
 
-  <!-- VINTAGE TICKET NEWSPAPER PRESHOOT (theme 6 only) -->
-  <section class="vt-newspaper-section" id="vtNewspaperSection" style="display:none">
-    <div class="vt-newspaper-header">
-      <div class="vt-newspaper-eyebrow">Our Story Before The Day</div>
-      <div class="vt-newspaper-title" id="vtNpTitle">Pre-Wedding</div>
-      <div class="vt-newspaper-date" id="vtNpDate">A Collection of Moments</div>
-    </div>
-    <div class="vt-newspaper-grid" id="vtNpGrid"></div>
+  <!-- VINTAGE TICKET STACKED CARD PRESHOOT (theme 6 only) -->
+  <section class="vt-stack-section" id="vtStackSection" style="display:none">
+    <div class="vt-stack-header" id="vtStackTitle">Our Pre-Shoot</div>
+    <div class="vt-stack-wrap" id="vtStackWrap"></div>
+    <div class="vt-stack-counter" id="vtStackCounter"></div>
+    <div class="vt-stack-hint">↓ Swipe down to reveal</div>
   </section>
 
   <!-- RSVP -->
@@ -1653,7 +1644,7 @@ function loadPreshoot(d) {
   preshootPhotos = photos;
 
   if (parseInt(d.template_id) === 6) {
-    if (photos.length) buildVtNewspaper(photos, d.preshoot_title);
+    if (photos.length) initVtStack(photos, d.preshoot_title);
     return;
   }
 
@@ -2938,47 +2929,92 @@ function initVintageTicket(d) {
   }
   initVtDust(document.getElementById('vtHero'));
 }
-function buildVtNewspaper(photos, title) {
-  const section = document.getElementById('vtNewspaperSection');
-  const grid = document.getElementById('vtNpGrid');
-  const titleEl = document.getElementById('vtNpTitle');
-  if (!section || !grid || !photos.length) return;
+function initVtStack(photos, title) {
+  const section = document.getElementById('vtStackSection');
+  const wrap = document.getElementById('vtStackWrap');
+  const counter = document.getElementById('vtStackCounter');
+  const titleEl = document.getElementById('vtStackTitle');
+  if (!section || !wrap || !photos.length) return;
+
   if (title) titleEl.textContent = title;
-
-  let html = '';
-
-  if (photos[0]) {
-    html += '<img class="vt-np-hero" src="' + photos[0] + '" onclick="openLightbox(0)" oncontextmenu="return false" draggable="false">';
-    html += '<div class="vt-np-caption">✦ &nbsp; Captured Memories &nbsp; ✦</div>';
-  }
-
-  if (photos[1] || photos[2]) {
-    html += '<div class="vt-np-row">';
-    if (photos[1]) html += '<img class="vt-np-small" src="' + photos[1] + '" onclick="openLightbox(1)" oncontextmenu="return false" draggable="false">';
-    if (photos[2]) html += '<img class="vt-np-small" src="' + photos[2] + '" onclick="openLightbox(2)" oncontextmenu="return false" draggable="false">';
-    html += '</div>';
-  }
-
-  if (photos[3] || photos[4]) {
-    html += '<div class="vt-np-divider">Before The Big Day</div>';
-    html += '<div class="vt-np-row2">';
-    if (photos[3]) html += '<img class="vt-np-hero" style="aspect-ratio:3/2" src="' + photos[3] + '" onclick="openLightbox(3)" oncontextmenu="return false" draggable="false">';
-    if (photos[4]) html += '<img class="vt-np-tall" src="' + photos[4] + '" onclick="openLightbox(4)" oncontextmenu="return false" draggable="false">';
-    html += '</div>';
-  }
-
-  const remaining = photos.slice(5);
-  if (remaining.length) {
-    html += '<div class="vt-np-divider">More Moments</div>';
-    html += '<div class="vt-np-row">';
-    remaining.forEach(function(p, i) {
-      html += '<img class="vt-np-small" src="' + p + '" onclick="openLightbox(' + (i + 5) + ')" oncontextmenu="return false" draggable="false">';
-    });
-    html += '</div>';
-  }
-
-  grid.innerHTML = html;
   section.style.display = 'block';
+
+  wrap.style.height = wrap.offsetWidth * (4 / 3) + 'px';
+
+  let current = 0;
+  const total = photos.length;
+
+  function updateCounter() {
+    counter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  function buildStack() {
+    wrap.innerHTML = '';
+    for (let i = Math.min(current + 2, total - 1); i >= current; i--) {
+      const offset = i - current;
+      const card = document.createElement('div');
+      card.className = 'vt-stack-card';
+      card.style.transform = 'translateY(' + (offset * -6) + 'px) rotate(' + (offset * 1.5) + 'deg) scale(' + (1 - offset * 0.03) + ')';
+      card.style.zIndex = (10 - offset).toString();
+      const img = document.createElement('img');
+      img.src = photos[i];
+      img.oncontextmenu = function() { return false; };
+      img.draggable = false;
+      card.appendChild(img);
+      if (i === current) addSwipeHandler(card);
+      wrap.appendChild(card);
+    }
+    updateCounter();
+  }
+
+  function addSwipeHandler(card) {
+    let startY = 0, startX = 0, isDragging = false, currentY = 0;
+
+    function onStart(e) {
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      isDragging = true;
+      card.style.transition = 'none';
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+      currentY = y;
+      if (y > 0) {
+        card.style.transform = 'translateY(' + y + 'px) rotate(' + (x * 0.05) + 'deg)';
+        card.style.opacity = Math.max(0, 1 - y / 300).toString();
+      }
+    }
+
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      card.style.transition = 'transform 0.4s ease, opacity 0.3s ease';
+      if (currentY > 80) {
+        card.style.transform = 'translateY(120%) rotate(15deg)';
+        card.style.opacity = '0';
+        setTimeout(function() {
+          current = (current + 1) % total;
+          buildStack();
+        }, 350);
+      } else {
+        card.style.transform = 'translateY(0) rotate(0deg)';
+        card.style.opacity = '1';
+      }
+      currentY = 0;
+    }
+
+    card.addEventListener('touchstart', onStart, { passive: true });
+    card.addEventListener('touchmove', onMove, { passive: true });
+    card.addEventListener('touchend', onEnd);
+    card.addEventListener('mousedown', onStart);
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseup', onEnd);
+  }
+
+  buildStack();
 }
 
 function initVtDust(heroEl) {
