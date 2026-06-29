@@ -41,7 +41,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .custom-bg-wrap{position:fixed;inset:0;z-index:-1;pointer-events:none;will-change:opacity}
 .custom-bg-image{position:absolute;inset:0;background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed;transition:opacity 0.3s ease}
 @media(max-width:768px){.custom-bg-image{background-attachment:scroll}}
-[data-theme="6"] #customBgImage{filter:grayscale(100%) contrast(1.12)}
 .custom-bg-fade{position:absolute;left:0;right:0;bottom:0;height:45%;pointer-events:none}
 [data-theme="1"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
 [data-theme="2"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
@@ -1537,7 +1536,7 @@ function render(d) {
     document.getElementById('calBtn').href = calUrl;
     document.getElementById('calBtnWrap').style.display = '';
   }
-  if (d.background_image_url && ![5].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![5,6].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === -1) {
     const cr = document.getElementById('coupleReveal');
