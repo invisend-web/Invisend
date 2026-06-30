@@ -2896,6 +2896,7 @@ function initPaperGardenTimeline(data) {
 
 /* ── THEME 12: VINTAGE TICKET ── */
 function initVintageTicket(d) {
+  document.body.style.overflow = 'hidden';
   const bg = document.getElementById('vtBgImage');
   if (bg && d.background_image_url) bg.src = d.background_image_url;
   if (d.wedding_date) {
@@ -2914,6 +2915,7 @@ function initVintageTicket(d) {
   if (ticket) {
     ticket.addEventListener('click', function vtReveal() {
       ticket.classList.add('vt-opened');
+      document.body.style.overflow = '';
       try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
       ticket.removeEventListener('click', vtReveal);
     });
