@@ -134,6 +134,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .olive-names-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;opacity:0;transition:opacity 1s ease;padding-top:6%;z-index:5}
 .olive-couple-names{font-family:var(--font-display);font-size:clamp(36px,10vw,52px);font-style:italic;color:var(--text);line-height:1.2;text-align:center}
 .olive-couple-names em{color:var(--accent2);font-style:italic}
+[data-theme="4"] .olive-couple-names{color:#F5EFE0;text-shadow:0 2px 12px rgba(0,0,0,0.4)}
+[data-theme="4"] .olive-couple-names em{color:#E8D5A0}
 .olive-nudge-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity 0.6s ease;pointer-events:none;z-index:6;font-family:var(--font-ui)}
 .olive-nudge-hint.show{opacity:1}
 .olive-nudge-hint span{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text2)}
@@ -1543,7 +1545,7 @@ function render(d) {
     document.getElementById('calBtn').href = calUrl;
     document.getElementById('calBtnWrap').style.display = '';
   }
-  if (d.background_image_url && ![5,6].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![4,5,6].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === -1) {
     const cr = document.getElementById('coupleReveal');
@@ -1587,12 +1589,6 @@ function applyBackgroundImage(url) {
   wrap.style.display = 'block';
   const img = new Image();
   img.onload = function() {
-    const theme = parseInt(document.documentElement.getAttribute('data-theme'));
-    if (theme === 4) {
-      // Theme 4: stay hidden until smoke reveal completes
-      // olive smokeDissipate will fade it in
-      return;
-    }
     if (bgLayer) { bgLayer.style.transition = 'opacity 0.8s ease'; bgLayer.style.opacity = '0'; }
     image.style.transition = 'opacity 1.2s ease';
     image.style.opacity = '1';
@@ -2485,14 +2481,8 @@ function initOliveReveal(data) {
         try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
-        const bgImage2 = document.getElementById('customBgImage');
-        const bgLayer2 = document.querySelector('.bg-layer');
-        if (bgImage2 && bgImage2.style.backgroundImage) {
-          if (bgLayer2) { bgLayer2.style.transition='opacity 0.8s ease'; bgLayer2.style.opacity='0'; }
-          bgImage2.style.transition = 'opacity 1.5s ease';
-          bgImage2.style.opacity = '1';
-          setTimeout(() => initCustomBgScrollFade(), 1500);
-        }
+        const bgUrl = data.background_image_url || data.couple_photo_url;
+        if (bgUrl) applyBackgroundImage(bgUrl);
         setTimeout(() => {
           namesLayer.style.opacity = '1';
         }, 400);
