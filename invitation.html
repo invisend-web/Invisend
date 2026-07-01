@@ -2493,12 +2493,31 @@ function initOliveReveal(data) {
         try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
         bgImage.style.transition = 'transform 8s ease-out';
         bgImage.style.transform = 'scale(1.06)';
-        const bgUrl = data.background_image_url || data.couple_photo_url;
-        if (bgUrl) applyBackgroundImage(bgUrl);
         setTimeout(() => {
           namesLayer.style.opacity = '1';
         }, 400);
         setTimeout(startNudgeLoop, 1400);
+
+        const oliveHeroEl = document.getElementById('oliveHero');
+        if (oliveHeroEl) {
+          function oliveScrollFade() {
+            const scrollY = window.scrollY;
+            const heroH = oliveHeroEl.offsetHeight;
+            const fadeStart = heroH * 0.55;
+            const fadeEnd = heroH * 0.85;
+            if (scrollY <= fadeStart) {
+              oliveHeroEl.style.opacity = '1';
+            } else if (scrollY >= fadeEnd) {
+              oliveHeroEl.style.opacity = '0';
+            } else {
+              const t = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+              oliveHeroEl.style.opacity = (1 - t).toFixed(3);
+            }
+          }
+          oliveHeroEl.style.transition = 'opacity 0.15s ease';
+          window.addEventListener('scroll', oliveScrollFade, { passive: true });
+          oliveScrollFade();
+        }
       }
     }
     requestAnimationFrame(frame);
