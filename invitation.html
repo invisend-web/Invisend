@@ -149,6 +149,15 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes oliveTapPulse{0%{transform:scale(0.5);opacity:0.9}100%{transform:scale(1.8);opacity:0}}
 /* OLIVE CREAM — calendar widget */
 [data-theme="4"] .olive-calendar-wrap{display:block !important;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+/* OLIVE CREAM — solid backing for content sections below the sticky hero, so the
+   fixed customBgWrap image doesn't bleed through their semi-transparent backgrounds */
+[data-theme="4"] #familySection,
+[data-theme="4"] #eventSection,
+[data-theme="4"] #msgBlock,
+[data-theme="4"] #locWrap,
+[data-theme="4"] #preshootSection,
+[data-theme="4"] #rsvpSection,
+[data-theme="4"] .inv-footer{background:var(--bg);position:relative;z-index:1}
 
 /* ══════════════════════════════════════
    PAPER GARDEN (theme 5)
@@ -1611,7 +1620,10 @@ function initCustomBgScrollFade() {
   let currentOpacity = 1, targetOpacity = 1, rafId = null, lastScrollY = -1;
   function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
   function getTargetOpacity() {
-    const heroEl = document.getElementById('heroSection');
+    const theme = parseInt(document.documentElement.getAttribute('data-theme'));
+    const heroEl = theme === 4
+      ? document.getElementById('oliveHero')
+      : document.getElementById('heroSection');
     const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
     const fadeStart = heroHeight * 0.20, fadeEnd = heroHeight * 0.88;
     const scrollY = window.scrollY;
