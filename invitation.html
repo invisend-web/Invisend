@@ -2794,11 +2794,11 @@ function initPaperGardenReveal(data) {
   }
   const pgHeroEl = document.getElementById('pgHero');
   if (pgHeroEl) {
-    const viewH = document.documentElement.clientHeight;
-    const fadeStart = viewH * 0.3;
-    const fadeEnd = viewH * 1.1;
     function pgScrollFade() {
       const scrollY = window.scrollY;
+      const heroH = pgHeroEl.offsetHeight;
+      const fadeStart = heroH * 0.55;
+      const fadeEnd = heroH * 0.85;
       if (scrollY <= fadeStart) {
         pgHeroEl.style.opacity = '1';
       } else if (scrollY >= fadeEnd) {
