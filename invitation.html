@@ -2318,6 +2318,8 @@ function isOliveTheme() {
 function initOliveReveal(data) {
   if (!isOliveTheme()) return;
 
+  window.scrollTo(0, 0);
+
   const hero = document.getElementById('oliveHero');
   const stickyWrap = document.getElementById('oliveStickyWrap');
   const bgImage = document.getElementById('oliveBgImage');
@@ -2656,6 +2658,10 @@ function isPaperGardenTheme() {
 
 function initPaperGardenReveal(data) {
   if (!isPaperGardenTheme()) return;
+
+  window.scrollTo(0, 0);
+  const pgHeroEl2 = document.getElementById('pgHero');
+  if (pgHeroEl2) pgHeroEl2.style.opacity = '1';
 
   const hero     = document.getElementById('pgHero');
   const stickyWrap = document.getElementById('pgStickyWrap');
