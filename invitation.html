@@ -184,7 +184,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="6"] .attend-opt{border-color:rgba(139,58,58,0.25);background:#F5F0E8;color:#1a1a1a}
 [data-theme="6"] .attend-opt.selected{background:#8B3A3A;border-color:#8B3A3A;color:#F5F0E8}
 [data-theme="5"] .family-card{border-top:2px solid var(--accent)}
-[data-theme="5"] .pg-timeline-section,[data-theme="5"] .pg-photo-section{display:block}
+[data-theme="5"] .pg-timeline-section{display:block}
+[data-theme="5"] .pg-photo-section{display:none!important}
 
 /* Paper Garden Hero */
 .pg-hero{display:none;position:relative;width:100%;height:220vh}
@@ -2677,17 +2678,9 @@ function initPaperGardenReveal(data) {
       : data.couple_name;
   }
 
-  // Mid-page static photo
+  // Mid-page static photo (removed for theme 5)
   const ph = document.getElementById('pgPhotoSection');
-  const pi = document.getElementById('pgPhotoImg');
-  const photoSrc = data.couple_photo_url || data.preshoot_photo_1;
-  if (ph && pi && photoSrc) {
-    pi.src = photoSrc;
-    pi.onerror = function() { ph.style.display = 'none'; };
-    ph.style.display = 'block';
-  } else if (ph) {
-    ph.style.display = 'none';
-  }
+  if (ph) ph.style.display = 'none';
 
   let revealed = false;
   let userScrolled = false;
@@ -2802,10 +2795,10 @@ function initPaperGardenReveal(data) {
   const pgHeroEl = document.getElementById('pgHero');
   if (pgHeroEl) {
     function pgScrollFade() {
-      const heroH = pgHeroEl.offsetHeight;
       const scrollY = window.scrollY;
-      const fadeStart = heroH * 0.3;
-      const fadeEnd = heroH * 0.85;
+      const viewH = window.innerHeight;
+      const fadeStart = viewH * 0.3;
+      const fadeEnd = viewH * 1.1;
       if (scrollY <= fadeStart) {
         pgHeroEl.style.opacity = '1';
       } else if (scrollY >= fadeEnd) {
