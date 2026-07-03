@@ -1552,7 +1552,7 @@ function render(d) {
     const cr = document.getElementById('coupleReveal');
     if (cr) cr.style.display = 'none';
   }
-  if ([7, 8].includes(parseInt(d.template_id))) {
+  if ([7, 8, 9].includes(parseInt(d.template_id))) {
     initTGSwipe(d);
   }
   if ([9, 11].includes(parseInt(d.template_id))) {
@@ -1901,7 +1901,7 @@ function initSwipe() {
 // TG WEDDING FILMS — FINAL SWIPE SYSTEM
 // ══════════════════════════════════════
 
-const TG_THEMES = [7, 8];
+const TG_THEMES = [7, 8, 9];
 
 function isTGTheme() {
   return TG_THEMES.includes(
