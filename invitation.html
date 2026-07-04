@@ -49,7 +49,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
 [data-theme="7"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
 [data-theme="8"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
-[data-theme="9"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(6,18,8,0.4) 40%,rgba(6,18,8,0.85) 70%,rgba(6,18,8,1) 100%)}
+[data-theme="9"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(28,3,3,0.4) 40%,rgba(28,3,3,0.85) 70%,rgba(28,3,3,1) 100%)}
 .custom-bg-overlay{position:absolute;inset:0;pointer-events:none}
 [data-theme="1"] .custom-bg-overlay{background:rgba(7,6,10,0.35)}
 [data-theme="2"] .custom-bg-overlay{background:rgba(22,4,4,0.35)}
@@ -58,7 +58,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
 [data-theme="7"] .custom-bg-overlay{background:rgba(22,4,4,0.45)}
 [data-theme="8"] .custom-bg-overlay{background:rgba(7,6,10,0.45)}
-[data-theme="9"] .custom-bg-overlay{background:rgba(6,18,8,0.45)}
+[data-theme="9"] .custom-bg-overlay{background:rgba(28,3,3,0.45)}
 [data-theme="3"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="4"] .hero-tag{display:none !important}
@@ -635,21 +635,21 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* ════════════════════════════════════
    THEME 9: KALYANAM BY TG WEDDING FILMS
 ════════════════════════════════════ */
-[data-theme="9"]{--bg:#061208;--bg2:#0c1e0e;--card:#132818;--accent:#ffc61c;--accent2:#ffe566;--glow:rgba(255,198,28,0.4);--text:#f0fff4;--text2:#7ab88a;--text3:#3d6644;--border:rgba(255,198,28,0.18);--section-bg:rgba(255,255,255,0.02);--merge-glow:radial-gradient(ellipse at center,rgba(255,198,28,0.8) 0%,rgba(74,158,92,0.3) 40%,transparent 70%);--particle-color:#ffc61c;}
-[data-theme="9"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(74,158,92,0.08) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(255,198,28,0.06) 0%,transparent 60%),#061208;}
+[data-theme="9"]{--bg:#1c0303;--bg2:#280505;--card:#3a0808;--accent:#ffb300;--accent2:#ffd54f;--glow:rgba(255,179,0,0.4);--text:#fff6e8;--text2:#d98a52;--text3:#7a3818;--border:rgba(255,179,0,0.2);--section-bg:rgba(255,255,255,0.025);--merge-glow:radial-gradient(ellipse at center,rgba(255,179,0,0.8) 0%,rgba(196,30,30,0.3) 40%,transparent 70%);--particle-color:#ffb300;}
+[data-theme="9"] .bg-layer{background:radial-gradient(ellipse 80% 60% at 15% 5%,rgba(255,179,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(196,30,30,0.07) 0%,transparent 60%),#1c0303;}
 [data-theme="9"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
 [data-theme="9"] .swipe-card::before{display:none!important;}
 [data-theme="9"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
 [data-theme="9"] .hero-tag::after{content:' · TG Wedding Films';opacity:0.5;font-size:0.85em;}
 [data-theme="9"] .couple-name-block{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
 [data-theme="9"] .couple-name-block.show{display:block;transform:translate(-50%,-50%);}
-[data-theme="9"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow9 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#ffc61c;letter-spacing:0.06em;}
-[data-theme="9"] .couple-names em{color:#ffe566;font-style:italic;}
-[data-theme="9"] .name-diamond{background:linear-gradient(135deg,#ffc61c,#4a9e5c);}
-[data-theme="9"] .name-line.l{background:linear-gradient(90deg,transparent,#ffc61c);}
-[data-theme="9"] .name-line.r{background:linear-gradient(90deg,#ffc61c,transparent);}
-[data-theme="9"] .couple-tagline{color:rgba(255,198,28,0.5);letter-spacing:0.4em;font-size:9px;}
-@keyframes tgNameGlow9{0%,100%{text-shadow:0 0 20px rgba(255,198,28,0.5),0 0 40px rgba(255,198,28,0.2);}50%{text-shadow:0 0 40px rgba(255,198,28,0.9),0 0 80px rgba(255,198,28,0.5);}}
+[data-theme="9"] .couple-name-block.show .couple-names{animation:tgNameReveal 1.2s cubic-bezier(0.34,1.56,0.64,1) both,tgNameGlow9 2.5s ease-in-out infinite 1.5s;font-family:var(--font-display);font-size:clamp(28px,7vw,52px);color:#ffb300;letter-spacing:0.06em;}
+[data-theme="9"] .couple-names em{color:#ffd54f;font-style:italic;}
+[data-theme="9"] .name-diamond{background:linear-gradient(135deg,#ffb300,#c41e1e);}
+[data-theme="9"] .name-line.l{background:linear-gradient(90deg,transparent,#ffb300);}
+[data-theme="9"] .name-line.r{background:linear-gradient(90deg,#ffb300,transparent);}
+[data-theme="9"] .couple-tagline{color:rgba(255,179,0,0.5);letter-spacing:0.4em;font-size:9px;}
+@keyframes tgNameGlow9{0%,100%{text-shadow:0 0 20px rgba(255,179,0,0.5),0 0 40px rgba(255,179,0,0.2);}50%{text-shadow:0 0 40px rgba(255,179,0,0.9),0 0 80px rgba(255,179,0,0.5);}}
 
 /* ── SHARED TG THEME ANIMATIONS ── */
 @keyframes tgNameReveal{0%{opacity:0;transform:scale(0.7);filter:blur(12px);}60%{filter:blur(0px);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
@@ -831,7 +831,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
 [data-theme="9"] .tg-left img,
 [data-theme="9"] .tg-right img {
-  filter: drop-shadow(0 -4px 20px rgba(255,198,28,0.2))
+  filter: drop-shadow(0 -4px 20px rgba(255,179,0,0.2))
           drop-shadow(0 8px 16px rgba(0,0,0,0.7));
 }
 
@@ -1448,7 +1448,7 @@ function handleThemeSpecificUI(themeId) {
     if (swipeHint) swipeHint.style.display = '';
     window._disableSwipe = false;
   }
-  if (themeId === 5 || themeId === 7 || themeId === 8) {
+  if (themeId === 5 || themeId === 7 || themeId === 8 || themeId === 9) {
     ['cardLeft','cardRight','divider','swipeHint','coupleReveal','waxSealWrap'].forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; }
@@ -1465,30 +1465,11 @@ function handleThemeSpecificUI(themeId) {
     }
     window._disableSwipe = true;
   }
-  if (themeId === 7 || themeId === 8) {
+  if (themeId === 7 || themeId === 8 || themeId === 9) {
     const dock  = document.getElementById('tgDock');
     const instr = document.getElementById('tgInstruction');
     if (dock)  dock.style.display  = 'block';
     if (instr) { instr.style.display = 'flex'; instr.style.opacity = '1'; }
-  }
-
-  if (themeId === 9) {
-    ['cardLeft','cardRight','divider','swipeHint','coupleReveal','waxSealWrap'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.style.display = 'none'; el.style.visibility = 'hidden'; }
-    });
-    document.querySelectorAll('.swipe-cards,.swipe-card').forEach(el => {
-      el.style.display = 'none'; el.style.visibility = 'hidden';
-    });
-    const nb = document.getElementById('coupleNameBlock');
-    if (nb) { nb.style.display = 'none'; nb.style.opacity = '0'; nb.classList.remove('show'); }
-    const dock  = document.getElementById('tgDock');
-    const instr = document.getElementById('tgInstruction');
-    if (dock)  { dock.style.display  = 'none'; }
-    if (instr) { instr.style.display = 'none'; }
-    const stage = document.getElementById('cinemaStage');
-    if (stage) stage.style.display = 'flex';
-    window._disableSwipe = true;
   }
   if (themeId === 6) {
     window._disableSwipe = true;
@@ -1562,7 +1543,7 @@ function render(d) {
   if ([7, 8, 9].includes(parseInt(d.template_id))) {
     initTGSwipe(d);
   }
-  if ([9, 11].includes(parseInt(d.template_id))) {
+  if ([11].includes(parseInt(d.template_id))) {
     initCinema(d);
   }
   initOliveReveal(d);
@@ -3302,7 +3283,7 @@ function triggerKandyanExplosion() {
     5: ['#f1cb14', '#ffe066', '#e8450a', '#FFD700', '#c4903a', '#FFFFFF'],
     7: ['#c9a84c', '#e8cc7a', '#f5ead4', '#FFD700', '#9a8468', '#FFFFFF'],
     8: ['#ffc61c', '#ffe566', '#4a9e5c', '#FFD700', '#7ab88a', '#FFFFFF'],
-    9: ['#C9A84C', '#E8CC7A', '#F5EAD4', '#FFFFFF', '#FFD700', '#B8923A'],
+    9: ['#ffb300', '#ffd54f', '#c41e1e', '#FFFFFF', '#FFD700', '#7a1f1f'],
   };
 
   const colors = themeParticleColors[currentTheme] || themeParticleColors[5];
