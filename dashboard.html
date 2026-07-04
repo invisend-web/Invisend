@@ -931,7 +931,7 @@ select.form-input{cursor:pointer}
           <div class="theme-opts-grid">
             <div class="theme-opt" data-val="7" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#160404,#f1cb14)"></div><div class="theme-opt-name" style="color:#f1cb14">Udarata Sinhala</div><div class="tg-label">TG</div></div>
             <div class="theme-opt" data-val="8" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#07060a,#c9a84c)"></div><div class="theme-opt-name" style="color:#c9a84c">Western Luxury</div><div class="tg-label">TG</div></div>
-            <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1c0303,#ffb300)"></div><div class="theme-opt-name" style="color:#ffb300">Kalyanam</div><div class="tg-label">TG</div></div>
+            <div class="theme-opt" data-val="9" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#2b0a12,#d4af37)"></div><div class="theme-opt-name" style="color:#d4af37">Kalyanam</div><div class="tg-label">TG</div></div>
           </div>
         </div>
       </div>
@@ -1258,7 +1258,7 @@ function updateStats() {
   document.getElementById('statTotalViews').textContent = allInvitations.reduce((s, i) => s + (i.view_count || 0), 0).toLocaleString();
 }
 const themeNames = { 1: 'Luxury Black', 2: 'Premium Brown', 3: 'InviSend Ivory', 4: 'Olive Cream', 5: 'Paper Garden', 6: 'Vintage Ticket', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#D8B57A', 4: '#8A9B6E', 5: '#5B7B6F', 6: '#2a2a2a', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffb300' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#D8B57A', 4: '#8A9B6E', 5: '#5B7B6F', 6: '#2a2a2a', 7: '#f1cb14', 8: '#c9a84c', 9: '#d4af37' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');
