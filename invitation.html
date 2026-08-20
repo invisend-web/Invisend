@@ -672,25 +672,29 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   display:none !important;
 }
 [data-theme="10"] .hero{
-  padding-top:60px !important;
+  padding-top:0 !important;
   min-height:auto !important;
 }
 
-/* Theme 10 full-width framed photo display */
-.ct1-section{
-  display:none;
-  max-width:480px;
-  margin:0 auto;
-  padding:0 20px;
+/* CT1 hero image (couple_photo_url) */
+.ct1-hero{display:none;width:100%;position:relative}
+[data-theme="10"] .ct1-hero{display:block}
+.ct1-hero-img{
+  width:100%;
+  max-height:100vh;
+  object-fit:cover;
+  display:block;
 }
-[data-theme="10"] .ct1-section{display:block}
 
+/* CT1 names */
 .ct1-names{
+  display:none;
   text-align:center;
-  padding:48px 20px 32px;
+  padding:48px 20px 24px;
   max-width:480px;
   margin:0 auto;
 }
+[data-theme="10"] .ct1-names{display:block}
 .ct1-eyebrow{
   font-family:var(--font-ui);
   font-size:9px;
@@ -701,7 +705,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 }
 .ct1-couple-names{
   font-family:var(--font-display);
-  font-size:clamp(36px,10vw,52px);
+  font-size:clamp(34px,9vw,50px);
   font-style:italic;
   color:var(--text);
   line-height:1.2;
@@ -711,9 +715,9 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   color:var(--accent);
   font-style:italic;
 }
-.ct1-date{
+.ct1-date-line{
   font-family:var(--font-ui);
-  font-size:12px;
+  font-size:11px;
   letter-spacing:0.2em;
   color:var(--text2);
   margin-top:12px;
@@ -723,7 +727,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   align-items:center;
   gap:12px;
   margin:20px auto;
-  max-width:200px;
+  max-width:180px;
 }
 .ct1-divider-line{
   flex:1;
@@ -738,15 +742,27 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   background:var(--accent);
   flex-shrink:0;
 }
+
+/* CT1 photos — bespoke scroll-in animation (not the shared .sr system) */
+.ct1-photos{
+  display:none;
+  max-width:480px;
+  margin:0 auto;
+  padding:0 20px;
+}
+[data-theme="10"] .ct1-photos{display:block}
 .ct1-photo-wrap{
   width:100%;
-  margin:24px 0;
-  position:relative;
+  margin:32px 0;
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity 0.8s ease,transform 0.8s ease;
 }
+.ct1-photo-wrap.visible{opacity:1;transform:translateY(0)}
 .ct1-photo{
   width:100%;
   display:block;
-  border-radius:4px;
+  border-radius:2px;
 }
 
 [data-theme="10"] .rsvp-submit{
@@ -1136,6 +1152,24 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 <div class="page" id="page">
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
+  <!-- CUSTOM THEME 1 hero (theme 10 only) -->
+  <div class="ct1-hero" id="ct1Hero">
+    <img class="ct1-hero-img" id="ct1HeroImg" src="" alt=""
+      oncontextmenu="return false" draggable="false">
+  </div>
+
+  <!-- CUSTOM THEME 1 names (theme 10 only) -->
+  <div class="ct1-names sr" id="ct1Names">
+    <div class="ct1-eyebrow">A Wedding Invitation</div>
+    <div class="ct1-couple-names" id="ct1CoupleNames"></div>
+    <div class="ct1-divider">
+      <div class="ct1-divider-line"></div>
+      <div class="ct1-divider-dot"></div>
+      <div class="ct1-divider-line"></div>
+    </div>
+    <div class="ct1-date-line" id="ct1DateLine"></div>
+  </div>
+
   <section class="hero" id="heroSection">
     <div class="hero-tag">A Wedding Invitation</div>
 
@@ -1262,18 +1296,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
   </section>
 
-  <!-- CUSTOM THEME 1: NAMES (theme 10 only) -->
-  <section class="ct1-names sr" id="ct1NamesSection" style="display:none">
-    <div class="ct1-eyebrow">A Wedding Invitation</div>
-    <div class="ct1-couple-names" id="ct1CoupleNames"></div>
-    <div class="ct1-divider">
-      <div class="ct1-divider-line"></div>
-      <div class="ct1-divider-dot"></div>
-      <div class="ct1-divider-line"></div>
-    </div>
-    <div class="ct1-date" id="ct1Date"></div>
-  </section>
-
   <!-- TG WEDDING FILMS DOCK -->
   <div class="tg-dock" id="tgDock">
     <div class="tg-left" id="tgLeft">
@@ -1398,17 +1420,17 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </div>
 
   <!-- CUSTOM THEME 1: FRAMED PHOTOS (theme 10 only) -->
-  <section class="ct1-section sr" id="ct1PhotoSection" style="display:none">
-    <div class="ct1-photo-wrap sr" id="ct1Photo1Wrap" style="display:none">
+  <div class="ct1-photos" id="ct1Photos">
+    <div class="ct1-photo-wrap" id="ct1Photo1Wrap" style="display:none">
       <img class="ct1-photo" id="ct1Photo1" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
-    <div class="ct1-photo-wrap sr" id="ct1Photo2Wrap" style="display:none">
+    <div class="ct1-photo-wrap" id="ct1Photo2Wrap" style="display:none">
       <img class="ct1-photo" id="ct1Photo2" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
-    <div class="ct1-photo-wrap sr" id="ct1Photo3Wrap" style="display:none">
+    <div class="ct1-photo-wrap" id="ct1Photo3Wrap" style="display:none">
       <img class="ct1-photo" id="ct1Photo3" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
-  </section>
+  </div>
 
   <!-- PRESHOOT SECTION (shown only if has content) -->
   <section class="preshoot-section sr" id="preshootSection" style="display:none">
@@ -3034,8 +3056,8 @@ function initVintageTicket(d) {
 
 // ─── CUSTOM THEME 1: IVORY & ROSE SCROLL ───
 function initCustomTheme1(d) {
-  const namesSection = document.getElementById('ct1NamesSection');
-  if (namesSection) namesSection.style.display = '';
+  const heroImg = document.getElementById('ct1HeroImg');
+  if (heroImg && d.couple_photo_url) heroImg.src = d.couple_photo_url;
 
   const namesEl = document.getElementById('ct1CoupleNames');
   if (namesEl && d.couple_name) {
@@ -3045,16 +3067,13 @@ function initCustomTheme1(d) {
       : d.couple_name;
   }
 
-  const dateEl = document.getElementById('ct1Date');
+  const dateEl = document.getElementById('ct1DateLine');
   if (dateEl && d.wedding_date) {
     const dt = new Date(d.wedding_date);
     dateEl.textContent = dt.toLocaleDateString('en-US', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
   }
-
-  const photoSection = document.getElementById('ct1PhotoSection');
-  if (photoSection) photoSection.style.display = '';
 
   const photos = [
     { wrap: 'ct1Photo1Wrap', img: 'ct1Photo1', src: d.swipe_image_a_url },
@@ -3070,6 +3089,16 @@ function initCustomTheme1(d) {
       wrap.style.display = '';
     }
   });
+
+  function ct1ScrollCheck() {
+    document.querySelectorAll('.ct1-photo-wrap').forEach(function(el) {
+      if (el.style.display === 'none') return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.88) el.classList.add('visible');
+    });
+  }
+  window.addEventListener('scroll', ct1ScrollCheck, { passive: true });
+  ct1ScrollCheck();
 }
 function initVtStack(photos, title) {
   const section = document.getElementById('vtStackSection');
