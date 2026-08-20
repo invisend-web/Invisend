@@ -923,6 +923,7 @@ select.form-input{cursor:pointer}
             <div class="theme-opt" data-val="4" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F7F3E7 0%,#e8e0cc 50%,#6B7849 100%)"></div><div class="theme-opt-name">Olive Cream</div><div class="theme-opt-sub">Botanical &amp; Light</div></div>
             <div class="theme-opt" data-val="5" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#FAF8F5 0%,#e8f0ec 50%,#5B7B6F 100%)"></div><div class="theme-opt-name">Paper Garden</div><div class="theme-opt-sub">Clean &amp; Botanical</div></div>
             <div class="theme-opt" data-val="6" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#c8b89a 100%)"></div><div class="theme-opt-name">Vintage Ticket</div><div class="theme-opt-sub">B&amp;W Film</div></div>
+            <div class="theme-opt" data-val="10" onclick="selectTheme(this)"><div class="theme-opt-swatch" style="background:linear-gradient(135deg,#F5EFE6 0%,#e8d5d0 50%,#C47A7A 100%)"></div><div class="theme-opt-name">Custom Theme 1</div><div class="theme-opt-sub">Ivory &amp; Rose</div></div>
           </div>
         </div>
         <!-- TG Exclusive -->
@@ -1257,8 +1258,8 @@ function updateStats() {
   document.getElementById('statMonth').textContent = allInvitations.filter(i => { const d = new Date(i.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
   document.getElementById('statTotalViews').textContent = allInvitations.reduce((s, i) => s + (i.view_count || 0), 0).toLocaleString();
 }
-const themeNames = { 1: 'Luxury Black', 2: 'Premium Brown', 3: 'InviSend Ivory', 4: 'Olive Cream', 5: 'Paper Garden', 6: 'Vintage Ticket', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG' };
-const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#D8B57A', 4: '#8A9B6E', 5: '#5B7B6F', 6: '#2a2a2a', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c' };
+const themeNames = { 1: 'Luxury Black', 2: 'Premium Brown', 3: 'InviSend Ivory', 4: 'Olive Cream', 5: 'Paper Garden', 6: 'Vintage Ticket', 7: 'Udarata Sinhala · TG', 8: 'Western Luxury · TG', 9: 'Kalyanam · TG', 10: 'Custom Theme 1' };
+const themeColors = { 1: '#c9a84c', 2: '#f1cb14', 3: '#D8B57A', 4: '#8A9B6E', 5: '#5B7B6F', 6: '#2a2a2a', 7: '#f1cb14', 8: '#c9a84c', 9: '#ffc61c', 10: '#C47A7A' };
 
 function renderTable(invs) {
   const body = document.getElementById('invTableBody');

@@ -50,6 +50,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(22,4,4,0.4) 40%,rgba(22,4,4,0.85) 70%,rgba(22,4,4,1) 100%)}
 [data-theme="8"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
 [data-theme="9"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(6,18,8,0.4) 40%,rgba(6,18,8,0.85) 70%,rgba(6,18,8,1) 100%)}
+[data-theme="10"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(245,239,230,0.4) 40%,rgba(245,239,230,0.85) 70%,rgba(245,239,230,1) 100%)}
 .custom-bg-overlay{position:absolute;inset:0;pointer-events:none}
 [data-theme="1"] .custom-bg-overlay{background:rgba(7,6,10,0.35)}
 [data-theme="2"] .custom-bg-overlay{background:rgba(22,4,4,0.35)}
@@ -59,6 +60,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .custom-bg-overlay{background:rgba(22,4,4,0.45)}
 [data-theme="8"] .custom-bg-overlay{background:rgba(7,6,10,0.45)}
 [data-theme="9"] .custom-bg-overlay{background:rgba(6,18,8,0.45)}
+[data-theme="10"] .custom-bg-overlay{background:rgba(245,239,230,0.15)}
 [data-theme="3"] .couple-card{box-shadow:0 32px 80px rgba(212,166,166,0.3),0 0 60px rgba(233,201,194,0.55)}
 [data-theme="3"] .hero-tag{padding:5px 18px;border:1px solid var(--border);border-radius:20px}
 [data-theme="4"] .hero-tag{display:none !important}
@@ -651,7 +653,117 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="7"] .ariya-scroll-hint.show,[data-theme="8"] .ariya-scroll-hint.show,[data-theme="9"] .ariya-scroll-hint.show{display:flex;}
 
 /* ════════════════════════════════════
-   THEME 10: TG PREMIUM — CINEMA NOIR
+   THEME 10: CUSTOM THEME 1 — IVORY & ROSE
+════════════════════════════════════ */
+[data-theme="10"]{--bg:#F5EFE6;--bg2:#EDE5D8;--card:#F0E8DC;--accent:#C47A7A;--accent2:#D4908A;--glow:rgba(196,122,122,0.3);--text:#3D1A24;--text2:#7A5A4A;--text3:#A08070;--border:rgba(196,122,122,0.25);--merge-glow:radial-gradient(ellipse at center,rgba(196,122,122,0.7) 0%,rgba(196,122,122,0.2) 50%,transparent 70%);--section-bg:rgba(196,122,122,0.04);}
+[data-theme="10"] .bg-layer{background:#F5EFE6;}
+
+/* Hide standard hero swipe arena for theme 10 — simple scroll layout instead */
+[data-theme="10"] .arena,
+[data-theme="10"] .couple-name-block,
+[data-theme="10"] .scroll-down-hint,
+[data-theme="10"] .hero-tag{
+  display:none !important;
+}
+[data-theme="10"] .hero{
+  padding-top:60px !important;
+  min-height:auto !important;
+}
+
+/* Theme 10 full-width framed photo display */
+.ct1-section{
+  display:none;
+  max-width:480px;
+  margin:0 auto;
+  padding:0 20px;
+}
+[data-theme="10"] .ct1-section{display:block}
+
+.ct1-names{
+  text-align:center;
+  padding:48px 20px 32px;
+  max-width:480px;
+  margin:0 auto;
+}
+.ct1-eyebrow{
+  font-family:var(--font-ui);
+  font-size:9px;
+  letter-spacing:0.4em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:16px;
+}
+.ct1-couple-names{
+  font-family:var(--font-display);
+  font-size:clamp(36px,10vw,52px);
+  font-style:italic;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:8px;
+}
+.ct1-couple-names em{
+  color:var(--accent);
+  font-style:italic;
+}
+.ct1-date{
+  font-family:var(--font-ui);
+  font-size:12px;
+  letter-spacing:0.2em;
+  color:var(--text2);
+  margin-top:12px;
+}
+.ct1-divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:20px auto;
+  max-width:200px;
+}
+.ct1-divider-line{
+  flex:1;
+  height:1px;
+  background:var(--accent);
+  opacity:0.4;
+}
+.ct1-divider-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--accent);
+  flex-shrink:0;
+}
+.ct1-photo-wrap{
+  width:100%;
+  margin:24px 0;
+  position:relative;
+}
+.ct1-photo{
+  width:100%;
+  display:block;
+  border-radius:4px;
+}
+
+[data-theme="10"] .rsvp-submit{
+  background:#C47A7A;
+  box-shadow:0 8px 24px rgba(196,122,122,0.35);
+}
+[data-theme="10"] .rsvp-submit:hover{background:#A86060}
+[data-theme="10"] .family-card{border-top:2px solid var(--accent)}
+[data-theme="10"] .sound-btn{
+  background:rgba(196,122,122,0.1);
+  border-color:rgba(196,122,122,0.2);
+}
+[data-theme="10"] .cal-btn{
+  animation:calPulse10 2.5s ease-in-out infinite;
+}
+@keyframes calPulse10{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(196,122,122,0)}
+  50%{transform:scale(1.04);box-shadow:0 0 18px 4px rgba(196,122,122,0.2)}
+}
+[data-theme="10"] .cal-btn:hover{animation:none}
+
+/* ════════════════════════════════════
+   THEME 11: TG PREMIUM — CINEMA NOIR
 ════════════════════════════════════ */
 
 [data-theme="11"]{--bg:#000000;--bg2:#0a0a0a;--card:#111111;--accent:#C9A84C;--accent2:#E8CC7A;--accent3:#F5EAD4;--glow:rgba(201,168,76,0.5);--text:#F5EAD4;--text2:#9A8468;--text3:#52463A;--border:rgba(201,168,76,0.15);--section-bg:rgba(255,255,255,0.018);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(201,168,76,0.6) 30%,transparent 65%);--particle-color:#C9A84C;}
@@ -1143,6 +1255,18 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
   </section>
 
+  <!-- CUSTOM THEME 1: NAMES (theme 10 only) -->
+  <section class="ct1-names sr" id="ct1NamesSection" style="display:none">
+    <div class="ct1-eyebrow">A Wedding Invitation</div>
+    <div class="ct1-couple-names" id="ct1CoupleNames"></div>
+    <div class="ct1-divider">
+      <div class="ct1-divider-line"></div>
+      <div class="ct1-divider-dot"></div>
+      <div class="ct1-divider-line"></div>
+    </div>
+    <div class="ct1-date" id="ct1Date"></div>
+  </section>
+
   <!-- TG WEDDING FILMS DOCK -->
   <div class="tg-dock" id="tgDock">
     <div class="tg-left" id="tgLeft">
@@ -1265,6 +1389,19 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       Open Location
     </a>
   </div>
+
+  <!-- CUSTOM THEME 1: FRAMED PHOTOS (theme 10 only) -->
+  <section class="ct1-section sr" id="ct1PhotoSection" style="display:none">
+    <div class="ct1-photo-wrap sr" id="ct1Photo1Wrap" style="display:none">
+      <img class="ct1-photo" id="ct1Photo1" src="" alt="" oncontextmenu="return false" draggable="false">
+    </div>
+    <div class="ct1-photo-wrap sr" id="ct1Photo2Wrap" style="display:none">
+      <img class="ct1-photo" id="ct1Photo2" src="" alt="" oncontextmenu="return false" draggable="false">
+    </div>
+    <div class="ct1-photo-wrap sr" id="ct1Photo3Wrap" style="display:none">
+      <img class="ct1-photo" id="ct1Photo3" src="" alt="" oncontextmenu="return false" draggable="false">
+    </div>
+  </section>
 
   <!-- PRESHOOT SECTION (shown only if has content) -->
   <section class="preshoot-section sr" id="preshootSection" style="display:none">
@@ -1563,6 +1700,7 @@ function render(d) {
   initPaperGardenReveal(d);
   initPaperGardenTimeline(d);
   if (parseInt(d.template_id) === 6) initVintageTicket(d);
+  if (parseInt(d.template_id) === 10) initCustomTheme1(d);
 }
 
 function setImg(id, url) {
@@ -2904,6 +3042,46 @@ function initVintageTicket(d) {
     vtScrollFade();
   }
   initVtDust(document.getElementById('vtHero'));
+}
+
+// ─── CUSTOM THEME 1: IVORY & ROSE SCROLL ───
+function initCustomTheme1(d) {
+  const namesSection = document.getElementById('ct1NamesSection');
+  if (namesSection) namesSection.style.display = '';
+
+  const namesEl = document.getElementById('ct1CoupleNames');
+  if (namesEl && d.couple_name) {
+    const parts = d.couple_name.split('&').map(s => s.trim());
+    namesEl.innerHTML = parts.length === 2
+      ? parts[0] + ' <em>&amp;</em> ' + parts[1]
+      : d.couple_name;
+  }
+
+  const dateEl = document.getElementById('ct1Date');
+  if (dateEl && d.wedding_date) {
+    const dt = new Date(d.wedding_date);
+    dateEl.textContent = dt.toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  const photoSection = document.getElementById('ct1PhotoSection');
+  if (photoSection) photoSection.style.display = '';
+
+  const photos = [
+    { wrap: 'ct1Photo1Wrap', img: 'ct1Photo1', src: d.swipe_image_a_url },
+    { wrap: 'ct1Photo2Wrap', img: 'ct1Photo2', src: d.swipe_image_b_url },
+    { wrap: 'ct1Photo3Wrap', img: 'ct1Photo3', src: d.preshoot_photo_1 },
+  ];
+  photos.forEach(function(p) {
+    if (!p.src) return;
+    const wrap = document.getElementById(p.wrap);
+    const img = document.getElementById(p.img);
+    if (wrap && img) {
+      img.src = p.src;
+      wrap.style.display = '';
+    }
+  });
 }
 function initVtStack(photos, title) {
   const section = document.getElementById('vtStackSection');
