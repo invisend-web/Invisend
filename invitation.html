@@ -671,6 +671,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="10"] .hero-tag{
   display:none !important;
 }
+[data-theme="10"] #preshootSection{display:none !important}
 [data-theme="10"] .hero{
   padding-top:0 !important;
   min-height:auto !important;
@@ -680,10 +681,17 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .ct1-hero{display:none;width:100%;position:relative}
 [data-theme="10"] .ct1-hero{display:block}
 .ct1-hero-img{
-  width:100%;
-  max-height:100vh;
-  object-fit:cover;
+  width:70%;
+  max-width:320px;
   display:block;
+  margin:60px auto 0;
+  border-radius:4px;
+  animation:ct1Float 3.5s ease-in-out infinite;
+  filter:drop-shadow(0 20px 40px rgba(196,122,122,0.25));
+}
+@keyframes ct1Float{
+  0%,100%{transform:translateY(0px)}
+  50%{transform:translateY(-12px)}
 }
 
 /* CT1 names */
@@ -764,6 +772,15 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   display:block;
   border-radius:2px;
 }
+
+/* CT1 dog/3rd photo — sits just above RSVP */
+.ct1-dog-wrap{
+  display:none;
+  max-width:480px;
+  margin:0 auto;
+  padding:0 20px 32px;
+}
+[data-theme="10"] .ct1-dog-wrap{display:block}
 
 [data-theme="10"] .rsvp-submit{
   background:#C47A7A;
@@ -1427,9 +1444,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="ct1-photo-wrap" id="ct1Photo2Wrap" style="display:none">
       <img class="ct1-photo" id="ct1Photo2" src="" alt="" oncontextmenu="return false" draggable="false">
     </div>
-    <div class="ct1-photo-wrap" id="ct1Photo3Wrap" style="display:none">
-      <img class="ct1-photo" id="ct1Photo3" src="" alt="" oncontextmenu="return false" draggable="false">
-    </div>
   </div>
 
   <!-- PRESHOOT SECTION (shown only if has content) -->
@@ -1457,6 +1471,14 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     <div class="vt-stack-counter" id="vtStackCounter"></div>
     <div class="vt-stack-hint">Swipe to reveal</div>
   </section>
+
+  <!-- CUSTOM THEME 1: DOG/3RD PHOTO (theme 10 only) -->
+  <div class="ct1-dog-wrap" id="ct1DogWrap" style="display:none">
+    <div class="ct1-photo-wrap" id="ct1Photo3Wrap2">
+      <img class="ct1-photo" id="ct1DogPhoto" src="" alt=""
+        oncontextmenu="return false" draggable="false">
+    </div>
+  </div>
 
   <!-- RSVP -->
   <section class="rsvp-section sr" id="rsvpSection">
@@ -3078,7 +3100,6 @@ function initCustomTheme1(d) {
   const photos = [
     { wrap: 'ct1Photo1Wrap', img: 'ct1Photo1', src: d.swipe_image_a_url },
     { wrap: 'ct1Photo2Wrap', img: 'ct1Photo2', src: d.swipe_image_b_url },
-    { wrap: 'ct1Photo3Wrap', img: 'ct1Photo3', src: d.preshoot_photo_1 },
   ];
   photos.forEach(function(p) {
     if (!p.src) return;
@@ -3090,9 +3111,18 @@ function initCustomTheme1(d) {
     }
   });
 
+  if (d.preshoot_photo_1) {
+    const dogWrap = document.getElementById('ct1DogWrap');
+    const dogImg = document.getElementById('ct1DogPhoto');
+    if (dogWrap && dogImg) {
+      dogImg.src = d.preshoot_photo_1;
+      dogWrap.style.display = '';
+    }
+  }
+
   function ct1ScrollCheck() {
     document.querySelectorAll('.ct1-photo-wrap').forEach(function(el) {
-      if (el.style.display === 'none') return;
+      if (el.offsetParent === null) return;
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight * 0.88) el.classList.add('visible');
     });
