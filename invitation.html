@@ -1713,16 +1713,6 @@ function hideLoader() {
   setTimeout(() => l.style.display = 'none', 900);
   document.getElementById('page').classList.add('show');
   if (document.documentElement.getAttribute('data-theme') === '10') revealCT1Hero();
-  function revealFamilyText(namesId, delay) {
-    setTimeout(() => {
-      const namesEl = document.getElementById(namesId);
-      const labelEl = namesEl?.previousElementSibling;
-      labelEl?.classList.add('in');
-      setTimeout(() => namesEl?.classList.add('in'), 120);
-    }, delay);
-  }
-  revealFamilyText('brideParents', 2800);
-  revealFamilyText('groomParents', 2950);
   scheduleSwipeDemo();
 }
 function showErr() {
@@ -3839,6 +3829,16 @@ function initScrollReveal() {
   document.querySelectorAll('.sr').forEach(el => obs.observe(el));
   const obsDir = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obsDir.unobserve(e.target); } }), { threshold: 0.18 });
   document.querySelectorAll('.sr-scale').forEach(el => obsDir.observe(el));
+  const familyCards = document.querySelectorAll('.family-card');
+  const famObs = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const labelEl = e.target.querySelector('.family-side');
+    const namesEl = e.target.querySelector('.family-names');
+    labelEl?.classList.add('in');
+    setTimeout(() => namesEl?.classList.add('in'), 120);
+    famObs.unobserve(e.target);
+  }), { threshold: 0.18 });
+  familyCards.forEach(el => famObs.observe(el));
   const rsvpSection = document.getElementById('rsvpSection');
   if (rsvpSection) {
     const rsvpObs = new IntersectionObserver(entries => {
