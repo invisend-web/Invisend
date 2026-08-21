@@ -1143,6 +1143,26 @@ try {
   console.error('Supabase init failed:', e);
 }
 
+// ─── SRI LANKA TIME (Asia/Colombo, UTC+5:30, no DST) ───
+function colomboLocalToUTCISOString(datetimeLocalValue) {
+  const [datePart, timePart] = datetimeLocalValue.split('T');
+  const [y, m, d] = datePart.split('-').map(Number);
+  const [h, min] = timePart.split(':').map(Number);
+  const utcMs = Date.UTC(y, m - 1, d, h, min) - (5 * 60 + 30) * 60 * 1000;
+  return new Date(utcMs).toISOString();
+}
+function utcISOToColomboLocalValue(isoString) {
+  const utcMs = new Date(isoString).getTime();
+  const colomboMs = utcMs + (5 * 60 + 30) * 60 * 1000;
+  const dt = new Date(colomboMs);
+  const y = dt.getUTCFullYear();
+  const m = String(dt.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(dt.getUTCDate()).padStart(2, '0');
+  const h = String(dt.getUTCHours()).padStart(2, '0');
+  const min = String(dt.getUTCMinutes()).padStart(2, '0');
+  return `${y}-${m}-${d}T${h}:${min}`;
+}
+
 // ─── STATE ───
 let allInvitations = [], editingId = null, selectedTheme = 1;
 let currentInvFilter = 'all';
@@ -1629,7 +1649,7 @@ function editInvitation(id) {
   document.getElementById('fCouplePhoto').value = inv.couple_photo_url || '';
   document.getElementById('fMusicUrl').value = inv.music_url || '';
   document.getElementById('fStatus').value = inv.status || 'live';
-  if (inv.wedding_date) document.getElementById('fWeddingDate').value = new Date(inv.wedding_date).toISOString().slice(0, 16);
+  if (inv.wedding_date) document.getElementById('fWeddingDate').value = utcISOToColomboLocalValue(inv.wedding_date);
   ['SwipeA','SwipeB','Couple'].forEach((k, i) => {
     const areaIds = ['uploadA','uploadB','uploadCouple'];
     const types = ['swipeA','swipeB','couple'];
@@ -2019,10 +2039,10 @@ async function saveInvitation() {
     music_url: document.getElementById('fMusicUrl').value || null,
     background_image_url: document.getElementById('fBgImage').value || null,
   };
-  if (document.getElementById('fWeddingDate').value) payload.wedding_date = new Date(document.getElementById('fWeddingDate').value).toISOString();
+  if (document.getElementById('fWeddingDate').value) payload.wedding_date = colomboLocalToUTCISOString(document.getElementById('fWeddingDate').value);
   let expiryDate = null;
   if (document.getElementById('fWeddingDate').value) {
-    const wDate = new Date(document.getElementById('fWeddingDate').value);
+    const wDate = new Date(colomboLocalToUTCISOString(document.getElementById('fWeddingDate').value));
     wDate.setDate(wDate.getDate() + 30);
     // Only set expiry if it would be in the future — prevents
     // editing a past-wedding invitation from locking it out

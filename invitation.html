@@ -1705,9 +1705,9 @@ function render(d) {
   document.getElementById('groomParents').innerHTML = [d.groom_mother, d.groom_father].filter(Boolean).join('<br>') || '—';
   if (d.wedding_date) {
     const dt = new Date(d.wedding_date);
-    document.getElementById('eventDay').textContent = dt.toLocaleDateString('en-US', { day: '2-digit' });
-    document.getElementById('eventDateFull').textContent = dt.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('eventDay').textContent = dt.toLocaleDateString('en-US', { day: '2-digit', timeZone: 'Asia/Colombo' });
+    document.getElementById('eventDateFull').textContent = dt.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Colombo' });
+    document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Colombo' });
   }
   document.getElementById('eventVenue').textContent = d.venue || '';
   document.getElementById('msgText').textContent = d.message || '';
@@ -2790,9 +2790,12 @@ function renderOliveCalendar(weddingDateStr) {
   if (!wrap || !monthEl || !gridEl) return;
 
   const weddingDate = new Date(weddingDateStr);
-  const year = weddingDate.getFullYear();
-  const month = weddingDate.getMonth();
-  const dayOfMonth = weddingDate.getDate();
+  const colomboParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(weddingDate).reduce((a, p) => { a[p.type] = p.value; return a; }, {});
+  const year = parseInt(colomboParts.year, 10);
+  const month = parseInt(colomboParts.month, 10) - 1;
+  const dayOfMonth = parseInt(colomboParts.day, 10);
 
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   monthEl.textContent = monthNames[month] + ' ' + year;
@@ -3097,7 +3100,7 @@ function initCustomTheme1(d) {
   if (dateEl && d.wedding_date) {
     const dt = new Date(d.wedding_date);
     dateEl.textContent = dt.toLocaleDateString('en-US', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Colombo'
     });
   }
 
