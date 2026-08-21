@@ -679,6 +679,17 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   min-height:auto !important;
 }
 
+/* CT1 first screen — photo + names + date form one self-contained viewport */
+.ct1-first-screen{display:none}
+[data-theme="10"] .ct1-first-screen{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  min-height:100dvh;
+}
+
 /* CT1 hero image (couple_photo_url) */
 .ct1-hero{display:none;width:100%;position:relative}
 [data-theme="10"] .ct1-hero{display:block}
@@ -1188,22 +1199,23 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 <div class="page" id="page">
   <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2"></canvas>
   <!-- HERO -->
-  <!-- CUSTOM THEME 1 hero (theme 10 only) -->
-  <div class="ct1-hero" id="ct1Hero">
-    <img class="ct1-hero-img" id="ct1HeroImg" src="" alt=""
-      oncontextmenu="return false" draggable="false">
-  </div>
-
-  <!-- CUSTOM THEME 1 names (theme 10 only) -->
-  <div class="ct1-names sr" id="ct1Names">
-    <div class="ct1-eyebrow">A Wedding Invitation</div>
-    <div class="ct1-couple-names" id="ct1CoupleNames"></div>
-    <div class="ct1-divider">
-      <div class="ct1-divider-line"></div>
-      <div class="ct1-divider-dot"></div>
-      <div class="ct1-divider-line"></div>
+  <!-- CUSTOM THEME 1 first screen: hero + names (theme 10 only) -->
+  <div class="ct1-first-screen" id="ct1FirstScreen">
+    <div class="ct1-hero" id="ct1Hero">
+      <img class="ct1-hero-img" id="ct1HeroImg" src="" alt=""
+        oncontextmenu="return false" draggable="false">
     </div>
-    <div class="ct1-date-line" id="ct1DateLine"></div>
+
+    <div class="ct1-names" id="ct1Names">
+      <div class="ct1-eyebrow">A Wedding Invitation</div>
+      <div class="ct1-couple-names" id="ct1CoupleNames"></div>
+      <div class="ct1-divider">
+        <div class="ct1-divider-line"></div>
+        <div class="ct1-divider-dot"></div>
+        <div class="ct1-divider-line"></div>
+      </div>
+      <div class="ct1-date-line" id="ct1DateLine"></div>
+    </div>
   </div>
 
   <section class="hero" id="heroSection">
