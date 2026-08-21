@@ -1684,6 +1684,10 @@ function hideLoader() {
   l.classList.add('out');
   setTimeout(() => l.style.display = 'none', 900);
   document.getElementById('page').classList.add('show');
+  setTimeout(() => {
+    document.querySelector('#familySection .sr-left')?.classList.add('in');
+    setTimeout(() => document.querySelector('#familySection .sr-right')?.classList.add('in'), 150);
+  }, 2800);
   scheduleSwipeDemo();
 }
 function showErr() {
@@ -3796,7 +3800,7 @@ function initScrollReveal() {
   const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } }), { threshold: 0.12 });
   document.querySelectorAll('.sr').forEach(el => obs.observe(el));
   const obsDir = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obsDir.unobserve(e.target); } }), { threshold: 0.18 });
-  document.querySelectorAll('.sr-left,.sr-right,.sr-scale').forEach(el => obsDir.observe(el));
+  document.querySelectorAll('.sr-scale').forEach(el => obsDir.observe(el));
   const rsvpSection = document.getElementById('rsvpSection');
   if (rsvpSection) {
     const rsvpObs = new IntersectionObserver(entries => {
