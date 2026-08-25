@@ -832,6 +832,15 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="10"] .cal-btn:hover{animation:none}
 
 /* ════════════════════════════════════
+   THEME 12: CUSTOM THEME 2 — NAVY & GOLD
+════════════════════════════════════ */
+[data-theme="12"]{--bg:#FFFCF5;--bg2:#F3ECDA;--card:#FFFFFF;--accent:#0F2748;--accent2:#D4AF37;--accent3:#E8C34A;--glow:rgba(212,175,55,0.45);--text:#0F2748;--text2:#33455F;--text3:#8A7440;--border:rgba(15,39,72,0.2);--section-bg:rgba(15,39,72,0.035);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(212,175,55,0.65) 35%,transparent 70%);--particle-color:#D4AF37;}
+[data-theme="12"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
+[data-theme="12"] .swipe-card::before{display:none!important;}
+[data-theme="12"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
+[data-theme="12"] .rsvp-deadline-notice{display:block!important;text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
+
+/* ════════════════════════════════════
    THEME 11: TG PREMIUM — CINEMA NOIR
 ════════════════════════════════════ */
 
@@ -1513,6 +1522,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
   <!-- RSVP -->
   <section class="rsvp-section sr" id="rsvpSection">
+    <div class="rsvp-deadline-notice" style="display:none">Please RSVP by 10th November 2026</div>
     <div class="rsvp-title">Will You Join Us?</div>
     <div class="rsvp-sub">Your presence would mean the world to us</div>
     <div class="rsvp-form" id="rsvpForm">
