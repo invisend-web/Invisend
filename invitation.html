@@ -834,11 +834,14 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* ════════════════════════════════════
    THEME 12: CUSTOM THEME 2 — NAVY & GOLD
 ════════════════════════════════════ */
-[data-theme="12"]{--bg:#FFFCF5;--bg2:#F3ECDA;--card:#FFFFFF;--accent:#0F2748;--accent2:#D4AF37;--accent3:#E8C34A;--glow:rgba(212,175,55,0.45);--text:#0F2748;--text2:#33455F;--text3:#8A7440;--border:rgba(15,39,72,0.2);--section-bg:rgba(15,39,72,0.035);--merge-glow:radial-gradient(ellipse at center,rgba(255,255,255,0.95) 0%,rgba(212,175,55,0.65) 35%,transparent 70%);--particle-color:#D4AF37;}
+[data-theme="12"]{--bg:#FFFCF5;--bg2:#F3ECDA;--card:#FFFFFF;--accent:#0F2748;--accent2:#D4AF37;--accent3:#E8C34A;--glow:rgba(212,175,55,0.45);--text:#0F2748;--text2:#33455F;--text3:#8A7440;--border:rgba(15,39,72,0.2);--section-bg:rgba(15,39,72,0.035);--merge-glow:radial-gradient(ellipse at center,rgba(212,175,55,0.8) 0%,rgba(212,175,55,0.3) 50%,transparent 70%);--particle-color:#D4AF37;}
 [data-theme="12"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
 [data-theme="12"] .swipe-card::before{display:none!important;}
 [data-theme="12"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
 [data-theme="12"] .rsvp-deadline-notice{display:block!important;text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
+[data-theme="12"] .bg-layer{background:#FFFFFF!important}
+[data-theme="12"] .hero{justify-content:flex-end}
+[data-theme="12"] .couple-names{color:#FFFFFF!important}
 
 /* ════════════════════════════════════
    THEME 11: TG PREMIUM — CINEMA NOIR
@@ -1766,7 +1769,7 @@ function render(d) {
     document.getElementById('calBtn').href = calUrl;
     document.getElementById('calBtnWrap').style.display = '';
   }
-  if (d.background_image_url && ![4,5,6].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
+  if (d.background_image_url && ![4,5,6,12].includes(parseInt(document.documentElement.getAttribute('data-theme')))) applyBackgroundImage(d.background_image_url);
   initCountdown(d.wedding_date);
   if (parseInt(document.documentElement.getAttribute('data-theme')) === -1) {
     const cr = document.getElementById('coupleReveal');
@@ -3553,6 +3556,24 @@ function completeReveal() {
         : document.querySelector('.family-section') || document.querySelector('.orn-div');
       if (nextSection) nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 3800);
+  } else if (currentTheme === 12) {
+    setTimeout(() => {
+      g.style.opacity = '0';
+      document.body.style.overflow = '';
+      try { if (navigator.vibrate) navigator.vibrate(80); } catch(e) {}
+      triggerKandyanExplosion();
+    }, 400);
+    setTimeout(() => {
+      if (invData && invData.background_image_url) applyBackgroundImage(invData.background_image_url);
+    }, 700);
+    setTimeout(() => {
+      const nameBlock = document.getElementById('coupleNameBlock');
+      if (nameBlock) {
+        nameBlock.style.display = 'block';
+        requestAnimationFrame(() => requestAnimationFrame(() => nameBlock.classList.add('show')));
+      }
+      showScrollHint();
+    }, 1900);
   } else {
     setTimeout(() => {
       g.style.opacity = '0';
