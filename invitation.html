@@ -1436,7 +1436,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   <section class="section sr" id="eventSection" style="padding-top:0">
     <span class="section-eyebrow">Save the Date</span>
     <div class="event-card sr-scale">
-      <div class="event-date-label">Wedding Ceremony</div>
+      <div class="event-date-label" id="eventDateLabel">Wedding Ceremony</div>
       <div class="event-date-num" id="eventDay"></div>
       <div class="event-date-full" id="eventDateFull"></div>
       <div class="event-sep"></div>
@@ -1765,6 +1765,10 @@ function render(d) {
     document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Colombo' });
   }
   document.getElementById('eventVenue').textContent = d.venue || '';
+  if (parseInt(d.template_id) === 12) {
+    const lbl = document.getElementById('eventDateLabel');
+    if (lbl) lbl.textContent = 'Wedding Reception';
+  }
   (function() {
     const el = document.getElementById('rsvpDeadlineNotice');
     if (el && d.rsvp_deadline) {
