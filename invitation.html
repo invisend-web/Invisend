@@ -1786,6 +1786,9 @@ function render(d) {
   if ([11].includes(parseInt(d.template_id))) {
     initCinema(d);
   }
+  if (parseInt(d.template_id) === 12) {
+    document.body.style.overflow = 'hidden';
+  }
   initOliveReveal(d);
   renderOliveCalendar(d.wedding_date);
   initPaperGardenReveal(d);
