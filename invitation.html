@@ -838,7 +838,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="12"] .swipe-card{border:none!important;box-shadow:none!important;background:transparent!important;border-radius:0!important;}
 [data-theme="12"] .swipe-card::before{display:none!important;}
 [data-theme="12"] .swipe-card img{object-fit:contain!important;object-position:center!important;background:transparent!important;}
-[data-theme="12"] .rsvp-deadline-notice{display:block!important;text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
+.rsvp-deadline-notice{text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
 [data-theme="12"] .bg-layer{background:#FFFFFF!important}
 [data-theme="12"] .hero{justify-content:flex-end}
 [data-theme="12"] .couple-names{color:#FFFFFF!important}
@@ -1530,7 +1530,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
   <!-- RSVP -->
   <section class="rsvp-section sr" id="rsvpSection">
-    <div class="rsvp-deadline-notice" style="display:none">Please RSVP by 10th November 2026</div>
+    <div class="rsvp-deadline-notice" id="rsvpDeadlineNotice" style="display:none"></div>
     <div class="rsvp-title">Will You Join Us?</div>
     <div class="rsvp-sub">Your presence would mean the world to us</div>
     <div class="rsvp-form" id="rsvpForm">
@@ -1765,6 +1765,13 @@ function render(d) {
     document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Colombo' });
   }
   document.getElementById('eventVenue').textContent = d.venue || '';
+  (function() {
+    const el = document.getElementById('rsvpDeadlineNotice');
+    if (el && d.rsvp_deadline) {
+      el.textContent = 'Please RSVP by ' + d.rsvp_deadline;
+      el.style.display = 'block';
+    }
+  })();
   (function() {
     const el = document.getElementById('msgText');
     const raw = d.message || '';
