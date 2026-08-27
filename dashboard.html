@@ -3288,6 +3288,15 @@ document.getElementById('fMessageSizeBtn')?.addEventListener('click', function()
   ta.focus();
   ta.selectionStart = start; ta.selectionEnd = end + 4;
 });
+document.addEventListener('keydown', function(e) {
+  const isSaveCombo = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's';
+  if (!isSaveCombo) return;
+  const modal = document.getElementById('invModal');
+  if (modal && modal.classList.contains('open')) {
+    e.preventDefault();
+    saveInvitation();
+  }
+});
 </script>
 
 <!-- ─── MOBILE BOTTOM NAV ─── -->
