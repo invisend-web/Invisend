@@ -1770,7 +1770,8 @@ function render(d) {
     const raw = d.message || '';
     const escaped = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-    el.innerHTML = bolded.replace(/\n/g, '<br>');
+    const sized = bolded.replace(/\+\+(.+?)\+\+/g, '<span style="font-size:1.35em;">$1</span>');
+    el.innerHTML = sized.replace(/\n/g, '<br>');
   })();
   if (!d.message) document.getElementById('msgBlock').style.display = 'none';
   if (d.google_maps_url) { document.getElementById('locBtn').href = d.google_maps_url; }

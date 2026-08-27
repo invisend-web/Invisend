@@ -964,7 +964,7 @@ select.form-input{cursor:pointer}
       <div class="form-grid">
         <div class="form-group"><label class="form-label">Wedding Date & Time</label><input class="form-input" id="fWeddingDate" type="datetime-local"></div>
         <div class="form-group"><label class="form-label">Venue</label><input class="form-input" id="fVenue" type="text" placeholder="Venue name"></div>
-        <div class="form-group full"><label class="form-label">Personal Message</label><div style="display:flex;gap:8px;margin-bottom:6px;"><button type="button" class="btn btn-sm" id="fMessageBoldBtn" style="padding:4px 10px;">B (Bold selected text)</button></div><textarea class="form-input" id="fMessage" rows="4" placeholder="A short message to guests. Press Enter for a new paragraph. Select text and click B to bold it."></textarea></div>
+        <div class="form-group full"><label class="form-label">Personal Message</label><div style="display:flex;gap:8px;margin-bottom:6px;"><button type="button" class="btn btn-sm" id="fMessageBoldBtn" style="padding:4px 10px;">B (Bold selected text)</button><button type="button" class="btn btn-sm" id="fMessageSizeBtn" style="padding:4px 10px;">A+ (Bigger selected text)</button></div><textarea class="form-input" id="fMessage" rows="4" placeholder="A short message to guests. Press Enter for a new paragraph. Select text and click B to bold or A+ to enlarge it."></textarea></div>
         <div class="form-group full"><label class="form-label">Google Maps URL</label><input class="form-input" id="fMapsUrl" type="url" placeholder="https://maps.google.com/..."></div>
       </div>
     </div>
@@ -3273,6 +3273,15 @@ document.getElementById('fMessageBoldBtn')?.addEventListener('click', function()
   if (start === end) return;
   const val = ta.value;
   ta.value = val.slice(0, start) + '**' + val.slice(start, end) + '**' + val.slice(end);
+  ta.focus();
+  ta.selectionStart = start; ta.selectionEnd = end + 4;
+});
+document.getElementById('fMessageSizeBtn')?.addEventListener('click', function() {
+  const ta = document.getElementById('fMessage');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  if (start === end) return;
+  const val = ta.value;
+  ta.value = val.slice(0, start) + '++' + val.slice(start, end) + '++' + val.slice(end);
   ta.focus();
   ta.selectionStart = start; ta.selectionEnd = end + 4;
 });
