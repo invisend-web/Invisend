@@ -353,7 +353,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 @keyframes arrowR{0%,100%{opacity:0.3;transform:rotate(45deg) translateX(0)}50%{opacity:0.7;transform:rotate(45deg) translateX(3px)}}
 .hint-text{font-family:var(--font-ui);font-size:8.5px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text3)}
 /* SCROLL DOWN HINT */
-.scroll-down-hint{display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;transition:opacity 0.9s var(--ease);pointer-events:none;margin-top:36px}
+.scroll-down-hint{display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;transition:opacity 0.9s var(--ease);pointer-events:none;margin-top:36px;position:relative;z-index:2}
 .scroll-down-hint.show{opacity:1}
 .scroll-down-chevron{width:18px;height:18px;border-right:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent);transform:rotate(45deg);animation:chevronBounce 1.7s ease-in-out infinite}
 .scroll-down-chevron:nth-child(2){animation-delay:0.22s;margin-top:-10px;opacity:0.45}
@@ -843,6 +843,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .rsvp-deadline-notice{text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
 [data-theme="12"] .bg-layer{background:#FFFFFF!important}
 [data-theme="12"] .hero{justify-content:flex-end}
+.t12-bottom-fade{display:none;position:absolute;left:0;right:0;bottom:0;height:240px;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.35) 45%,transparent 100%);pointer-events:none;z-index:1;}
+[data-theme="12"] .t12-bottom-fade{display:block;}
 [data-theme="12"] .couple-names{color:#FFFFFF!important}
 [data-theme="12"] .couple-tagline{color:#FFFFFF!important;font-size:10px!important}
 [data-theme="12"] .couple-name-block{position:absolute;top:18%;left:50%;transform:translate(-50%,0);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
@@ -1355,6 +1357,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         <span class="ariya-scroll-text">Scroll to continue</span>
       </div>
     </div>
+    <div class="t12-bottom-fade" id="t12BottomFade"></div>
     <div class="scroll-down-hint" id="scrollDownHint">
       <div class="sdh-line"></div>
       <div class="scroll-down-chevron"></div>
