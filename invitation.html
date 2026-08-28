@@ -3617,12 +3617,28 @@ function completeReveal() {
     }, 1900);
     setTimeout(() => {
       let magnetFired = false;
+      function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+      function smoothScrollTo(targetY, duration) {
+        const startY = window.scrollY;
+        const diff = targetY - startY;
+        const startTime = performance.now();
+        function step(now) {
+          const elapsed = now - startTime;
+          const t = Math.min(elapsed / duration, 1);
+          window.scrollTo(0, startY + diff * easeInOutCubic(t));
+          if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
       function magnetScroll() {
         if (magnetFired) return;
         if (window.scrollY > 30) {
           magnetFired = true;
           const family = document.getElementById('familySection');
-          if (family) family.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (family) {
+            const targetY = family.getBoundingClientRect().top + window.scrollY;
+            smoothScrollTo(targetY, 1000);
+          }
           window.removeEventListener('scroll', magnetScroll);
         }
       }
