@@ -185,10 +185,12 @@ async function load() {
   if(!slug) return;
 
   // Get invitation name
-  const { data: inv } = await sb.from('invitations').select('couple_name').eq('slug',slug).single();
+  const { data: invRows } = await sb.rpc('get_invitation_name_by_slug', { p_slug: slug });
+  const inv = invRows && invRows.length ? invRows[0] : null;
   if(inv) document.getElementById('pageTitle').textContent = inv.couple_name || 'RSVP Results';
 
-  const { data } = await sb.from('rsvp').select('*').eq('invitation_slug',slug).order('created_at',{ascending:false});
+  const { data: rawData } = await sb.rpc('get_rsvp_by_slug', { p_slug: slug });
+  const data = (rawData || []).slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   allRsvps = data || [];
   render();
   subscribe();
