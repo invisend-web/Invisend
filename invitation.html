@@ -360,6 +360,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .scroll-down-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.38em;text-transform:uppercase;color:var(--text3);margin-top:12px}
 [data-theme="12"] .scroll-down-label{font-size:12px;letter-spacing:0.2em;font-weight:700;color:#FFD400;}
 [data-theme="12"] .scroll-down-chevron{width:24px;height:24px;border-right:2.5px solid #FFD400;border-bottom:2.5px solid #FFD400;}
+.t12-bottom-fade{display:none;position:fixed;left:0;right:0;bottom:0;height:260px;background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.3) 45%,transparent 100%);pointer-events:none;z-index:0;opacity:0;transition:opacity 0.8s ease;}
+.t12-bottom-fade.show{display:block;opacity:1;}
 @keyframes chevronBounce{0%,100%{opacity:0.35;transform:rotate(45deg) translateY(0)}55%{opacity:1;transform:rotate(45deg) translateY(5px)}}
 /* COUPLE NAME */
 .couple-name-block{margin-top:80px;text-align:center;padding:0 24px;opacity:0;transform:translateY(14px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
@@ -1355,6 +1357,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         <span class="ariya-scroll-text">Scroll to continue</span>
       </div>
     </div>
+    <div class="t12-bottom-fade" id="t12BottomFade"></div>
     <div class="scroll-down-hint" id="scrollDownHint">
       <div class="sdh-line"></div>
       <div class="scroll-down-chevron"></div>
@@ -1845,6 +1848,10 @@ function applyBackgroundImage(url) {
     if (bgLayer) { bgLayer.style.transition = 'opacity 0.8s ease'; bgLayer.style.opacity = '0'; }
     image.style.transition = 'opacity 1.2s ease';
     image.style.opacity = '1';
+    if (parseInt(document.documentElement.getAttribute('data-theme')) === 12) {
+      const fade = document.getElementById('t12BottomFade');
+      if (fade) fade.classList.add('show');
+    }
     initCustomBgScrollFade();
   };
   img.onerror = function() {
@@ -3556,6 +3563,8 @@ function completeReveal() {
         const hero = document.getElementById('heroSection');
         if (window.scrollY > (hero ? hero.offsetHeight + 50 : window.innerHeight)) {
           hint.style.opacity = '0'; hint.style.pointerEvents = 'none';
+          const fade = document.getElementById('t12BottomFade');
+          if (fade) { fade.style.opacity = '0'; }
           window.removeEventListener('scroll', fadeHint);
         }
       }, { passive: true });
