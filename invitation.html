@@ -4168,6 +4168,7 @@ class ParticleSystem {
 
   _loop(time) {
     if (!this.running) return;
+    if (window._t12ScrollPause) { requestAnimationFrame(t => this._loop(t)); return; }
     const ctx = this.ctx;
     const W = this.canvas.width, H = this.canvas.height;
     ctx.clearRect(0, 0, W, H);
@@ -4191,6 +4192,14 @@ class ParticleSystem {
 
 init();
 const particleSystem = new ParticleSystem();
+
+let _t12ScrollTimeout;
+window.addEventListener('scroll', () => {
+  if (parseInt(document.documentElement.getAttribute('data-theme')) !== 12) return;
+  window._t12ScrollPause = true;
+  clearTimeout(_t12ScrollTimeout);
+  _t12ScrollTimeout = setTimeout(() => { window._t12ScrollPause = false; }, 150);
+}, { passive: true });
 </script>
 </body>
 </html>
