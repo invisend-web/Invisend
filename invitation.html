@@ -40,6 +40,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 /* ── CUSTOM BACKGROUND IMAGE SYSTEM ── */
 .custom-bg-wrap{position:fixed;inset:0;z-index:-1;pointer-events:none;will-change:opacity}
 .custom-bg-image{position:absolute;inset:0;background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed;transition:opacity 0.3s ease}
+[data-theme="12"] .custom-bg-image{animation:t12KenBurns 24s ease-in-out infinite;}
+@keyframes t12KenBurns{0%{background-size:100% auto;}50%{background-size:112% auto;}100%{background-size:100% auto;}}
 @media(max-width:768px){.custom-bg-image{background-attachment:scroll}}
 .custom-bg-fade{position:absolute;left:0;right:0;bottom:0;height:45%;pointer-events:none}
 [data-theme="1"] .custom-bg-fade{background:linear-gradient(to bottom,transparent 0%,rgba(7,6,10,0.4) 40%,rgba(7,6,10,0.85) 70%,rgba(7,6,10,1) 100%)}
