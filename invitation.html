@@ -358,8 +358,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .scroll-down-chevron{width:18px;height:18px;border-right:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent);transform:rotate(45deg);animation:chevronBounce 1.7s ease-in-out infinite}
 .scroll-down-chevron:nth-child(2){animation-delay:0.22s;margin-top:-10px;opacity:0.45}
 .scroll-down-label{font-family:var(--font-ui);font-size:8px;letter-spacing:0.38em;text-transform:uppercase;color:var(--text3);margin-top:12px}
-[data-theme="12"] .scroll-down-label{font-size:12px;letter-spacing:0.2em;font-weight:600;color:var(--accent2);}
-[data-theme="12"] .scroll-down-chevron{width:24px;height:24px;border-right:2.5px solid var(--accent2);border-bottom:2.5px solid var(--accent2);}
+[data-theme="12"] .scroll-down-label{font-size:12px;letter-spacing:0.2em;font-weight:600;color:#FFFFFF;text-shadow:0 1px 6px rgba(0,0,0,0.85),0 0 3px rgba(0,0,0,0.6);}
+[data-theme="12"] .scroll-down-chevron{width:24px;height:24px;border-right:2.5px solid #FFFFFF;border-bottom:2.5px solid #FFFFFF;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.85));}
 @keyframes chevronBounce{0%,100%{opacity:0.35;transform:rotate(45deg) translateY(0)}55%{opacity:1;transform:rotate(45deg) translateY(5px)}}
 /* COUPLE NAME */
 .couple-name-block{margin-top:80px;text-align:center;padding:0 24px;opacity:0;transform:translateY(14px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
@@ -843,8 +843,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 .rsvp-deadline-notice{text-align:center;font-family:var(--font-ui);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:14px;}
 [data-theme="12"] .bg-layer{background:#FFFFFF!important}
 [data-theme="12"] .hero{justify-content:flex-end}
-.t12-bottom-fade{display:none;position:fixed;left:0;right:0;bottom:0;height:260px;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.35) 45%,transparent 100%);pointer-events:none;z-index:0;opacity:0;transition:opacity 0.8s ease;}
-.t12-bottom-fade.show{display:block;opacity:1;}
 [data-theme="12"] .couple-names{color:#FFFFFF!important}
 [data-theme="12"] .couple-tagline{color:#FFFFFF!important;font-size:10px!important}
 [data-theme="12"] .couple-name-block{position:absolute;top:18%;left:50%;transform:translate(-50%,0);z-index:20;text-align:center;width:90%;pointer-events:none;display:none;opacity:1;transition:none;margin-top:0;}
@@ -1357,7 +1355,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
         <span class="ariya-scroll-text">Scroll to continue</span>
       </div>
     </div>
-    <div class="t12-bottom-fade" id="t12BottomFade"></div>
     <div class="scroll-down-hint" id="scrollDownHint">
       <div class="sdh-line"></div>
       <div class="scroll-down-chevron"></div>
@@ -1848,10 +1845,6 @@ function applyBackgroundImage(url) {
     if (bgLayer) { bgLayer.style.transition = 'opacity 0.8s ease'; bgLayer.style.opacity = '0'; }
     image.style.transition = 'opacity 1.2s ease';
     image.style.opacity = '1';
-    if (parseInt(document.documentElement.getAttribute('data-theme')) === 12) {
-      const fade = document.getElementById('t12BottomFade');
-      if (fade) fade.classList.add('show');
-    }
     initCustomBgScrollFade();
   };
   img.onerror = function() {
@@ -3563,8 +3556,6 @@ function completeReveal() {
         const hero = document.getElementById('heroSection');
         if (window.scrollY > (hero ? hero.offsetHeight + 50 : window.innerHeight)) {
           hint.style.opacity = '0'; hint.style.pointerEvents = 'none';
-          const fade = document.getElementById('t12BottomFade');
-          if (fade) { fade.style.opacity = '0'; }
           window.removeEventListener('scroll', fadeHint);
         }
       }, { passive: true });
