@@ -3615,6 +3615,19 @@ function completeReveal() {
       }
       showScrollHint();
     }, 1900);
+    setTimeout(() => {
+      let magnetFired = false;
+      function magnetScroll() {
+        if (magnetFired) return;
+        if (window.scrollY > 30) {
+          magnetFired = true;
+          const family = document.getElementById('familySection');
+          if (family) family.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          window.removeEventListener('scroll', magnetScroll);
+        }
+      }
+      window.addEventListener('scroll', magnetScroll, { passive: true });
+    }, 1900);
   } else {
     setTimeout(() => {
       g.style.opacity = '0';
