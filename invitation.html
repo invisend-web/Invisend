@@ -3615,40 +3615,6 @@ function completeReveal() {
       }
       showScrollHint();
     }, 1900);
-    setTimeout(() => {
-      let magnetArmed = true;
-      let magnetAnimating = false;
-      function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
-      function smoothScrollTo(targetY, duration, onDone) {
-        const startY = window.scrollY;
-        const diff = targetY - startY;
-        const startTime = performance.now();
-        function step(now) {
-          const elapsed = now - startTime;
-          const t = Math.min(elapsed / duration, 1);
-          window.scrollTo(0, startY + diff * easeInOutCubic(t));
-          if (t < 1) { requestAnimationFrame(step); }
-          else if (onDone) { onDone(); }
-        }
-        requestAnimationFrame(step);
-      }
-      function magnetScroll() {
-        if (magnetAnimating) return;
-        if (window.scrollY < 10) { magnetArmed = true; return; }
-        if (magnetArmed && window.scrollY > 30) {
-          magnetArmed = false;
-          magnetAnimating = true;
-          const family = document.getElementById('familySection');
-          if (family) {
-            const targetY = family.getBoundingClientRect().top + window.scrollY;
-            smoothScrollTo(targetY, 1800, () => { magnetAnimating = false; });
-          } else {
-            magnetAnimating = false;
-          }
-        }
-      }
-      window.addEventListener('scroll', magnetScroll, { passive: true });
-    }, 1900);
   } else {
     setTimeout(() => {
       g.style.opacity = '0';
