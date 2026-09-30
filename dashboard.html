@@ -782,7 +782,7 @@ select.form-input{cursor:pointer}
               <div class="tbl-summary-wrap" id="tblSummaryWrap"></div>
               <div class="rsvp-table-wrap" style="overflow-x:auto">
                 <table class="rsvp-table">
-                  <thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
+<thead><tr><th>Guest Name</th><th>Phone</th><th>Attendance</th><th>Guests</th><th>Table No.</th><th>Note</th><th>Submitted</th></tr></thead>
                   <tbody id="rsvpTableBody"></tbody>
                 </table>
               </div>
@@ -2192,8 +2192,7 @@ async function loadRSVPForInv(slug) {
       body.innerHTML = currentRsvpData.map(r => `<tr>
         <td data-label="Guest" style="color:var(--text);font-weight:500">${esc(r.guest_name || '—')}</td>
         <td data-label="Phone">${esc(r.phone || '—')}</td>
-        <td data-label="Status"><span class="sbadge ${r.attendance === 'yes' ? 'live' : 'expired'}">${r.attendance === 'yes' ? 'Attending' : 'Not Attending'}</span></td>
-        <td data-label="Table" id="tblnum_${r.id}">${tblNumHTML(r)}</td>
+<td data-label="Guests">${r.attendance === 'yes' ? (r.guest_count || 1) : '—'}</td>        <td data-label="Table" id="tblnum_${r.id}">${tblNumHTML(r)}</td>
         <td data-label="Note" id="tblnote_${r.id}">${tblNoteHTML(r)}</td>
         <td data-label="Date">${new Date(r.created_at).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
       </tr>`).join('');
