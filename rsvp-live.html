@@ -227,7 +227,7 @@ function render() {
         <div class="rsvp-phone">${esc(r.phone||'—')}</div>
       </div>
       <div style="text-align:right">
-        <div style="margin-bottom:6px"><span class="badge ${r.attendance}">${r.attendance==='yes'?'Attending':'Not Attending'}</span></div>
+       <div style="margin-bottom:6px"><span class="badge ${r.attendance}">${r.attendance==='yes'?'Attending':'Not Attending'}</span>${r.attendance==='yes' && r.guest_count ? ` <span style="font-size:12px;color:var(--text3)">(${r.guest_count} ${r.guest_count === 1 ? 'guest' : 'guests'})</span>` : ''}</div>
         <div class="rsvp-time">${timeAgo(r.created_at)}</div>
       </div>
     </li>
