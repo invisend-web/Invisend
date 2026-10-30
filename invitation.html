@@ -641,6 +641,18 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="8"] .name-line.r{background:linear-gradient(90deg,#c9a84c,transparent);}
 [data-theme="8"] .couple-tagline{color:rgba(201,168,76,0.5);letter-spacing:0.4em;font-size:9px;}
 @keyframes tgNameGlow8{0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.5),0 0 40px rgba(201,168,76,0.2);}50%{text-shadow:0 0 40px rgba(201,168,76,0.9),0 0 80px rgba(201,168,76,0.5);}}
+/* ── THEME 8: CHURCH CEREMONY SECTION ── */
+[data-theme="8"] .t8-church-section{display:none;}
+[data-theme="8"] .t8-church-section.visible{display:block;}
+[data-theme="8"] .t8-church-card{background:var(--section-bg);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center;margin-bottom:0;}
+[data-theme="8"] .t8-church-label{font-family:var(--font-display);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);opacity:0.7;margin-bottom:12px;}
+[data-theme="8"] .t8-church-name{font-family:var(--font-display);font-size:clamp(18px,4vw,26px);color:var(--text);letter-spacing:0.04em;margin-bottom:6px;}
+[data-theme="8"] .t8-church-time{font-family:var(--font-body);font-size:15px;color:var(--text2);margin-bottom:14px;}
+[data-theme="8"] .t8-church-map-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border:1px solid var(--border);border-radius:30px;font-family:var(--font-body);font-size:13px;color:var(--accent);text-decoration:none;transition:background 0.2s,border-color 0.2s;}
+[data-theme="8"] .t8-church-map-btn:hover{background:rgba(201,168,76,0.08);border-color:var(--accent);}
+[data-theme="8"] .t8-church-divider{display:flex;align-items:center;gap:12px;margin:24px 0;}
+[data-theme="8"] .t8-church-divider-line{flex:1;height:1px;background:var(--border);}
+[data-theme="8"] .t8-church-divider-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:0.5;}
 
 /* ════════════════════════════════════
    THEME 9: KALYANAM BY TG WEDDING FILMS
@@ -1440,6 +1452,27 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
     </div>
   </section>
 
+  <!-- CHURCH CEREMONY (Theme 8 only — shown via JS when church fields are filled) -->
+  <section class="section sr t8-church-section" id="t8ChurchSection">
+    <span class="section-eyebrow">Save the Date</span>
+    <div class="t8-church-card sr-scale">
+      <div class="t8-church-label">Church Ceremony</div>
+      <div class="t8-church-name" id="t8ChurchName"></div>
+      <div class="t8-church-time" id="t8ChurchTime"></div>
+      <div id="t8ChurchMapWrap" style="display:none">
+        <a class="t8-church-map-btn" id="t8ChurchMapsBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Get Directions
+        </a>
+      </div>
+    </div>
+    <div class="t8-church-divider">
+      <div class="t8-church-divider-line"></div>
+      <div class="t8-church-divider-dot"></div>
+      <div class="t8-church-divider-line"></div>
+    </div>
+  </section>
+
   <!-- EVENT -->
   <section class="section sr" id="eventSection" style="padding-top:0">
     <span class="section-eyebrow">Save the Date</span>
@@ -1808,6 +1841,22 @@ function render(d) {
   }
   if ([7, 8, 9].includes(parseInt(d.template_id))) {
     initTGSwipe(d);
+  }
+  // Theme 8 — Church Ceremony section
+  if (parseInt(d.template_id) === 8 && (d.church_name || d.ceremony_time)) {
+    const churchSection = document.getElementById('t8ChurchSection');
+    if (churchSection) {
+      document.getElementById('t8ChurchName').textContent = d.church_name || '';
+      document.getElementById('t8ChurchTime').textContent = d.ceremony_time || '';
+      if (d.church_maps_url) {
+        document.getElementById('t8ChurchMapsBtn').href = d.church_maps_url;
+        document.getElementById('t8ChurchMapWrap').style.display = '';
+      }
+      churchSection.classList.add('visible');
+      // Relabel reception card
+      const lbl = document.getElementById('eventDateLabel');
+      if (lbl) lbl.textContent = 'Wedding Reception';
+    }
   }
   if ([11].includes(parseInt(d.template_id))) {
     initCinema(d);

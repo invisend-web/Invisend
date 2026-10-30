@@ -971,6 +971,15 @@ select.form-input{cursor:pointer}
     </div>
 
     <div class="form-section">
+      <div class="form-section-title">Church Ceremony <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:6px">(Theme 8 — Western Luxury only)</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Church Name</label><input class="form-input" id="fChurchName" type="text" placeholder="e.g. St. Mary's Church"></div>
+        <div class="form-group"><label class="form-label">Ceremony Time</label><input class="form-input" id="fCeremonyTime" type="text" placeholder="e.g. 10:00 AM"></div>
+        <div class="form-group full"><label class="form-label">Church Google Maps URL</label><input class="form-input" id="fChurchMapsUrl" type="url" placeholder="https://maps.google.com/..."></div>
+      </div>
+    </div>
+
+    <div class="form-section">
       <div class="form-section-title">Core Photos & Music</div>
       <div class="form-grid cols-3">
         <div class="form-group"><label class="form-label">Swipe Image A (Bride)</label><div class="upload-area" id="uploadA"><input type="file" accept="image/*" onchange="interceptUploadForCrop(this,'swipeA','uploadA','previewSwipeA')"><img class="upload-preview" id="previewSwipeA"><div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><div class="upload-label">Bride Photo</div><div class="upload-sub">JPG / PNG / WEBP</div><div class="upload-hint">Best: 9:16 portrait · min 600×900px · face centered at top</div></div><button type="button" class="btn-use-existing btn-media-pool" style="display:none" onclick="openMediaPool('fSwipeA','previewSwipeA','uploadA','image')"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>Media Pool</button><input type="hidden" id="fSwipeA"></div>
@@ -1609,7 +1618,7 @@ function openCreateModal() {
 }
 function closeModal() { _doCloseModal(); }
 function clearForm() {
-  ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fBgImage','fPreshootTitle','fPreshootVideo','fRsvpDeadline'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['fCoupleName','fSlug','fBrideFather','fBrideMother','fGroomFather','fGroomMother','fVenue','fMessage','fMapsUrl','fSwipeA','fSwipeB','fCouplePhoto','fMusicUrl','fBgImage','fPreshootTitle','fPreshootVideo','fRsvpDeadline','fChurchName','fCeremonyTime','fChurchMapsUrl'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fPreshootTitle').value = 'Our Pre-Shoot';
   document.getElementById('fStatus').value = 'live';
   document.getElementById('fWeddingDate').value = '';
@@ -1647,6 +1656,9 @@ function editInvitation(id) {
   document.getElementById('fRsvpDeadline').value = inv.rsvp_deadline || '';
   document.getElementById('fMessage').value = inv.message || '';
   document.getElementById('fMapsUrl').value = inv.google_maps_url || '';
+  document.getElementById('fChurchName').value = inv.church_name || '';
+  document.getElementById('fCeremonyTime').value = inv.ceremony_time || '';
+  document.getElementById('fChurchMapsUrl').value = inv.church_maps_url || '';
   document.getElementById('fSwipeA').value = inv.swipe_image_a_url || '';
   document.getElementById('fSwipeB').value = inv.swipe_image_b_url || '';
   document.getElementById('fCouplePhoto').value = inv.couple_photo_url || '';
@@ -2037,6 +2049,9 @@ async function saveInvitation() {
     rsvp_deadline: document.getElementById('fRsvpDeadline').value.trim() || null,
     message: document.getElementById('fMessage').value.trim() || null,
     google_maps_url: document.getElementById('fMapsUrl').value.trim() || null,
+    church_name: document.getElementById('fChurchName').value.trim() || null,
+    ceremony_time: document.getElementById('fCeremonyTime').value.trim() || null,
+    church_maps_url: document.getElementById('fChurchMapsUrl').value.trim() || null,
     swipe_image_a_url: document.getElementById('fSwipeA').value || null,
     swipe_image_b_url: document.getElementById('fSwipeB').value || null,
     couple_photo_url: document.getElementById('fCouplePhoto').value || null,
