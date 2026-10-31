@@ -1207,6 +1207,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="8"] .event-card .location-wrap{padding:18px 0 4px;}
 [data-theme="8"] .event-card .location-btn{margin:0 auto;}
 
+[data-theme="8"] .t8-welcome{max-width:320px;margin:0 auto 34px;text-align:center;font-family:var(--font-body);font-style:italic;font-size:16px;line-height:1.9;color:var(--text2);}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .tg-dock { height: 48dvh; }
@@ -1470,6 +1472,7 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
   </div>
 
   <section class="section sr" id="familySection">
+    <div class="t8-welcome" id="t8Welcome" style="display:none"></div>
     <span class="section-eyebrow">With the Blessings of</span>
     <div class="family-grid">
       <div class="family-card"><div class="family-side fade-in-text">Bride's Family</div><div class="family-names fade-in-text" id="brideParents"></div></div>
@@ -1874,6 +1877,17 @@ function render(d) {
     if (lw && et) {
       lw.classList.remove('sr');
       et.insertAdjacentElement('afterend', lw);
+    }
+  }
+  // Theme 8 — Welcome message above family names
+  if (parseInt(d.template_id) === 8 && d.welcome_message) {
+    const wel = document.getElementById('t8Welcome');
+    if (wel) {
+      const esc = d.welcome_message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const b = esc.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+      const z = b.replace(/\+\+(.+?)\+\+/g, '<span style="font-size:1.25em;">$1</span>');
+      wel.innerHTML = z.replace(/\n/g, '<br>');
+      wel.style.display = 'block';
     }
   }
   // Theme 8 — Church Ceremony section
