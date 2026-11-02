@@ -1213,6 +1213,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 [data-theme="8"] .t8-scroll-note{display:block;}
 .t8-scroll-note.show{opacity:1;}
 
+[data-theme="8"] .event-date-num .t8-ord{font-size:0.3em;vertical-align:super;line-height:0;margin-left:3px;letter-spacing:0.05em;font-style:italic;}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .tg-dock { height: 48dvh; }
@@ -1844,6 +1846,7 @@ function render(d) {
       const n = parseInt(pr.day, 10);
       const suf = (n % 100 >= 11 && n % 100 <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th');
       document.getElementById('eventDateFull').textContent = pr.weekday + ', ' + pr.month + ' ' + n + suf + ', ' + pr.year;
+      document.getElementById('eventDay').innerHTML = n + '<sup class="t8-ord">' + suf + '</sup>';
     }
     document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Colombo' });
   }
