@@ -1209,12 +1209,6 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
 [data-theme="8"] .t8-welcome{max-width:320px;margin:0 auto 34px;text-align:center;font-family:var(--font-body);font-style:italic;font-size:16px;line-height:1.9;color:var(--text2);}
 
-[data-theme="8"] #ariyaScrollHint{display:flex!important;flex-direction:column;align-items:center;gap:4px;margin-top:0;animation:none;pointer-events:none;bottom:calc(4dvh + env(safe-area-inset-bottom,0px))!important;}
-[data-theme="8"] .ariya-scroll-line{display:none;}
-[data-theme="8"] .ariya-scroll-text{order:-1;font-family:var(--font-ui);font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.92);text-shadow:0 1px 6px rgba(0,0,0,0.8);}
-[data-theme="8"] .ariya-scroll-arrow{width:16px;height:16px;animation:t8Chev 1.8s ease-in-out infinite;}
-@keyframes t8Chev{0%,100%{transform:translateY(0);opacity:0.6;}50%{transform:translateY(5px);opacity:1;}}
-
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .tg-dock { height: 48dvh; }
@@ -2624,9 +2618,7 @@ function tgSetupNameScroll() {
   const next = heroEl.nextElementSibling
     || document.querySelector('.orn-div')
     || document.querySelector('.family-section');
-  const isT8 = parseInt(document.documentElement.getAttribute('data-theme')) === 8;
-  if (next && !isT8) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
-  if (isT8) tgScrollNudge();
+  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
 
   // Re-init bg fade — scroll was locked during reveal so scrollY was 0
   // Re-calling now picks up the correct scroll position after unlock
@@ -2634,30 +2626,6 @@ function tgSetupNameScroll() {
 }
 
 // ── Demo hint ──
-// Theme 8 gentle scroll nudge (2 small bounces, stops on any touch/scroll)
-function tgScrollNudge() {
-  let stopped = false;
-  const stop = () => { stopped = true; };
-  ['touchstart', 'wheel', 'mousedown', 'keydown'].forEach(ev =>
-    window.addEventListener(ev, stop, { once: true, passive: true }));
-  function bump(done) {
-    const y0 = window.scrollY;
-    if (stopped || y0 > 5) { stopped = true; return; }
-    const start = performance.now(), dur = 900, amp = 40;
-    function step(now) {
-      if (stopped) return;
-      const t = Math.min(1, (now - start) / dur);
-      window.scrollTo({ top: y0 + amp * Math.sin(Math.PI * t), left: 0, behavior: 'instant' });
-      if (t < 1) requestAnimationFrame(step); else if (done) done();
-    }
-    requestAnimationFrame(step);
-  }
-  setTimeout(() => {
-    if (stopped) return;
-    bump(() => setTimeout(() => { if (!stopped) bump(); }, 700));
-  }, 2000);
-}
-
 function tgDemoHint() {
   if (tgDone) return;
   const leftEl  = document.getElementById('tgLeft');
