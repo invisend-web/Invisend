@@ -1209,6 +1209,10 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
 
 [data-theme="8"] .t8-welcome{max-width:320px;margin:0 auto 34px;text-align:center;font-family:var(--font-body);font-style:italic;font-size:16px;line-height:1.9;color:var(--text2);}
 
+.t8-scroll-note{display:none;position:fixed;top:46dvh;left:50%;transform:translateX(-50%);z-index:16;width:90%;text-align:center;pointer-events:none;opacity:0;transition:opacity 1.2s ease;font-family:var(--font-ui);font-size:11px;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.92);text-shadow:0 1px 6px rgba(0,0,0,0.8);}
+[data-theme="8"] .t8-scroll-note{display:block;}
+.t8-scroll-note.show{opacity:1;}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .tg-dock { height: 48dvh; }
@@ -1407,6 +1411,8 @@ body{font-family:var(--font-body);color:var(--text);min-height:100dvh;overflow-x
       <span class="scroll-down-label" id="scrollDownLabel">Scroll to explore</span>
     </div>
   </section>
+
+  <div class="t8-scroll-note" id="t8ScrollNote">Scroll down to view your invitation</div>
 
   <!-- TG WEDDING FILMS DOCK -->
   <div class="tg-dock" id="tgDock">
@@ -1831,6 +1837,14 @@ function render(d) {
     const dt = new Date(d.wedding_date);
     document.getElementById('eventDay').textContent = dt.toLocaleDateString('en-US', { day: '2-digit', timeZone: 'Asia/Colombo' });
     document.getElementById('eventDateFull').textContent = dt.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Colombo' });
+    if (parseInt(d.template_id) === 8) {
+      const pr = {};
+      new Intl.DateTimeFormat('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Colombo' })
+        .formatToParts(dt).forEach(x => { pr[x.type] = x.value; });
+      const n = parseInt(pr.day, 10);
+      const suf = (n % 100 >= 11 && n % 100 <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th');
+      document.getElementById('eventDateFull').textContent = pr.weekday + ', ' + pr.month + ' ' + n + suf + ', ' + pr.year;
+    }
     document.getElementById('eventTime').textContent = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Colombo' });
   }
   document.getElementById('eventVenue').textContent = d.venue || '';
@@ -2618,7 +2632,9 @@ function tgSetupNameScroll() {
   const next = heroEl.nextElementSibling
     || document.querySelector('.orn-div')
     || document.querySelector('.family-section');
-  if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
+  const isT8 = parseInt(document.documentElement.getAttribute('data-theme')) === 8;
+  if (next && !isT8) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 900);
+  if (isT8) tgShowScrollNote();
 
   // Re-init bg fade — scroll was locked during reveal so scrollY was 0
   // Re-calling now picks up the correct scroll position after unlock
@@ -2626,6 +2642,21 @@ function tgSetupNameScroll() {
 }
 
 // ── Demo hint ──
+// Theme 8: soft info text 2s after names, fades out when guest scrolls
+function tgShowScrollNote() {
+  const note = document.getElementById('t8ScrollNote');
+  if (!note) return;
+  let dismissed = false;
+  window.addEventListener('scroll', function onS() {
+    if (window.scrollY > 15) {
+      dismissed = true;
+      note.classList.remove('show');
+      window.removeEventListener('scroll', onS);
+    }
+  }, { passive: true });
+  setTimeout(() => { if (!dismissed) note.classList.add('show'); }, 1400);
+}
+
 function tgDemoHint() {
   if (tgDone) return;
   const leftEl  = document.getElementById('tgLeft');
