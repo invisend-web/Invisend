@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "api/invitation-meta.js": { "includeFiles": "invitation.html" }
+  }
+}
